@@ -88,6 +88,11 @@ public class EnemyPool : IPoolBase
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
         pEnemyMain.GetRepeatPatternList().Add(cUpdate);
     }
+    public void AddCounterPattern(GameObject pEnemyObject, int iFlag)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        pEnemyMain.GetCounterPatternList().Add(iFlag);
+    }
     public void SetEnemyMoveX(GameObject pEnemyObject, float fEnemyMoveSpeedX, float fEnemyMoveAccelerationSpeedX = 0.0f, float fEnemyMoveAccelerationSpeedXMax = 0.0f, float fEnemyMoveDecelerationSpeedX = 0.0f, float fEnemyMoveDecelerationSpeedXMin = 0.0f)
     {
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();

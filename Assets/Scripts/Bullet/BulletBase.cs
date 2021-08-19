@@ -38,6 +38,7 @@ public class BulletBase : GameObjectBase, IObjectBase
     private bool bCondition;
     private bool bCollisionDestroy;
     private bool bColliderTrigger;
+    private bool bGraze;
     #endregion
 
     #region CONSTRUCTOR
@@ -81,6 +82,7 @@ public class BulletBase : GameObjectBase, IObjectBase
     public bool GetCondition() { return bCondition; }
     public bool GetCollisionDestroy() { return bCollisionDestroy; }
     public bool GetColliderTrigger() { return bColliderTrigger; }
+    public bool GetGraze() { return bGraze; }
     #endregion
 
     #region SET METHOD
@@ -144,6 +146,7 @@ public class BulletBase : GameObjectBase, IObjectBase
     public void SetCondition(bool bCondition) { this.bCondition = bCondition; }
     public void SetCollisionDestroy(bool bCollisionDestroy) { this.bCollisionDestroy = bCollisionDestroy; }
     public void SetColliderTrigger(bool bColliderTrigger) { this.bColliderTrigger = bColliderTrigger; }
+    public void SetGraze(bool bGraze) { this.bGraze = bGraze; }
     #endregion
 
     #region COMMON METHOD
@@ -165,6 +168,7 @@ public class BulletBase : GameObjectBase, IObjectBase
         SetCondition(false);
         SetCollisionDestroy(false);
         SetColliderTrigger(false);
+        SetGraze(false);
 
         base.AllReset();
     }

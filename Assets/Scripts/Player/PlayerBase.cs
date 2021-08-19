@@ -20,8 +20,11 @@ public class PlayerBase : GameObjectBase, IObjectBase
     private int iPlayerSpellFragment;
     private int iPlayerScoreItem;
     private int iPlayerGrazeCount;
+    private int iPlayerMissCount;
     private float fPlayerPower;
-    private float fPlayerAttackDamage;
+    private float fPlayerPrimaryDamage;
+    private float fPlayerFastSecondaryDamage;
+    private float fPlayerSlowSecondaryDamage;
     private float fPlayerMoveSpeedFast;
     private float fPlayerMoveSpeedSlow;
     private bool bSlowMode;
@@ -39,12 +42,16 @@ public class PlayerBase : GameObjectBase, IObjectBase
         switch (enPlayerType)
         {
             case EPlayerType.enType_Reimu:
-                fPlayerAttackDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.2f : 1.3f;
+                fPlayerPrimaryDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.5f : 1.3f;
+                fPlayerFastSecondaryDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 0.6f : 0.8f;
+                fPlayerSlowSecondaryDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.2f : 1.1f;
                 fPlayerMoveSpeedFast = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 3.5f : 3.8f;
                 fPlayerMoveSpeedSlow = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.2f : 1.4f;
                 break;
             case EPlayerType.enType_Marisa:
-                fPlayerAttackDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.4f : 1.2f;
+                fPlayerPrimaryDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.8f : 2.0f;
+                fPlayerFastSecondaryDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.4f : 1.0f;
+                fPlayerSlowSecondaryDamage = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.2f : 1.0f;
                 fPlayerMoveSpeedFast = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 4.2f : 4.0f;
                 fPlayerMoveSpeedSlow = (enPlayerWeaponType.Equals(EPlayerWeaponType.enType_A)) ? 1.8f : 1.6f;
                 break;
@@ -72,8 +79,11 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public int GetPlayerSpellFragment() { return iPlayerSpellFragment; }
     public int GetPlayerScoreItem() { return iPlayerScoreItem; }
     public int GetPlayerGrazeCount() { return iPlayerGrazeCount; }
+    public int GetPlayerMissCount() { return iPlayerMissCount; }
     public float GetPlayerPower() { return fPlayerPower; }
-    public float GetPlayerAttackDamage() { return fPlayerAttackDamage; }
+    public float GetPlayerPrimaryDamage() { return fPlayerPrimaryDamage; }
+    public float GetPlayerFastSecondaryDamage() { return fPlayerFastSecondaryDamage; }
+    public float GetPlayerSlowSecondaryDamage() { return fPlayerSlowSecondaryDamage; }
     public float GetPlayerMoveSpeed() { return !bSlowMode ? fPlayerMoveSpeedFast : fPlayerMoveSpeedSlow; }
     public bool GetSlowMode() { return bSlowMode; }
     public bool GetDeath() { return bDeath; }
@@ -95,8 +105,11 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public void SetPlayerSpellFragment(int iPlayerSpellFragment) { this.iPlayerSpellFragment = iPlayerSpellFragment; }
     public void SetPlayerScoreItem(int iPlayerScoreItem) { this.iPlayerScoreItem = iPlayerScoreItem; }
     public void SetPlayerGrazeCount(int iPlayerGrazeCount) { this.iPlayerGrazeCount = iPlayerGrazeCount; }
+    public void SetPlayerMissCount(int iPlayerMissCount) { this.iPlayerMissCount = iPlayerMissCount; }
     public void SetPlayerPower(float fPlayerPower) { this.fPlayerPower = fPlayerPower; }
-    public void SetPlayerAttackDamage(float fPlayerAttackDamage) { this.fPlayerAttackDamage = fPlayerAttackDamage; }
+    public void SetPlayerPrimaryDamage(float fPlayerPrimaryDamage) { this.fPlayerPrimaryDamage = fPlayerPrimaryDamage; }
+    public void SetPlayerFastSecondaryDamage(float fPlayerFastSecondaryDamage) { this.fPlayerFastSecondaryDamage = fPlayerFastSecondaryDamage; }
+    public void SetPlayerSlowSecondaryDamage(float fPlayerSlowSecondaryDamage) { this.fPlayerSlowSecondaryDamage = fPlayerSlowSecondaryDamage; }
     public void SetPlayerMoveSpeed(float fPlayerMoveSpeedFast, float fPlayerMoveSpeedSlow)
     {
         this.fPlayerMoveSpeedFast = fPlayerMoveSpeedFast;
@@ -119,8 +132,11 @@ public class PlayerBase : GameObjectBase, IObjectBase
         SetPlayerSpellFragment(0);
         SetPlayerScoreItem(0);
         SetPlayerGrazeCount(0);
+        SetPlayerMissCount(0);
         SetPlayerPower(0.0f);
-        SetPlayerAttackDamage(0.0f);
+        SetPlayerPrimaryDamage(0.0f);
+        SetPlayerFastSecondaryDamage(0.0f);
+        SetPlayerSlowSecondaryDamage(0.0f);
         SetPlayerMoveSpeed(0.0f, 0.0f);
         SetSlowMode(false);
         SetDeath(false);

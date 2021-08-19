@@ -15,25 +15,25 @@ public class BulletMain : MonoBehaviour
     public DelegateCommon pAttachDelegate;
 
     private BulletBase pBulletBase;
+    private PlayerMain pPlayerMain;
     private PlayerBase pPlayerBase;
     private GameObject pPlayerObject;
     private Transform pPlayerTransform;
     private Transform pTempTransform;
     private Timer pPatternTimer;
     private Timer pRotateTimer;
-    private CoroutineHandle cUpdate;
     private float fDistance;
     #endregion
 
     #region GET METHOD
     public BulletBase GetBulletBase() { return pBulletBase; }
+    public PlayerMain GetPlayerMain() { return pPlayerMain; }
     public PlayerBase GetPlayerBase() { return pPlayerBase; }
     public GameObject GetPlayerObject() { return pPlayerObject; }
     public Transform GetPlayerTransform() { return pPlayerTransform; }
     public Transform GetTempTransform() { return pTempTransform; }
     public Timer GetPatternTimer() { return pPatternTimer; }
     public Timer GetRotateTimer() { return pRotateTimer; }
-    public CoroutineHandle GetUpdate() { return cUpdate; }
     public float GetDistance() { return fDistance; }
     #endregion
 
@@ -94,6 +94,70 @@ public class BulletMain : MonoBehaviour
             pConditionDelegate();
         }
     }
+    private void OnTriggerEnter2D(Collider2D pCollider)
+    {
+        EnemyMain pEnemyMain = pCollider.GetComponent<EnemyMain>();
+
+        if (pBulletBase.GetBulletShooter().Equals(EBulletShooter.enShooter_Player))
+        {
+            if (pCollider.CompareTag("ENEMY"))
+            {
+                switch (pBulletBase.GetPlayerBulletType())
+                {
+                    case EPlayerBulletType.enType_ReimuPrimary:
+                    case EPlayerBulletType.enType_MarisaPrimary:
+                        pEnemyMain.GetEnemyBase().SetEnemyHP
+                            (pEnemyMain.GetEnemyBase().GetEnemyHP() - (pPlayerBase.GetPlayerPrimaryDamage() + pPlayerBase.GetPlayerPower()));
+                        break;
+                    case EPlayerBulletType.enType_ReimuSecondary_Homing:
+                    case EPlayerBulletType.enType_MarisaSecondary_Missile:
+                        pEnemyMain.GetEnemyBase().SetEnemyHP
+                            (pEnemyMain.GetEnemyBase().GetEnemyHP() - (pPlayerBase.GetPlayerFastSecondaryDamage() + (pPlayerBase.GetPlayerPower() * 0.5f)));
+                        break;
+                    case EPlayerBulletType.enType_ReimuSecondary_Niddle:
+                    case EPlayerBulletType.enType_MarisaSecondary_Laser:
+                        pEnemyMain.GetEnemyBase().SetEnemyHP
+                            (pEnemyMain.GetEnemyBase().GetEnemyHP() - (pPlayerBase.GetPlayerSlowSecondaryDamage() + (pPlayerBase.GetPlayerPower() * 0.5f)));
+                        break;
+                    default:
+                        break;
+                }
+                if (pEnemyMain.GetEnemyBase().GetEnemyHP() <= 0.0f)
+                {
+                    pEnemyMain.DestroyEnemy();
+                }
+
+                if (pBulletBase.GetCollisionDestroy().Equals(true))
+                {
+                    DestroyBullet();
+                }
+            }
+            else return;
+        }
+        else
+        {
+            if (pCollider.name.Equals("HitPoint"))
+            {
+                if (pBulletBase.GetCollisionDestroy().Equals(true))
+                {
+                    DestroyBullet();
+                }
+                if (pPlayerBase.GetDeath().Equals(false) && pPlayerBase.GetRevive().Equals(false))
+                {
+                    Timing.RunCoroutine(pPlayerMain.PlayerDeath());
+                }
+            }
+            else if (pCollider.name.Equals("GrazePoint"))
+            {
+                if (pBulletBase.GetGraze().Equals(false))
+                {
+                    pBulletBase.SetGraze(true);
+                    pPlayerBase.SetPlayerGrazeCount(pPlayerBase.GetPlayerGrazeCount() + 1);
+                }
+            }
+            else return;
+        }
+    }
     #endregion
 
     #region COMMON METHOD
@@ -103,7 +167,8 @@ public class BulletMain : MonoBehaviour
         {
             pBulletBase = new BulletBase(pBulletObject, pTransform, vSpawnPosition, vScale);
             pPlayerObject = GameManager.Instance.pPlayer;
-            pPlayerBase = pPlayerObject.GetComponent<PlayerMain>().GetPlayerBase();
+            pPlayerMain = pPlayerObject.GetComponent<PlayerMain>();
+            pPlayerBase = pPlayerMain.GetPlayerBase();
             pPlayerTransform = pPlayerObject.GetComponent<Transform>();
             pPatternTimer = new Timer();
             pRotateTimer = new Timer();
@@ -137,7 +202,8 @@ public class BulletMain : MonoBehaviour
         {
             pBulletBase = new BulletBase(pBulletObject, pTransform, vSpawnPosition, vScale);
             pPlayerObject = GameManager.Instance.pPlayer;
-            pPlayerBase = pPlayerObject.GetComponent<PlayerMain>().GetPlayerBase();
+            pPlayerMain = pPlayerObject.GetComponent<PlayerMain>();
+            pPlayerBase = pPlayerMain.GetPlayerBase();
             pPlayerTransform = pPlayerObject.GetComponent<Transform>();
             pPatternTimer = new Timer();
             pRotateTimer = new Timer();
@@ -319,7 +385,6 @@ public class BulletMain : MonoBehaviour
         pPatternTimer.InitTimer(0, 0.0f, false);
         pRotateTimer.InitTimer(0, 0.0f, false);
 
-        // Timing.Instance.KillCoroutinesOnInstance(cUpdate);
         BulletManager.Instance.GetBulletPool().ReturnPool(pBulletBase.GetGameObject());
     }
     public void ColliderCheck(float fDistance)
@@ -343,7 +408,7 @@ public class BulletMain : MonoBehaviour
         }
         else
         {
-            if (pBulletBase.GetColliderTrigger().Equals(true) && pPlayerBase.GetDeath().Equals(false) && pPlayerBase.GetRevive().Equals(false))
+            if (pBulletBase.GetColliderTrigger().Equals(true) && pPlayerBase.GetDeath().Equals(false))
             {
                 switch (pBulletBase.GetBulletType())
                 {
@@ -452,93 +517,6 @@ public class BulletMain : MonoBehaviour
     #endregion
 
     #region IENUMERATOR
-    // public IEnumerator<float> Update()
-    // {
-    //     while (true)
-    //     {
-    //         yield return Timing.WaitForOneFrame;
-    // 
-    //         if (pBulletBase == null)
-    //         {
-    //             continue;
-    //         }
-    // 
-    //         // SCREEN CHECK
-    //         OutScreenCheck(pBulletBase.GetTransform(), pBulletBase.GetPadding());
-    //         TouchScreenCheck(pBulletBase.GetTransform());
-    // 
-    //         // COLLIDER CHECK
-    //         pTempTransform = pPlayerTransform;
-    //         fDistance = Vector3.Distance(pBulletBase.GetTransform().position, pTempTransform.position);
-    //         ColliderCheck(fDistance);
-    // 
-    //         // BULLET MOVE
-    //         if (pBulletBase.GetBulletMoveAccelerationSpeed() != 0.0f)
-    //             BulletMoveAcceleration();
-    //         if (pBulletBase.GetBulletMoveDecelerationSpeed() != 0.0f)
-    //             BulletMoveDeceleration();
-    //         if (pBulletBase.GetBulletMoveSpeed() != 0.0f)
-    //             BulletMove();
-    // 
-    //         // BULLET ROTATE
-    //         if (pRotateTimer.GetSwitch().Equals(true))
-    //         {
-    //             pRotateTimer.RunTimer();
-    //             if (pBulletBase.GetBulletRotateAccelerationSpeed() != 0.0f)
-    //                 BulletRotateAcceleration();
-    //             if (pBulletBase.GetBulletRotateDecelerationSpeed() != 0.0f)
-    //                 BulletRotateDeceleration();
-    //             if (pBulletBase.GetBulletRotateSpeed() != 0.0f)
-    //                 BulletRotate();
-    //         }
-    // 
-    //         // PATTERN TIMER CHECK
-    //         if (pPatternTimer.GetSwitch().Equals(true))
-    //         {
-    //             pPatternTimer.RunTimer();
-    //             if (pPatternTimer.GetFlag().Equals(true))
-    //             {
-    //                 if (pCommonDelegate != null)
-    //                 {
-    //                     pCommonDelegate();
-    //                 }
-    //                 pPatternTimer.ResetTimer(pPatternTimer.GetResetTime());
-    //             }
-    //         }
-    // 
-    //         // CONDITION PATTERN
-    //         if (pConditionDelegate != null)
-    //         {
-    //             pConditionDelegate();
-    //         }
-    //     }
-    // }
+    
     #endregion
-
-    private void OnTriggerEnter2D(Collider2D pCollider)
-    {
-        if (pBulletBase.GetBulletShooter().Equals(EBulletShooter.enShooter_Player))
-        {
-            if (pCollider.CompareTag("ENEMY"))
-            {
-                if (pBulletBase.GetCollisionDestroy().Equals(true))
-                {
-                    DestroyBullet();
-                }
-            }
-            else return;
-        }
-        else
-        {
-            if (pCollider.name.Equals("HitPoint"))
-            {
-                Debug.Log("HIT !!!");
-                if (pBulletBase.GetCollisionDestroy().Equals(true))
-                {
-                    DestroyBullet();
-                }
-            }
-            else return;
-        }
-    }
 }

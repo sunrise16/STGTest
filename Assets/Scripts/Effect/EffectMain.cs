@@ -15,7 +15,6 @@ public class EffectMain : MonoBehaviour
     private Timer pTimer;
     private Timer pLaserDelayTimer;
     private Timer pLaserActiveTimer;
-    private CoroutineHandle cUpdate;
     private float fAlpha;
     private float fScale;
     #endregion
@@ -25,7 +24,6 @@ public class EffectMain : MonoBehaviour
     public Timer GetTimer() { return pTimer; }
     public Timer GetLaserDelayTimer() { return pLaserDelayTimer; }
     public Timer GetLaserActiveTimer() { return pLaserActiveTimer; }
-    public CoroutineHandle GetUpdate() { return cUpdate; }
     public float GetAlpha() { return fAlpha; }
     public float GetScale() { return fScale; }
     #endregion
@@ -194,8 +192,6 @@ public class EffectMain : MonoBehaviour
         pEffectBase.SetEffectType(enEffectType);
         pEffectBase.SetEffectAnimationType(enEffectAnimationType);
         fAlpha = pEffectBase.GetColor().a;
-
-        // cUpdate = Timing.RunCoroutine(Update());
     }
     public void ScaleUp()
     {
@@ -271,59 +267,7 @@ public class EffectMain : MonoBehaviour
         pLaserDelayTimer.InitTimer(0, 0.0f, false);
         pLaserActiveTimer.InitTimer(0, 0.0f, false);
 
-        // Timing.Instance.KillCoroutinesOnInstance(cUpdate);
         EffectManager.Instance.GetEffectPool().ReturnPool(pEffectBase.GetGameObject());
     }
-    #endregion
-
-    #region IENUMERATOR
-    // public IEnumerator<float> Update()
-    // {
-    //     while (true)
-    //     {
-    //         yield return Timing.WaitForOneFrame;
-    // 
-    //         if (pEffectBase == null)
-    //         {
-    //             continue;
-    //         }
-    // 
-    //         // TIMER CHECK
-    //         if (pTimer.GetSwitch().Equals(true))
-    //         {
-    //             pTimer.RunTimer();
-    // 
-    //             // TYPE CHECK
-    //             switch (pEffectBase.GetEffectAnimationType())
-    //             {
-    //                 case EEffectAnimationType.enType_Common:
-    //                     break;
-    //                 case EEffectAnimationType.enType_BulletShot:
-    //                     ScaleDown();
-    //                     AlphaUp();
-    //                     break;
-    //                 case EEffectAnimationType.enType_Animation:
-    //                     break;
-    //                 case EEffectAnimationType.enType_Explosion:
-    //                     break;
-    //                 default:
-    //                     break;
-    //             }
-    // 
-    //             // SWITCH OFF
-    //             if (pTimer.GetFlag().Equals(true))
-    //             {
-    //                 if (pCommonDelegate != null)
-    //                 {
-    //                     pCommonDelegate();
-    //                 }
-    //                 pTimer.SetSwitch(false);
-    //                 pTimer.InitTimer();
-    //                 // Timing.Instance.KillCoroutinesOnInstance(cUpdate);
-    //                 EffectManager.Instance.GetEffectPool().ReturnPool(pEffectBase.GetGameObject());
-    //             }
-    //         }
-    //     }
-    // }
     #endregion
 }

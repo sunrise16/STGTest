@@ -75,7 +75,7 @@ public class EnemyMain : MonoBehaviour
                     {
 						pPatternList[i].SetRepeatCount(pPatternList[i].GetRepeatCount() + 1);
 						iFireCount++;
-						GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pPatternList[i].GetFlag(), iFireCount);
+						GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pPatternList[i].GetFlag(), false, iFireCount);
 						pPatternList[i].ResetTimer(pPatternList[i].GetResetTime());
 						if (pPatternList[i].GetRepeatLimit().Equals(1))
 						{
@@ -88,18 +88,12 @@ public class EnemyMain : MonoBehaviour
 						{
 							pPatternList[i].SetRepeatCount(pPatternList[i].GetRepeatCount() + 1);
 							iFireCount++;
-							GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pPatternList[i].GetFlag(), iFireCount);
+							GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pPatternList[i].GetFlag(), false, iFireCount);
 							pPatternList[i].ResetTimer(pPatternList[i].GetResetTime());
 						}
 					}
 				}
 			}
-		}
-
-		// DESTROY
-		if (pEnemyBase.GetEnemyHP() <= 0.0f)
-		{
-			DestroyEnemy();
 		}
 	}
 	#endregion
@@ -310,6 +304,8 @@ public class EnemyMain : MonoBehaviour
 	}
 	public void DestroyEnemy()
     {
+		// CREATE EFFECT HERE
+
 		for (int i = 0; i < pPatternList.Count; i++)
         {
 			pPatternList[i].InitTimer(0, 0, false);
@@ -326,71 +322,12 @@ public class EnemyMain : MonoBehaviour
 		{
 			for (int i = 0; i < pCounterPatternList.Count; i++)
 			{
-				GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pCounterPatternList[i], iFireCount);
+				GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pCounterPatternList[i], true, iFireCount);
 			}
 		}
 		pCounterPatternList.Clear();
 
-		// Timing.Instance.KillCoroutinesOnInstance(cUpdate);
 		EnemyManager.Instance.GetEnemyPool().ReturnPool(pEnemyBase.GetGameObject());
 	}
-	#endregion
-
-	#region IENUMERATOR
-	// public IEnumerator<float> Update()
-    // {
-	// 	while (true)
-    //     {
-	// 		yield return Timing.WaitForOneFrame;
-	// 
-	// 		if (pEnemyBase == null)
-	// 		{
-	// 			continue;
-	// 		}
-	// 
-	// 		// SCREEN CHECK
-	// 		OutScreenCheck(pEnemyBase.GetTransform());
-	// 
-	// 		// TIMER
-	// 		if (pDelayTimer.GetSwitch().Equals(true))
-	// 		{
-	// 			pDelayTimer.RunTimer();
-	// 		}
-	// 		else
-	// 		{
-	// 			if (pShotTimer.GetSwitch().Equals(true) && TouchScreenCheck(pEnemyBase.GetTransform()).Equals(false))
-	// 			{
-	// 				if (pShotTimer.GetRepeatCount().Equals(0))
-	// 				{
-	// 					pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
-	// 					iFireCount++;
-	// 					GameManager.Instance.PatternCall(iPatternIndex, pEnemyBase.GetTransform().position, iFireCount);
-	// 					pShotTimer.ResetTimer(pShotTimer.GetResetTime());
-	// 					if (pShotTimer.GetRepeatLimit().Equals(1))
-	// 					{
-	// 						pShotTimer.SetSwitch(false);
-	// 					}
-	// 				}
-	// 				else
-	// 				{
-	// 					pShotTimer.RunTimer();
-	// 					if (pShotTimer.GetFlag().Equals(true))
-	// 					{
-	// 						pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
-	// 						iFireCount++;
-	// 						GameManager.Instance.PatternCall(iPatternIndex, pEnemyBase.GetTransform().position, iFireCount);
-	// 						pShotTimer.ResetTimer(pShotTimer.GetResetTime());
-	// 					}
-	// 				}
-	// 			}
-	// 		}
-	// 
-	// 		// DESTROY
-	// 		if (pEnemyBase.GetEnemyHP() <= 0.0f)
-    //         {
-	// 			DestroyEnemy();
-    //         }
-	// 	}
-    // }
 	#endregion
 }

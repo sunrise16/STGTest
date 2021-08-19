@@ -104,8 +104,8 @@ public enum EPlayerBulletType
     None = -1,
     enType_ReimuPrimary = 47,
     enType_ReimuSecondary_Niddle = 50,
-    enType_ReimuSecondary_Homing,
-    enType_MarisaPrimary,
+    enType_ReimuSecondary_Homing = 27,
+    enType_MarisaPrimary = 2,
     enType_MarisaSecondary_Missile,
     enType_MarisaSecondary_Laser,
     Max

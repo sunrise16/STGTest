@@ -5,24 +5,84 @@ using UnityEngine;
 using MEC;
 #endregion
 
+public class PlayerSecondary
+{
+    #region VARIABLE
+    private PlayerBase pPlayerBase;
+    private Vector3 vRefVector;
+    private int iNumber;
+    #endregion
+
+    #region CONSTRUCTOR
+    public PlayerSecondary(PlayerBase pPlayerBase, int iNumber)
+    {
+        this.pPlayerBase = pPlayerBase;
+        vRefVector = Vector3.one;
+        this.iNumber = iNumber;
+    }
+    #endregion
+
+    #region COMMON METHOD
+    public void MoveSecondary(bool bKeyUp)
+    {
+        if (pPlayerBase.GetChildTransform(2).GetChild(iNumber).gameObject.activeSelf.Equals(false))
+            return;
+
+        if ((int)pPlayerBase.GetPlayerPower() == 1 || (int)pPlayerBase.GetPlayerPower() == 3)
+        {
+            if (((int)pPlayerBase.GetPlayerPower() == 1 && iNumber.Equals(0)) || ((int)pPlayerBase.GetPlayerPower() == 3 && iNumber.Equals(2)))
+            {
+                pPlayerBase.GetChildTransform(2).GetChild(iNumber).position = Vector3.SmoothDamp(pPlayerBase.GetChildTransform(2).GetChild(iNumber).position,
+                    pPlayerBase.GetChildTransform(2).GetChild(bKeyUp.Equals(true) ? 15 : 14).position, ref vRefVector, 0.05f);
+            }
+            else
+            {
+                pPlayerBase.GetChildTransform(2).GetChild(iNumber).position = Vector3.SmoothDamp(pPlayerBase.GetChildTransform(2).GetChild(iNumber).position,
+                    pPlayerBase.GetChildTransform(2).GetChild(bKeyUp.Equals(true) ? 10 + iNumber : 6 + iNumber).position, ref vRefVector, 0.05f);
+            }
+        }
+        else
+        {
+            pPlayerBase.GetChildTransform(2).GetChild(iNumber).position = Vector3.SmoothDamp(pPlayerBase.GetChildTransform(2).GetChild(iNumber).position,
+                pPlayerBase.GetChildTransform(2).GetChild(bKeyUp.Equals(true) ? 10 + iNumber : 6 + iNumber).position, ref vRefVector, 0.05f);
+        }
+    }
+    #endregion
+}
+
 public class PlayerMain : MonoBehaviour
 {
     #region VARIABLE
-    private SpriteRenderer pHitPoint;
+    private SpriteRenderer pPlayerSprite;
+    private SpriteRenderer pHitPointSprite;
     private PlayerBase pPlayerBase;
     private Timer pShotTimer;
+    private List<PlayerSecondary> pSecondaryList;
     private Vector2 vMoveSpeedVector;
     private Vector2 vMargin;
-    private float fAlpha;
+    private float fPlayerAlpha;
+    private float fHitPointAlpha;
     #endregion
 
     #region UNITY LIFE CYCLE
     public void FixedUpdate()
     {
-        PlayerMove();
-        ShotBullet();
+        if (pPlayerBase.GetDeath().Equals(false))
+        {
+            PlayerMove();
+            ShotBullet();
+            MoveInScreen();
+        }
         ControlHitPoint();
-        MoveInScreen();
+
+        // PLAYER SPRITE
+        pPlayerSprite.color = new Color(1.0f, 1.0f, 1.0f, fPlayerAlpha);
+
+        // PLAYER SECONDARY
+        for (int i = 0; i < 4; i++)
+        {
+            pSecondaryList[i].MoveSecondary(pPlayerBase.GetSlowMode().Equals(true) ? true : false);
+        }
     }
     #endregion
 
@@ -52,7 +112,14 @@ public class PlayerMain : MonoBehaviour
                 pPlayerBase.GetAnimator().ResetTrigger(szTrigger2);
                 pPlayerBase.GetAnimator().ResetTrigger(szTrigger3);
             });
-            pHitPoint = pPlayerBase.GetTransform().GetChild(1).GetComponent<SpriteRenderer>();
+            pPlayerSprite = pPlayerBase.GetChildTransform(0).GetComponent<SpriteRenderer>();
+            pHitPointSprite = pPlayerBase.GetChildTransform(1).GetComponent<SpriteRenderer>();
+
+            pSecondaryList = new List<PlayerSecondary>();
+            for (int i = 0; i < 4; i++)
+            {
+                pSecondaryList.Add(new PlayerSecondary(pPlayerBase, i));
+            }
         }
         else
         {
@@ -65,7 +132,8 @@ public class PlayerMain : MonoBehaviour
         pPlayerBase.SetRevive(false);
         vMoveSpeedVector = Vector2.zero;
         vMargin = new Vector2(0.03f, 0.03f);
-        fAlpha = 0.0f;
+        fPlayerAlpha = 1.0f;
+        fHitPointAlpha = 0.0f;
     }
     public void PlayerMove()
     {
@@ -185,8 +253,8 @@ public class PlayerMain : MonoBehaviour
             for (int i = 0; i < 2; i++)
             {
                 GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                    (new Vector2(pPlayerBase.GetPositionX() + (i.Equals(0) ? -0.08f : 0.08f), pPlayerBase.GetPositionY()), Vector3.one,
-                    EBulletType.enType_Box, EBulletShooter.enShooter_Player, EEnemyBulletType.None, EPlayerBulletType.enType_ReimuPrimary, 1.0f, 10.0f);
+                    (pPlayerBase.GetChildTransform(2).GetChild(i + 4).position, Vector3.one, EBulletType.enType_Box, EBulletShooter.enShooter_Player,
+                    EEnemyBulletType.None, EPlayerBulletType.enType_ReimuPrimary, 0.6f, 10.0f);
                 BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
                 BulletBase pBulletBase = pBulletMain.GetBulletBase();
 
@@ -209,32 +277,92 @@ public class PlayerMain : MonoBehaviour
             }
 
             // SECONDARY SHOT
-            // if (pPlayerBase.)
+            if (pPlayerBase.GetPlayerPower() >= 1.0f)
+            {
+                for (int i = 0; i < (int)pPlayerBase.GetPlayerPower(); i++)
+                {
+                    if (pPlayerBase.GetSlowMode().Equals(true))
+                    {
+                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                            (pPlayerBase.GetChildTransform(2).GetChild(i).position, Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Player,
+                            EEnemyBulletType.None, EPlayerBulletType.enType_ReimuSecondary_Niddle, 0.6f, 10.0f);
+                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+                        pBulletBase.SetChildRotationZ(0, 90.0f);
+                        pBulletBase.SetUniqueNumber(0);
+                        pBulletMain.GetPatternTimer().InitTimer();
+                        pBulletMain.GetRotateTimer().InitTimer();
+                        pBulletBase.SetBulletSpeed(18.0f);
+                        pBulletBase.SetBulletRotate(0.0f);
+                        pBulletBase.SetBulletOption();
+                        pBulletBase.SetCondition(false);
+                        pBulletBase.SetCollisionDestroy(true);
+                        pBulletBase.SetColliderTrigger(true);
+                        pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuSecondary_Niddle)];
+                        pBulletMain.pCommonDelegate = null;
+                        pBulletMain.pConditionDelegate = null;
+                        pBulletMain.pChangeDelegate = null;
+                        pBulletMain.pSplitDelegate = null;
+                        pBulletMain.pAttachDelegate = null;
+                    }
+                    else
+                    {
+                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                            (pPlayerBase.GetChildTransform(2).GetChild(i).position, Vector3.one, EBulletType.enType_Box, EBulletShooter.enShooter_Player,
+                            EEnemyBulletType.None, EPlayerBulletType.enType_ReimuSecondary_Homing, 0.6f, 20.0f);
+                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+                        pBulletBase.SetChildRotationZ(0, 90.0f);
+                        pBulletBase.SetUniqueNumber(0);
+                        pBulletMain.GetPatternTimer().InitTimer();
+                        pBulletMain.GetRotateTimer().InitTimer();
+                        pBulletBase.SetBulletSpeed(12.0f);
+                        pBulletBase.SetBulletRotate(0.0f);
+                        pBulletBase.SetBulletOption();
+                        pBulletBase.SetCondition(false);
+                        pBulletBase.SetCollisionDestroy(true);
+                        pBulletBase.SetColliderTrigger(true);
+                        pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuSecondary_Homing)];
+                        pBulletMain.pCommonDelegate = null;
+                        pBulletMain.pConditionDelegate = null;
+                        pBulletMain.pChangeDelegate = null;
+                        pBulletMain.pSplitDelegate = null;
+                        pBulletMain.pAttachDelegate = null;
+                    }
+                }
+            }
         }
         else if (enPlayerType.Equals(EPlayerType.enType_Marisa))
         {
-
+            // UNDER CONSTRUCTION
         }
     }
     public void ControlHitPoint()
     {
         if (pPlayerBase.GetSlowMode().Equals(true))
         {
-            fAlpha += 0.1f;
-            if (fAlpha > 1.0f)
+            fHitPointAlpha += 0.1f;
+            if (fHitPointAlpha > 1.0f)
             {
-                fAlpha = 1.0f;
+                fHitPointAlpha = 1.0f;
             }
         }
         else
         {
-            fAlpha -= 0.1f;
-            if (fAlpha < 0.0f)
+            fHitPointAlpha -= 0.1f;
+            if (fHitPointAlpha < 0.0f)
             {
-                fAlpha = 0.0f;
+                fHitPointAlpha = 0.0f;
             }
         }
-        pHitPoint.color = new Color(pPlayerBase.GetColor().r, pPlayerBase.GetColor().g, pPlayerBase.GetColor().b, fAlpha);
+
+        if (pPlayerBase.GetDeath().Equals(true))
+        {
+            fHitPointAlpha = 0.0f;
+        }
+        pHitPointSprite.color = new Color(1.0f, 1.0f, 1.0f, fHitPointAlpha);
     }
     public void MoveInScreen()
     {
@@ -247,17 +375,50 @@ public class PlayerMain : MonoBehaviour
     #endregion
 
     #region IENUMERATOR
-    // public IEnumerator<float> Update()
-    // {
-    //     while (true)
-    //     {
-    //         yield return Timing.WaitForOneFrame;
-    // 
-    //         PlayerMove();
-    //         // ShotBullet();
-    //         ControlHitPoint();
-    //         MoveInScreen();
-    //     }
-    // }
+    public IEnumerator<float> PlayerDeath()
+    {
+        pPlayerBase.SetDeath(true);
+        pPlayerBase.SetSlowMode(false);
+        pPlayerBase.SetPlayerMissCount(pPlayerBase.GetPlayerMissCount() + 1);
+
+        fPlayerAlpha = 0.0f;
+        pPlayerBase.GetRigidbody2D().velocity = Vector2.zero;
+        vMoveSpeedVector = Vector2.zero;
+        pPlayerBase.GetAction()("isIdle", "isLeftMove", "isRightMove");
+        pPlayerBase.GetChildGameObject(2).SetActive(false);
+
+        // CREATE EFFECT HERE
+
+        yield return Timing.WaitForSeconds(1.0f);
+
+        fPlayerAlpha = 0.8f;
+        pPlayerBase.SetPosition(new Vector3(0.0f, -4.5f, 0.0f));
+        pPlayerBase.GetChildGameObject(2).SetActive(true);
+        iTween.MoveTo(pPlayerBase.GetGameObject(), iTween.Hash("position", new Vector3(0.0f, -3.25f, 0.0f), "easetype", iTween.EaseType.linear, "time", 1.0f));
+
+        yield return Timing.WaitForSeconds(1.0f);
+
+        pPlayerBase.SetDeath(false);
+        pPlayerBase.SetRevive(true);
+        Timing.RunCoroutine(PlayerRevive());
+
+        yield break;
+    }
+    public IEnumerator<float> PlayerRevive()
+    {
+        int iCount = 0;
+
+        while (iCount <= 96)
+        {
+            fPlayerAlpha = (iCount % 2).Equals(0) ? 0.8f : 0.3f;
+            iCount++;
+
+            yield return Timing.WaitForSeconds(0.03f);
+        }
+        fPlayerAlpha = 1.0f;
+        pPlayerBase.SetRevive(false);
+
+        yield break;
+    }
     #endregion
 }

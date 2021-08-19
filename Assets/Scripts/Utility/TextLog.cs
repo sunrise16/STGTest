@@ -25,13 +25,22 @@ public class TextLog : MonoBehaviour
         {
 			yield return Timing.WaitForOneFrame;
 
-			if (iIndex > 0 && iIndex <= 1)
+			switch (iIndex)
             {
-				pText.text = BulletManager.Instance.GetBulletPool().GetBulletListCount(iIndex).ToString();
-			}
-			else
-            {
-				pText.text = pTransform.childCount.ToString();
+				case 0:
+					pText.text = BulletManager.Instance.GetBulletPool().GetBulletListCount(iIndex).ToString();
+					break;
+				case 1:
+					pText.text = pTransform.childCount.ToString();
+					break;
+				case 2:
+					pText.text = GameManager.Instance.pPlayerBase.GetPlayerGrazeCount().ToString();
+					break;
+				case 3:
+					pText.text = GameManager.Instance.pPlayerBase.GetPlayerMissCount().ToString();
+					break;
+				default:
+					break;
             }
 		}
 	}

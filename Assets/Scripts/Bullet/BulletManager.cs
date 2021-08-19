@@ -182,7 +182,7 @@ public class BulletPool : IPoolBase
                     pBulletBase.GetBoxCollider().offset = new Vector2(0.0f, 0.2f);
                     break;
                 case EPlayerBulletType.enType_ReimuSecondary_Homing:
-                    pBulletBase.GetBoxCollider().size = new Vector2(0.07f, 0.14f);
+                    pBulletBase.GetBoxCollider().size = new Vector2(0.1f, 0.15f);
                     break;
                 default:
                     break;
@@ -222,7 +222,7 @@ public class BulletPool : IPoolBase
             switch (enPlayerBulletType)
             {
                 case EPlayerBulletType.enType_ReimuSecondary_Niddle:
-                    pBulletBase.GetBoxCollider().size = new Vector2(0.07f, 0.14f);
+                    pBulletBase.GetCapsuleCollider().size = new Vector2(0.1f, 0.5f);
                     break;
                 default:
                     break;
