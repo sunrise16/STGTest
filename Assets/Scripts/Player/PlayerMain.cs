@@ -105,6 +105,7 @@ public class PlayerMain : MonoBehaviour
             pPlayerBase.SetCamera(Camera.main);
             pPlayerBase.SetAnimator(pTransform.GetChild(0).GetComponent<Animator>());
             pPlayerBase.SetSpriteRenderer(pTransform.GetChild(1).GetComponent<SpriteRenderer>());
+            pPlayerBase.SetAudioSource(GetComponent<AudioSource>());
             pPlayerBase.SetRigidbody2D(GetComponent<Rigidbody2D>());
             pPlayerBase.SetAction((string szTrigger1, string szTrigger2, string szTrigger3) =>
             {
@@ -233,6 +234,7 @@ public class PlayerMain : MonoBehaviour
             {
                 pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
                 ExtractBullet(pPlayerBase.GetPlayerType(), pPlayerBase.GetPlayerWeaponType());
+                SoundManager.Instance.PlaySE(ESE.enSE_PlSt00, 1.0f);
                 pShotTimer.ResetTimer(pShotTimer.GetResetTime());
             }
         }
@@ -386,6 +388,7 @@ public class PlayerMain : MonoBehaviour
         vMoveSpeedVector = Vector2.zero;
         pPlayerBase.GetAction()("isIdle", "isLeftMove", "isRightMove");
         pPlayerBase.GetChildGameObject(2).SetActive(false);
+        SoundManager.Instance.PlaySE(ESE.enSE_PlDead00, 1.0f);
 
         // CREATE EFFECT HERE
 

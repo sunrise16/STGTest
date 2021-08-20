@@ -124,7 +124,12 @@ public class BulletMain : MonoBehaviour
                 }
                 if (pEnemyMain.GetEnemyBase().GetEnemyHP() <= 0.0f)
                 {
+                    SoundManager.Instance.PlaySE(ESE.enSE_EnEp00, 1.0f);
                     pEnemyMain.DestroyEnemy();
+                }
+                else
+                {
+                    SoundManager.Instance.PlaySE(ESE.enSE_Damage00, 1.0f);
                 }
 
                 if (pBulletBase.GetCollisionDestroy().Equals(true))
@@ -153,6 +158,7 @@ public class BulletMain : MonoBehaviour
                 {
                     pBulletBase.SetGraze(true);
                     pPlayerBase.SetPlayerGrazeCount(pPlayerBase.GetPlayerGrazeCount() + 1);
+                    SoundManager.Instance.PlaySE(ESE.enSE_Graze, 1.0f);
                 }
             }
             else return;
@@ -413,7 +419,7 @@ public class BulletMain : MonoBehaviour
                 switch (pBulletBase.GetBulletType())
                 {
                     case EBulletType.enType_Box:
-                        if (fDistance <= 0.25f)
+                        if (fDistance <= 0.3f)
                         {
                             pBulletBase.GetBoxCollider().enabled = true;
                         }
@@ -423,7 +429,7 @@ public class BulletMain : MonoBehaviour
                         }
                         break;
                     case EBulletType.enType_Capsule:
-                        if (fDistance <= 0.25f)
+                        if (fDistance <= 0.3f)
                         {
                             pBulletBase.GetCapsuleCollider().enabled = true;
                         }
@@ -433,7 +439,7 @@ public class BulletMain : MonoBehaviour
                         }
                         break;
                     case EBulletType.enType_Circle:
-                        if (fDistance <= 0.25f)
+                        if (fDistance <= 0.3f)
                         {
                             pBulletBase.GetCircleCollider().enabled = true;
                         }
@@ -514,9 +520,5 @@ public class BulletMain : MonoBehaviour
             pBulletBase.SetBulletRotateDecelerationSpeedMin(0.0f);
         }
     }
-    #endregion
-
-    #region IENUMERATOR
-    
     #endregion
 }

@@ -10,6 +10,7 @@ public enum EGameObjectType
     enType_Item,
     enType_Area,
     enType_UI,
+    enType_Sound,
     Max
 }
 #endregion
@@ -176,7 +177,7 @@ public enum EEffectAnimationType
 #region UI
 #endregion
 
-#region SYSTEM
+#region GAMEINFO
 public enum EGameDifficulty
 {
     None = -1,
@@ -185,6 +186,93 @@ public enum EGameDifficulty
     enDifficulty_Hard,
     enDifficulty_Lunatic,
     enDifficulty_Extra,
+    Max
+}
+#endregion
+
+#region SYSTEM
+public enum EBGM
+{
+    None = -1,
+    enBGM_Title,
+    enBGM_Start,
+    enBGM_Stage1_Field,
+    enBGM_Stage1_Boss,
+    enBGM_Stage2_Field,
+    enBGM_Stage2_Boss,
+    enBGM_Stage3_Field,
+    enBGM_Stage3_Boss,
+    enBGM_Stage4_Field,
+    enBGM_Stage4_Boss,
+    enBGM_Stage5A_Field,
+    enBGM_Stage5A_Boss,
+    enBGM_Stage6A_Field,
+    enBGM_Stage6A_Boss,
+    enBGM_Stage5B_Field,
+    enBGM_Stage5B_Boss,
+    enBGM_Stage6B_Field,
+    enBGM_Stage6B_Boss,
+    enBGM_Stage7_Field,
+    enBGM_Stage7_Boss,
+    enBGM_Stage7_Final,
+    enBGM_Extra_Field,
+    enBGM_Extra_Boss,
+    enBGM_Epilogue,
+    enBGM_StaffRoll,
+    enBGM_Ranking,
+    Max
+}
+public enum ESE
+{
+    None = -1,
+    enSE_Bonus,
+    enSE_Bonus2,
+    enSE_Boon00,
+    enSE_Boon01,
+    enSE_Cancel00,
+    enSE_CardGet,
+    enSE_Cat00,
+    enSE_Ch00,
+    enSE_Ch01,
+    enSE_ChangeItem,
+    enSE_Damage00,
+    enSE_Damage01,
+    enSE_Don00,
+    enSE_EnEp00,
+    enSE_EnEp01,
+    enSE_EnEp02,
+    enSE_Extend,
+    enSE_Graze,
+    enSE_Gun00,
+    enSE_Invalid,
+    enSE_Item00,
+    enSE_Item01,
+    enSE_Kira00,
+    enSE_Kira01,
+    enSE_Kira02,
+    enSE_Laser00,
+    enSE_Laser01,
+    enSE_Laser02,
+    enSE_Nep00,
+    enSE_NoDamage,
+    enSE_Ok00,
+    enSE_Option,
+    enSE_Pause,
+    enSE_Piyo,
+    enSE_PlDead00,
+    enSE_PlSt00,
+    enSE_Power0,
+    enSE_Power1,
+    enSE_PowerUp,
+    enSE_Select00,
+    enSE_Slash,
+    enSE_Tan00,
+    enSE_Tan01,
+    enSE_Tan02,
+    enSE_TimeOut,
+    enSE_TimeOut2,
+    enSE_UFO,
+    enSE_UFOAlert,
     Max
 }
 #endregion

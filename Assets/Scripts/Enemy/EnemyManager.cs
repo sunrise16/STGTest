@@ -67,26 +67,25 @@ public class EnemyPool : IPoolBase
             }
         }
     }
-    public GameObject ExtractEnemy(Vector3 vSpawnPosition, Vector3 vScale, EEnemyType enEnemyType, float fEnemyHP, bool bCounter)
+    public GameObject ExtractEnemy(Vector3 vSpawnPosition, Vector3 vScale, EEnemyType enEnemyType, float fEnemyHP, bool bCounter, bool bOutScreenShot)
     {
         GameObject pEnemyObject = pEnemyList.Count.Equals(0) ? AddPool() : pEnemyList[0];
         Transform pTransform = pEnemyObject.GetComponent<Transform>();
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
 
-        pEnemyMain.Init(pEnemyObject, pTransform, vSpawnPosition, vScale, enEnemyType, fEnemyHP, bCounter);
+        pEnemyMain.Init(pEnemyObject, pTransform, vSpawnPosition, vScale, enEnemyType, fEnemyHP, bCounter, bOutScreenShot);
         pTransform.parent = pActiveEnemyParent;
         pEnemyList.RemoveAt(0);
         return pEnemyObject;
     }
-    public void AddSinglePattern(GameObject pEnemyObject, int iShotTimerRepeatLimit, float iShotTimerLimitTime, int iFlag, float iDelayTimerLimitTime)
+    public void AddSinglePattern(GameObject pEnemyObject, int iFlag, int iShotTimerRepeatLimit, float iShotTimerLimitTime, float iDelayTimerLimitTime)
     {
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
-        pEnemyMain.GetPatternList().Add(new Timer(iShotTimerRepeatLimit, iShotTimerLimitTime, iFlag, 0.0f, 0.0f, iDelayTimerLimitTime));
+        pEnemyMain.GetPatternTimerList().Add(new Timer(iShotTimerRepeatLimit, iShotTimerLimitTime, iFlag, 0.0f, 0.0f, iDelayTimerLimitTime));
     }
-    public void AddRepeatPattern(GameObject pEnemyObject, CoroutineHandle cUpdate)
+    public void AddRepeatPattern(GameObject pEnemyObject, int iPatternIndex, float fShotDelay)
     {
-        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
-        pEnemyMain.GetRepeatPatternList().Add(cUpdate);
+        Timing.RunCoroutine(Delay(pEnemyObject, iPatternIndex, fShotDelay));
     }
     public void AddCounterPattern(GameObject pEnemyObject, int iFlag)
     {
@@ -104,6 +103,18 @@ public class EnemyPool : IPoolBase
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
         EnemyBase pEnemyBase = pEnemyMain.GetEnemyBase();
         pEnemyBase.SetEnemySpeedY(fEnemyMoveSpeedY, fEnemyMoveAccelerationSpeedY, fEnemyMoveAccelerationSpeedYMax, fEnemyMoveDecelerationSpeedY, fEnemyMoveDecelerationSpeedYMin);
+    }
+    #endregion
+
+    #region IENUMERATOR
+    public IEnumerator<float> Delay(GameObject pEnemyObject, int iPatternIndex, float fShotDelay)
+    {
+        yield return Timing.WaitForSeconds(fShotDelay);
+
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        pEnemyMain.GetRepeatPatternList().Add(GameManager.Instance.PatternCall(pEnemyObject, pEnemyMain, iPatternIndex));
+
+        yield break;
     }
     #endregion
 }

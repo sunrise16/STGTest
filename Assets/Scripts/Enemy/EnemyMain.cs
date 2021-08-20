@@ -9,20 +9,22 @@ public class EnemyMain : MonoBehaviour
 {
 	#region VARIABLE
 	private EnemyBase pEnemyBase;
-	private List<Timer> pPatternList;
+	private List<Timer> pPatternTimerList;
+	private Dictionary<int, CoroutineHandle> pSinglePatternList;
 	private List<CoroutineHandle> pRepeatPatternList;
 	private List<int> pCounterPatternList;
 	private int iFireCount;
 	private bool bScreenOut;
-	private bool bCounter;
     #endregion
 
     #region GET METHOD
 	public EnemyBase GetEnemyBase() { return pEnemyBase; }
-	public List<Timer> GetPatternList() { return pPatternList ; }
+	public List<Timer> GetPatternTimerList() { return pPatternTimerList; }
+	public Dictionary<int, CoroutineHandle> GetSinglePatternList() { return pSinglePatternList; }
 	public List<CoroutineHandle> GetRepeatPatternList() { return pRepeatPatternList; }
 	public List<int> GetCounterPatternList() { return pCounterPatternList; }
-	public Timer GetPattern(int iIndex) { return pPatternList[iIndex]; }
+	public Timer GetPatternTimer(int iIndex) { return pPatternTimerList[iIndex]; }
+	public CoroutineHandle GetSinglePattern(int iIndex) { return pSinglePatternList[iIndex]; }
 	public CoroutineHandle GetRepeatPattern(int iIndex) { return pRepeatPatternList[iIndex]; }
 	public int GetCounterPattern(int iIndex) { return pCounterPatternList[iIndex]; }
 	public int GetFireCount() { return iFireCount; }
@@ -50,46 +52,71 @@ public class EnemyMain : MonoBehaviour
 		{
 			bScreenOut = true;
 
-			for (int i = 0; i < pPatternList.Count; i++)
+			if (pEnemyBase.GetOutScreenShot().Equals(false))
             {
-				pPatternList[i].SetSwitch(false);
-			}
-			if (!pRepeatPatternList.Count.Equals(0))
-            {
-				for (int i = 0; i < pRepeatPatternList.Count; i++)
+				for (int i = 0; i < pPatternTimerList.Count; i++)
 				{
-					Timing.Instance.KillCoroutinesOnInstance(pRepeatPatternList[i]);
+					if (pSinglePatternList.ContainsKey(pPatternTimerList[i].GetFlag()))
+					{
+						Timing.Instance.KillCoroutinesOnInstance(pSinglePatternList[pPatternTimerList[i].GetFlag()]);
+					}
+					pPatternTimerList[i].SetSwitch(false);
 				}
-            }
+				pPatternTimerList.Clear();
+				pSinglePatternList.Clear();
+
+				if (!pRepeatPatternList.Count.Equals(0))
+				{
+					for (int i = 0; i < pRepeatPatternList.Count; i++)
+					{
+						Timing.Instance.KillCoroutinesOnInstance(pRepeatPatternList[i]);
+					}
+					pRepeatPatternList.Clear();
+				}
+			}
 		}
 
 		// TIMER CHECK
-		if (pPatternList.Count > 0)
+		if (pPatternTimerList.Count > 0)
         {
-			for (int i = 0; i < pPatternList.Count; i++)
+			for (int i = 0; i < pPatternTimerList.Count; i++)
 			{
-				if (pPatternList[i].GetSwitch().Equals(true))
+				if (pPatternTimerList[i].GetSwitch().Equals(true))
 				{
-					pPatternList[i].RunTimer();
-					if (pPatternList[i].GetDelay().Equals(false) && pPatternList[i].GetRepeatCount().Equals(0))
+					pPatternTimerList[i].RunTimer();
+					if (pPatternTimerList[i].GetDelay().Equals(false) && pPatternTimerList[i].GetRepeatCount().Equals(0))
                     {
-						pPatternList[i].SetRepeatCount(pPatternList[i].GetRepeatCount() + 1);
 						iFireCount++;
-						GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pPatternList[i].GetFlag(), false, iFireCount);
-						pPatternList[i].ResetTimer(pPatternList[i].GetResetTime());
-						if (pPatternList[i].GetRepeatLimit().Equals(1))
+						pPatternTimerList[i].SetRepeatCount(pPatternTimerList[i].GetRepeatCount() + 1);
+						if (pSinglePatternList.ContainsKey(pPatternTimerList[i].GetFlag()).Equals(false))
+                        {
+							pSinglePatternList.Add(pPatternTimerList[i].GetFlag(), GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pPatternTimerList[i].GetFlag(), pEnemyBase.GetCounter(), iFireCount));
+						}
+						else
+                        {
+							iFireCount--;
+                        }
+						pPatternTimerList[i].ResetTimer(pPatternTimerList[i].GetResetTime());
+						if (pPatternTimerList[i].GetRepeatLimit().Equals(1))
 						{
-							pPatternList[i].SetSwitch(false);
+							pPatternTimerList[i].SetSwitch(false);
 						}
 					}
 					else
                     {
-						if (pPatternList[i].GetTrigger().Equals(true))
+						if (pPatternTimerList[i].GetTrigger().Equals(true))
 						{
-							pPatternList[i].SetRepeatCount(pPatternList[i].GetRepeatCount() + 1);
 							iFireCount++;
-							GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pPatternList[i].GetFlag(), false, iFireCount);
-							pPatternList[i].ResetTimer(pPatternList[i].GetResetTime());
+							pPatternTimerList[i].SetRepeatCount(pPatternTimerList[i].GetRepeatCount() + 1);
+							if (pSinglePatternList.ContainsKey(pPatternTimerList[i].GetFlag()).Equals(false))
+							{
+								pSinglePatternList.Add(pPatternTimerList[i].GetFlag(), GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pPatternTimerList[i].GetFlag(), pEnemyBase.GetCounter(), iFireCount));
+							}
+							else
+							{
+								iFireCount--;
+							}
+							pPatternTimerList[i].ResetTimer(pPatternTimerList[i].GetResetTime());
 						}
 					}
 				}
@@ -99,12 +126,13 @@ public class EnemyMain : MonoBehaviour
 	#endregion
 
 	#region COMMON METHOD
-	public void Init(GameObject pEnemyObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EEnemyType enEnemyType, float fEnemyHP, bool bCounter)
+	public void Init(GameObject pEnemyObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EEnemyType enEnemyType, float fEnemyHP, bool bCounter, bool bOutScreenShot)
 	{
 		if (pEnemyBase == null)
 		{
 			pEnemyBase = new EnemyBase(pEnemyObject, pTransform, vSpawnPosition, vScale);
-			pPatternList = new List<Timer>();
+			pPatternTimerList = new List<Timer>();
+			pSinglePatternList = new Dictionary<int, CoroutineHandle>();
 			pRepeatPatternList = new List<CoroutineHandle>();
 			pCounterPatternList = new List<int>();
 			pEnemyBase.SetSpriteRenderer(pEnemyBase.GetTransform().GetChild(0).GetComponent<SpriteRenderer>());
@@ -114,15 +142,16 @@ public class EnemyMain : MonoBehaviour
 		else
 		{
 			pEnemyBase.Init(pEnemyObject, pTransform, vSpawnPosition, vScale, EGameObjectType.enType_Enemy);
-			pPatternList.Clear();
+			pPatternTimerList.Clear();
 			pRepeatPatternList.Clear();
 			pCounterPatternList.Clear();
 		}
 		pEnemyBase.SetEnemyType(enEnemyType);
 		pEnemyBase.SetEnemyHP(fEnemyHP);
+		pEnemyBase.SetCounter(bCounter);
+		pEnemyBase.SetOutScreenShot(bOutScreenShot);
 		iFireCount = 0;
 		bScreenOut = false;
-		this.bCounter = bCounter;
 
 		SetSpriteBase(enEnemyType);
 	}
@@ -306,11 +335,16 @@ public class EnemyMain : MonoBehaviour
     {
 		// CREATE EFFECT HERE
 
-		for (int i = 0; i < pPatternList.Count; i++)
+		for (int i = 0; i < pPatternTimerList.Count; i++)
         {
-			pPatternList[i].InitTimer(0, 0, false);
+			if (pSinglePatternList.ContainsKey(pPatternTimerList[i].GetFlag()))
+            {
+				Timing.Instance.KillCoroutinesOnInstance(pSinglePatternList[pPatternTimerList[i].GetFlag()]);
+			}
+			pPatternTimerList[i].InitTimer(0, 0, false);
         }
-		pPatternList.Clear();
+		pPatternTimerList.Clear();
+		pSinglePatternList.Clear();
 
 		for (int i = 0; i < pRepeatPatternList.Count; i++)
 		{
@@ -318,11 +352,11 @@ public class EnemyMain : MonoBehaviour
 		}
 		pRepeatPatternList.Clear();
 
-		if (bCounter.Equals(true))
+		if (pEnemyBase.GetCounter().Equals(true))
 		{
 			for (int i = 0; i < pCounterPatternList.Count; i++)
 			{
-				GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), pCounterPatternList[i], true, iFireCount);
+				GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pCounterPatternList[i], true, iFireCount);
 			}
 		}
 		pCounterPatternList.Clear();

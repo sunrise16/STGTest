@@ -1,25 +1,31 @@
-﻿using System.Collections;
+﻿#region USING
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using MEC;
+#endregion
 
 public class TextLog : MonoBehaviour
 {
-	[HideInInspector] public Text pText;
+    #region VARIABLE
 	public GameObject pGameObject;
 	[HideInInspector] public Transform pTransform;
+	[HideInInspector] public Text pText;
 	public int iIndex;
+    #endregion
 
-	void Start ()
+    #region UNITY LIFE CYCLE
+    void Start ()
 	{
 		pText = GetComponent<Transform>().GetComponent<Text>();
 		pTransform = pGameObject.GetComponent<Transform>();
 
 		Timing.RunCoroutine(Update());
 	}
-	
-	public IEnumerator<float> Update()
+    #endregion
+
+    #region IENUMERATOR
+    public IEnumerator<float> Update()
 	{
 		while (true)
         {
@@ -44,4 +50,5 @@ public class TextLog : MonoBehaviour
             }
 		}
 	}
+	#endregion
 }

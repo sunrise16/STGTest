@@ -20,6 +20,7 @@ public sealed class GlobalData
     public static string szEffectPrefabPath = "Prefabs/Effect/Effect";
     public static string szEnemyPrefabPath = "Prefabs/Enemy/Enemy";
     public static string szPlayerPrefabPath = "Prefabs/Player/Player";
+    public static string szSoundPrefabPath = "Prefabs/Sound/Sound";
 
     public static string szBulletSpritePath = "Sprites/Bullet/Bullets";
     public static string szItemSpritePath = "Sprites/Item/Items";
@@ -27,5 +28,8 @@ public sealed class GlobalData
     public static string szPlayerSpritePath = "Sprites/Player/PlayerA";
 
     public static string szEnemyAnimationPath = "Animations/Enemy/";
+
+    public static string szBGMClipPath = "Sounds/BGM/";
+    public static string szSEClipPath = "Sounds/SE/";
     #endregion
 }

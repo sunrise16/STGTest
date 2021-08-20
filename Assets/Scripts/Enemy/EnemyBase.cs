@@ -21,6 +21,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
     private float fEnemyMoveAccelerationSpeedYMax;
     private float fEnemyMoveDecelerationSpeedY;
     private float fEnemyMoveDecelerationSpeedYMin;
+    private bool bCounter;
+    private bool bOutScreenShot;
     #endregion
 
     #region CONSTRUCTOR
@@ -47,6 +49,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
     public float GetEnemyMoveAccelerationSpeedYMax() { return fEnemyMoveAccelerationSpeedYMax; }
     public float GetEnemyMoveDecelerationSpeedY() { return fEnemyMoveDecelerationSpeedY; }
     public float GetEnemyMoveDecelerationSpeedYMin() { return fEnemyMoveDecelerationSpeedYMin; }
+    public bool GetCounter() { return bCounter; }
+    public bool GetOutScreenShot() { return bOutScreenShot; }
     #endregion
 
     #region SET METHOD
@@ -82,6 +86,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
         SetEnemyMoveDecelerationSpeedY(fEnemyMoveDecelerationSpeedY);
         SetEnemyMoveDecelerationSpeedYMin(fEnemyMoveDecelerationSpeedYMin);
     }
+    public void SetCounter(bool bCounter) { this.bCounter = bCounter; }
+    public void SetOutScreenShot(bool bOutScreenShot) { this.bOutScreenShot = bOutScreenShot; }
     #endregion
 
     #region COMMON METHOD
@@ -91,6 +97,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
         SetEnemyHP(0.0f);
         SetEnemySpeedX(0.0f);
         SetEnemySpeedY(0.0f);
+        SetCounter(false);
+        SetOutScreenShot(false);
 
         base.AllReset();
     }

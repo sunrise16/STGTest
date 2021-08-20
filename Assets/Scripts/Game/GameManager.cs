@@ -96,24 +96,22 @@ public partial class GameManager : UnitySingleton<GameManager>
     {
         GameObject pEnemy = null;
 
+        yield return Timing.WaitForOneFrame;
+
+        SoundManager.Instance.PlayBGM(EBGM.enBGM_Stage1_Field, 1.0f, true);
+
         yield return Timing.WaitForSeconds(2.0f);
 
-        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 100.0f, true);
-        EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 0, 4.5f, 110, 1.5f);
-        EnemyManager.Instance.GetEnemyPool().AddCounterPattern(pEnemy, 102);
-        // EnemyManager.Instance.GetEnemyPool().AddRepeatPattern(pEnemy, Timing.RunCoroutine(Pattern109(pEnemy)));
+        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 100.0f, true, false);
+        EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 102, 0, 2.0f, 1.0f);
+        // EnemyManager.Instance.GetEnemyPool().AddRepeatPattern(pEnemy, 101, 1.0f);
+        // EnemyManager.Instance.GetEnemyPool().AddCounterPattern(pEnemy, 102);
         EnemyManager.Instance.GetEnemyPool().SetEnemyMoveX(pEnemy, 0.0f);
         EnemyManager.Instance.GetEnemyPool().SetEnemyMoveY(pEnemy, 0.0f);
 
-        // for (int i = 0; i < 6; i++)
-        // {
-        //     pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy
-        //         (new Vector2(Random.Range(-2.0f, 2.0f), Random.Range(0.5f, 2.75f)), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 10.0f, 100, false, 1, 0.5f, 0, 3.5f);
-        // 
-        //     yield return Timing.WaitForSeconds(1.3f);
-        // }
-
         yield return Timing.WaitForOneFrame;
+
+        // UNDER CONSTRUCTION
     }
     #endregion
 

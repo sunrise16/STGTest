@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class GameMain : MonoBehaviour
 {
-    #region VARIABLE
-    #endregion
-
     #region UNITY LIFE CYCLE
     public void Awake()
     {
@@ -16,6 +13,7 @@ public class GameMain : MonoBehaviour
     public void Start()
     {
         GameManager.Instance.Init();
+        SoundManager.Instance.Init();
         BulletManager.Instance.Init();
         EffectManager.Instance.Init();
         EnemyManager.Instance.Init();

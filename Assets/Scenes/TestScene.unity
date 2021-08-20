@@ -178,7 +178,12 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4617659397856342, guid: 4cb1cdf4becb64e43bad66fb2aa22e50, type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 58361088366912768, guid: 4cb1cdf4becb64e43bad66fb2aa22e50,
+        type: 2}
+      propertyPath: m_Radius
+      value: 0.3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 4cb1cdf4becb64e43bad66fb2aa22e50, type: 2}

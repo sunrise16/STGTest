@@ -61,8 +61,8 @@ public class BulletPool : IPoolBase
     }
     #endregion
 
-    #region GET METHOD
-    public int GetBulletListCount(int iIndex)   // 임시 카운트용
+    #region GET METHOD // 임시 카운트용
+    public int GetBulletListCount(int iIndex)
     {
         switch (iIndex)
         {

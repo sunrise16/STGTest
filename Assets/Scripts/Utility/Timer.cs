@@ -162,31 +162,4 @@ public class Timer
         bTrigger = false;
     }
     #endregion
-
-    #region IENUMERATOR
-    // public IEnumerator RunForFrames(float fLimitTime, System.Action<float> pAction)
-    // {
-    //     while (fTime < fLimitTime)
-    //     {
-    //         pAction(fTime);
-    // 
-    //         fTime += DeltaTime;
-    //         bSwitch = false;
-    // 
-    //         yield return null;
-    //     }
-    //     fTime = fResetTime;
-    //     bSwitch = true;
-    // }
-    // public IEnumerator WaitForFrames(float fLimitTime)
-    // {
-    //     while (fTime < fLimitTime)
-    //     {
-    //         fTime += DeltaTime;
-    // 
-    //         yield return null;
-    //     }
-    //     fTime = fResetTime;
-    // }
-    #endregion
 }

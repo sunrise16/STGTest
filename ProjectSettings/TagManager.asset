@@ -13,6 +13,7 @@ TagManager:
   - AREA
   - UI
   - SPRITE
+  - SOUND
   layers:
   - Default
   - TransparentFX
@@ -31,7 +32,7 @@ TagManager:
   - ITEM
   - AREA
   - SPRITE
-  - 
+  - SOUND
   - 
   - 
   - 

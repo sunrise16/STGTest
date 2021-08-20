@@ -10,6 +10,7 @@ public class PlayerBase : GameObjectBase, IObjectBase
     private Camera pCamera;
     private SpriteRenderer pSpriteRenderer;
     private Animator pAnimator;
+    private AudioSource pAudioSource;
     private Rigidbody2D pRigidbody2D;
     private Color pColor;
     private EPlayerType enPlayerType;
@@ -69,6 +70,7 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public Camera GetCamera() { return pCamera; }
     public SpriteRenderer GetSpriteRenderer() { return pSpriteRenderer; }
     public Animator GetAnimator() { return pAnimator; }
+    public AudioSource GetAudioSource() { return pAudioSource; }
     public Rigidbody2D GetRigidbody2D() { return pRigidbody2D; }
     public Color GetColor() { return pColor; }
     public EPlayerType GetPlayerType() { return enPlayerType; }
@@ -95,6 +97,7 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public void SetCamera(Camera pCamera) { this.pCamera = pCamera; }
     public void SetSpriteRenderer(SpriteRenderer pSpriteRenderer) { this.pSpriteRenderer = pSpriteRenderer; }
     public void SetAnimator(Animator pAnimator) { this.pAnimator = pAnimator; }
+    public void SetAudioSource(AudioSource pAudioSource) { this.pAudioSource = pAudioSource; }
     public void SetRigidbody2D(Rigidbody2D pRigidbody2D) { this.pRigidbody2D = pRigidbody2D; }
     public void SetColor(Color pColor) { this.pColor = pColor; }
     public void SetPlayerType(EPlayerType enPlayerType) { this.enPlayerType = enPlayerType; }
