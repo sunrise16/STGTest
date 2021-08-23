@@ -22,6 +22,7 @@ public class BulletMain : MonoBehaviour
     private Transform pTempTransform;
     private Timer pPatternTimer;
     private Timer pRotateTimer;
+    private CoroutineHandle pHomingHandle;
     private float fDistance;
     #endregion
 
@@ -167,7 +168,8 @@ public class BulletMain : MonoBehaviour
     #endregion
 
     #region COMMON METHOD
-    public void Init(GameObject pBulletObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding)
+    public void Init(GameObject pBulletObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType,
+        EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding, bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         if (pBulletBase == null)
         {
@@ -200,9 +202,16 @@ public class BulletMain : MonoBehaviour
         pBulletBase.GetSpriteRenderer().color = pBulletBase.GetColor();
         pBulletBase.GetSpriteRenderer().sortingOrder = 5;
         pBulletBase.SetPadding(fPadding);
+        pBulletBase.SetHoming(bHoming);
         fDistance = 0.0f;
+
+        if (bHoming.Equals(true))
+        {
+            pHomingHandle = Timing.RunCoroutine(BulletHoming(EBulletShooter.enShooter_Player, fHomingSpeed, 0.03f));
+        }
     }
-    public void Init(GameObject pBulletObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType, EEnemyBulletType enEnemyBulletType, float fAlpha, float fPadding)
+    public void Init(GameObject pBulletObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType,
+        EEnemyBulletType enEnemyBulletType, float fAlpha, float fPadding, bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         if (pBulletBase == null)
         {
@@ -235,7 +244,62 @@ public class BulletMain : MonoBehaviour
         pBulletBase.GetSpriteRenderer().color = pBulletBase.GetColor();
         pBulletBase.GetSpriteRenderer().sortingOrder = 6;
         pBulletBase.SetPadding(fPadding);
+        pBulletBase.SetHoming(bHoming);
         fDistance = 0.0f;
+
+        if (bHoming.Equals(true))
+        {
+            pHomingHandle = Timing.RunCoroutine(BulletHoming(EBulletShooter.enShooter_Enemy, fHomingSpeed, 0.03f));
+        }
+    }
+    public void BulletMove()
+    {
+        pBulletBase.GetTransform().Translate(Vector2.up * pBulletBase.GetBulletMoveSpeed() * Time.deltaTime);
+    }
+    public void BulletMoveAcceleration()
+    {
+        pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveSpeed() + pBulletBase.GetBulletMoveAccelerationSpeed());
+        if (pBulletBase.GetBulletMoveSpeed() >= pBulletBase.GetBulletMoveAccelerationSpeedMax())
+        {
+            pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveAccelerationSpeedMax());
+            pBulletBase.SetBulletMoveAccelerationSpeed(0.0f);
+            pBulletBase.SetBulletMoveAccelerationSpeedMax(0.0f);
+        }
+    }
+    public void BulletMoveDeceleration()
+    {
+        pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveSpeed() - pBulletBase.GetBulletMoveDecelerationSpeed());
+        if (pBulletBase.GetBulletMoveSpeed() <= pBulletBase.GetBulletMoveDecelerationSpeedMin())
+        {
+            pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveDecelerationSpeedMin());
+            pBulletBase.SetBulletMoveDecelerationSpeed(0.0f);
+            pBulletBase.SetBulletMoveDecelerationSpeedMin(0.0f);
+        }
+    }
+    public void BulletRotate()
+    {
+        pBulletBase.GetTransform().Rotate(0.0f, 0.0f, pBulletBase.GetBulletRotateSpeed() * Time.deltaTime);
+        pBulletBase.SetBulletRotateAngle(pBulletBase.GetBulletRotateAngle() + (pBulletBase.GetBulletRotateSpeed() > 0.0f ? pBulletBase.GetBulletRotateSpeed() * Time.deltaTime : -(pBulletBase.GetBulletRotateSpeed() * Time.deltaTime)));
+    }
+    public void BulletRotateAcceleration()
+    {
+        pBulletBase.SetBulletRotateSpeed(pBulletBase.GetBulletRotateSpeed() + pBulletBase.GetBulletRotateAccelerationSpeed());
+        if (pBulletBase.GetBulletRotateSpeed() >= pBulletBase.GetBulletRotateAccelerationSpeedMax())
+        {
+            pBulletBase.SetBulletRotateSpeed(0);
+            pBulletBase.SetBulletRotateAccelerationSpeed(0.0f);
+            pBulletBase.SetBulletRotateAccelerationSpeedMax(0.0f);
+        }
+    }
+    public void BulletRotateDeceleration()
+    {
+        pBulletBase.SetBulletRotateSpeed(pBulletBase.GetBulletRotateSpeed() - pBulletBase.GetBulletRotateDecelerationSpeed());
+        if (pBulletBase.GetBulletRotateSpeed() <= pBulletBase.GetBulletRotateDecelerationSpeedMin())
+        {
+            pBulletBase.SetBulletRotateSpeed(0);
+            pBulletBase.SetBulletRotateDecelerationSpeed(0.0f);
+            pBulletBase.SetBulletRotateDecelerationSpeedMin(0.0f);
+        }
     }
     public void OutScreenCheck(Transform pTransform, float fPadding)
     {
@@ -391,7 +455,32 @@ public class BulletMain : MonoBehaviour
         pPatternTimer.InitTimer(0, 0.0f, false);
         pRotateTimer.InitTimer(0, 0.0f, false);
 
+        if (pHomingHandle != null)
+        {
+            Timing.Instance.KillCoroutinesOnInstance(pHomingHandle);
+        }
+        ExtractEffect(pBulletBase.GetPosition(), Vector3.one, Color.white);
         BulletManager.Instance.GetBulletPool().ReturnPool(pBulletBase.GetGameObject());
+    }
+    public void ExtractEffect(Vector3 vPosition, Vector3 vScale, Color pColor)
+    {
+        GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
+            (vPosition, vScale, pColor, EEffectType.enType_DestroyEffect, EEffectAnimationType.enType_Explosion);
+        EffectMain pEffectMain = pEffectObject.GetComponent<EffectMain>();
+        EffectBase pEffectBase = pEffectMain.GetEffectBase();
+
+        pEffectBase.SetUniqueNumber(0);
+        pEffectMain.GetTimer().InitTimer(0.225f);
+        pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
+        pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
+        pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        pEffectBase.SetCondition(false);
+        pEffectBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[27];
+        pEffectBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[0];
+        pEffectBase.GetAnimator().SetTrigger("SecondaryBDestroy");
+        pEffectMain.pStartDelegate = null;
+        pEffectMain.pCommonDelegate = null;
+        pEffectMain.pConditionDelegate = null;
     }
     public void ColliderCheck(float fDistance)
     {
@@ -471,53 +560,41 @@ public class BulletMain : MonoBehaviour
             }
         }
     }
-    public void BulletMove()
+    #endregion
+
+    #region IENUMERATOR
+    public IEnumerator<float> BulletHoming(EBulletShooter enBulletShooter, float fHomingSpeed, float fDelay)
     {
-        pBulletBase.GetTransform().Translate(Vector2.up * pBulletBase.GetBulletMoveSpeed() * Time.deltaTime);
-    }
-    public void BulletMoveAcceleration()
-    {
-        pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveSpeed() + pBulletBase.GetBulletMoveAccelerationSpeed());
-        if (pBulletBase.GetBulletMoveSpeed() >= pBulletBase.GetBulletMoveAccelerationSpeedMax())
+        Transform pTransform = enBulletShooter.Equals(EBulletShooter.enShooter_Player) ? GameObject.Find("ActiveEnemys").transform : pPlayerTransform;
+        Vector2 vTargetPosition = Vector2.zero;
+        Vector2 vFinalPosition = Vector2.zero;
+        float fTargetDistance = 0.0f;
+        float fFinalDistance = 0.0f;
+        float fAngle = 0.0f;
+
+        while (true)
         {
-            pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveAccelerationSpeedMax());
-            pBulletBase.SetBulletMoveAccelerationSpeed(0.0f);
-            pBulletBase.SetBulletMoveAccelerationSpeedMax(0.0f);
-        }
-    }
-    public void BulletMoveDeceleration()
-    {
-        pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveSpeed() - pBulletBase.GetBulletMoveDecelerationSpeed());
-        if (pBulletBase.GetBulletMoveSpeed() <= pBulletBase.GetBulletMoveDecelerationSpeedMin())
-        {
-            pBulletBase.SetBulletMoveSpeed(pBulletBase.GetBulletMoveDecelerationSpeedMin());
-            pBulletBase.SetBulletMoveDecelerationSpeed(0.0f);
-            pBulletBase.SetBulletMoveDecelerationSpeedMin(0.0f);
-        }
-    }
-    public void BulletRotate()
-    {
-        pBulletBase.GetTransform().Rotate(0.0f, 0.0f, pBulletBase.GetBulletRotateSpeed() * Time.deltaTime);
-        pBulletBase.SetBulletRotateAngle(pBulletBase.GetBulletRotateAngle() + (pBulletBase.GetBulletRotateSpeed() > 0.0f ? pBulletBase.GetBulletRotateSpeed() * Time.deltaTime : -(pBulletBase.GetBulletRotateSpeed() * Time.deltaTime)));
-    }
-    public void BulletRotateAcceleration()
-    {
-        pBulletBase.SetBulletRotateSpeed(pBulletBase.GetBulletRotateSpeed() + pBulletBase.GetBulletRotateAccelerationSpeed());
-        if (pBulletBase.GetBulletRotateSpeed() >= pBulletBase.GetBulletRotateAccelerationSpeedMax())
-        {
-            pBulletBase.SetBulletRotateSpeed(0);
-            pBulletBase.SetBulletRotateAccelerationSpeed(0.0f);
-            pBulletBase.SetBulletRotateAccelerationSpeedMax(0.0f);
-        }
-    }
-    public void BulletRotateDeceleration()
-    {
-        pBulletBase.SetBulletRotateSpeed(pBulletBase.GetBulletRotateSpeed() - pBulletBase.GetBulletRotateDecelerationSpeed());
-        if (pBulletBase.GetBulletRotateSpeed() <= pBulletBase.GetBulletRotateDecelerationSpeedMin())
-        {
-            pBulletBase.SetBulletRotateSpeed(0);
-            pBulletBase.SetBulletRotateDecelerationSpeed(0.0f);
-            pBulletBase.SetBulletRotateDecelerationSpeedMin(0.0f);
+            if (!pTransform.childCount.Equals(0))
+            {
+                for (int i = 0; i < pTransform.childCount; i++)
+                {
+                    vTargetPosition = pTransform.GetChild(i).position;
+                    fTargetDistance = Vector2.Distance(pBulletBase.GetPosition(), vTargetPosition);
+                    if (i.Equals(0) || fFinalDistance > fTargetDistance)
+                    {
+                        vFinalPosition = vTargetPosition;
+                        fFinalDistance = fTargetDistance;
+                    }
+                }
+                vTargetPosition = (vFinalPosition - (Vector2)pBulletBase.GetPosition()).normalized;
+                fAngle = Vector3.Cross(vTargetPosition, transform.up).z;
+                pBulletBase.GetRigidbody().angularVelocity = -fAngle * (fHomingSpeed / fFinalDistance);
+            }
+            else
+            {
+                pBulletBase.GetRigidbody().angularVelocity = 0.0f;
+            }
+            yield return Timing.WaitForSeconds(fDelay);
         }
     }
     #endregion

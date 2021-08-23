@@ -90,7 +90,8 @@ public class EnemyMain : MonoBehaviour
 						pPatternTimerList[i].SetRepeatCount(pPatternTimerList[i].GetRepeatCount() + 1);
 						if (pSinglePatternList.ContainsKey(pPatternTimerList[i].GetFlag()).Equals(false))
                         {
-							pSinglePatternList.Add(pPatternTimerList[i].GetFlag(), GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pPatternTimerList[i].GetFlag(), pEnemyBase.GetCounter(), iFireCount));
+							pSinglePatternList.Add(pPatternTimerList[i].GetFlag(), GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this,
+								pPatternTimerList[i].GetFlag(), iFireCount));
 						}
 						else
                         {
@@ -110,7 +111,8 @@ public class EnemyMain : MonoBehaviour
 							pPatternTimerList[i].SetRepeatCount(pPatternTimerList[i].GetRepeatCount() + 1);
 							if (pSinglePatternList.ContainsKey(pPatternTimerList[i].GetFlag()).Equals(false))
 							{
-								pSinglePatternList.Add(pPatternTimerList[i].GetFlag(), GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pPatternTimerList[i].GetFlag(), pEnemyBase.GetCounter(), iFireCount));
+								pSinglePatternList.Add(pPatternTimerList[i].GetFlag(), GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this,
+									pPatternTimerList[i].GetFlag(), iFireCount));
 							}
 							else
 							{
@@ -126,7 +128,8 @@ public class EnemyMain : MonoBehaviour
 	#endregion
 
 	#region COMMON METHOD
-	public void Init(GameObject pEnemyObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EEnemyType enEnemyType, float fEnemyHP, bool bCounter, bool bOutScreenShot)
+	public void Init(GameObject pEnemyObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EEnemyType enEnemyType, float fEnemyHP,
+		bool bCounter, bool bOutScreenShot)
 	{
 		if (pEnemyBase == null)
 		{
@@ -356,7 +359,7 @@ public class EnemyMain : MonoBehaviour
 		{
 			for (int i = 0; i < pCounterPatternList.Count; i++)
 			{
-				GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pCounterPatternList[i], true, iFireCount);
+				GameManager.Instance.PatternCall(pEnemyBase.GetGameObject(), this, pCounterPatternList[i], iFireCount);
 			}
 		}
 		pCounterPatternList.Clear();

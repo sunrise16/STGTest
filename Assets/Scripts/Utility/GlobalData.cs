@@ -27,7 +27,7 @@ public sealed class GlobalData
     public static string szEnemySpritePath = "Sprites/Player/Enemy";
     public static string szPlayerSpritePath = "Sprites/Player/PlayerA";
 
-    public static string szEnemyAnimationPath = "Animations/Enemy/";
+    public static string szAnimationPath = "Animations/";
 
     public static string szBGMClipPath = "Sounds/BGM/";
     public static string szSEClipPath = "Sounds/SE/";

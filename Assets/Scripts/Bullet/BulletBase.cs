@@ -39,6 +39,7 @@ public class BulletBase : GameObjectBase, IObjectBase
     private bool bCollisionDestroy;
     private bool bColliderTrigger;
     private bool bGraze;
+    private bool bHoming;
     #endregion
 
     #region CONSTRUCTOR
@@ -83,6 +84,7 @@ public class BulletBase : GameObjectBase, IObjectBase
     public bool GetCollisionDestroy() { return bCollisionDestroy; }
     public bool GetColliderTrigger() { return bColliderTrigger; }
     public bool GetGraze() { return bGraze; }
+    public bool GetHoming() { return bHoming; }
     #endregion
 
     #region SET METHOD
@@ -147,6 +149,7 @@ public class BulletBase : GameObjectBase, IObjectBase
     public void SetCollisionDestroy(bool bCollisionDestroy) { this.bCollisionDestroy = bCollisionDestroy; }
     public void SetColliderTrigger(bool bColliderTrigger) { this.bColliderTrigger = bColliderTrigger; }
     public void SetGraze(bool bGraze) { this.bGraze = bGraze; }
+    public void SetHoming(bool bHoming) { this.bHoming = bHoming; }
     #endregion
 
     #region COMMON METHOD
@@ -169,6 +172,7 @@ public class BulletBase : GameObjectBase, IObjectBase
         SetCollisionDestroy(false);
         SetColliderTrigger(false);
         SetGraze(false);
+        SetHoming(false);
 
         base.AllReset();
     }

@@ -130,4 +130,13 @@ public class Utility : Singleton<Utility>
         return new Vector2(vObjectPosition.x + fAddPositionX, (iPositionMultiply.Equals(0) ? vObjectPosition.y + fAddPositionY : vObjectPosition.y - fAddPositionY));
     }
     #endregion
+
+    #region BULLET ROTATION
+    public Quaternion VectorToRotationSlerp(Quaternion srcRotation, Vector3 targetPos, float slerpSpeed)
+    {
+        float angle = Mathf.Atan2(targetPos.y, targetPos.x) * Mathf.Rad2Deg;
+        Quaternion rotationTarget = Quaternion.AngleAxis(angle, Vector3.forward);
+        return Quaternion.Slerp(srcRotation, rotationTarget, Time.deltaTime * slerpSpeed);
+    }
+    #endregion
 }

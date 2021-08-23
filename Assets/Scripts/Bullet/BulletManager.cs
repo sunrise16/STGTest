@@ -141,7 +141,8 @@ public class BulletPool : IPoolBase
             }
         }
     }
-    public GameObject ExtractBullet(Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fBulletAlpha, float fPadding)
+    public GameObject ExtractBullet(Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType,
+        EPlayerBulletType enPlayerBulletType, float fBulletAlpha, float fPadding, bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         GameObject pBulletObject = pBulletList.Count.Equals(0) ? AddPool() : pBulletList[0];
         Transform pTransform = pBulletObject.GetComponent<Transform>();
@@ -151,25 +152,31 @@ public class BulletPool : IPoolBase
         switch (enBulletType)
         {
             case EBulletType.enType_Box:
-                return SettingBoxBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletShooter, enEnemyBulletType, enPlayerBulletType, fBulletAlpha, fPadding);
+                return SettingBoxBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletShooter, enEnemyBulletType, enPlayerBulletType,
+                    fBulletAlpha, fPadding, bHoming, fHomingSpeed);
             case EBulletType.enType_Capsule:
-                return SettingCapsuleBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletShooter, enEnemyBulletType, enPlayerBulletType, fBulletAlpha, fPadding);
+                return SettingCapsuleBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletShooter, enEnemyBulletType, enPlayerBulletType,
+                    fBulletAlpha, fPadding, bHoming, fHomingSpeed);
             case EBulletType.enType_Circle:
-                return SettingCircleBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletShooter, enEnemyBulletType, enPlayerBulletType, fBulletAlpha, fPadding);
+                return SettingCircleBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletShooter, enEnemyBulletType, enPlayerBulletType,
+                    fBulletAlpha, fPadding, bHoming, fHomingSpeed);
             default:
-                return SettingBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletType, enBulletShooter, enEnemyBulletType, enPlayerBulletType, fBulletAlpha, fPadding);
+                return SettingBullet(ref pBulletObject, ref pTransform, vSpawnPosition, vScale, enBulletType, enBulletShooter, enEnemyBulletType,
+                    enPlayerBulletType, fBulletAlpha, fPadding, bHoming, fHomingSpeed);
         }
     }
-    public GameObject SettingBoxBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding)
+    public GameObject SettingBoxBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale,
+        EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding,
+        bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
         if (enBulletShooter.Equals(EBulletShooter.enShooter_Player))
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Box, enPlayerBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Box, enPlayerBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         else
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Box, enEnemyBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Box, enEnemyBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         BulletBase pBulletBase = pBulletMain.GetBulletBase();
 
@@ -204,16 +211,18 @@ public class BulletPool : IPoolBase
         }
         return pBulletObject;
     }
-    public GameObject SettingCapsuleBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding)
+    public GameObject SettingCapsuleBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale,
+        EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding,
+        bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
         if (enBulletShooter.Equals(EBulletShooter.enShooter_Player))
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Capsule, enPlayerBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Capsule, enPlayerBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         else
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Capsule, enEnemyBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Capsule, enEnemyBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         BulletBase pBulletBase = pBulletMain.GetBulletBase();
 
@@ -250,16 +259,18 @@ public class BulletPool : IPoolBase
         }
         return pBulletObject;
     }
-    public GameObject SettingCircleBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding)
+    public GameObject SettingCircleBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale,
+        EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding,
+        bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
         if (enBulletShooter.Equals(EBulletShooter.enShooter_Player))
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Circle, enPlayerBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Circle, enPlayerBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         else
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Circle, enEnemyBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, EBulletType.enType_Circle, enEnemyBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         BulletBase pBulletBase = pBulletMain.GetBulletBase();
 
@@ -301,16 +312,18 @@ public class BulletPool : IPoolBase
         }
         return pBulletObject;
     }
-    public GameObject SettingBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha, float fPadding)
+    public GameObject SettingBullet(ref GameObject pBulletObject, ref Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale,
+        EBulletType enBulletType, EBulletShooter enBulletShooter, EEnemyBulletType enEnemyBulletType, EPlayerBulletType enPlayerBulletType, float fAlpha,
+        float fPadding, bool bHoming = false, float fHomingSpeed = 600.0f)
     {
         BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
         if (enBulletShooter.Equals(EBulletShooter.enShooter_Player))
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, enBulletType, enPlayerBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, enBulletType, enPlayerBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
         else
         {
-            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, enBulletType, enEnemyBulletType, fAlpha, fPadding);
+            pBulletMain.Init(pBulletObject, pTransform, vSpawnPosition, vScale, enBulletType, enEnemyBulletType, fAlpha, fPadding, bHoming, fHomingSpeed);
         }
 
         if (pBulletMain.GetBulletBase().GetBulletType() != EBulletType.enType_Empty)

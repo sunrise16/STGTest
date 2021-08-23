@@ -13,7 +13,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
     #region SHOOT PATTERN METHOD
     #region PATTERN 1
-    public IEnumerator<float> Pattern1(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern1(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -135,7 +135,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 100
-    public IEnumerator<float> Pattern100(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern100(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -232,7 +232,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 101
-    public IEnumerator<float> Pattern101(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern101(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -304,7 +304,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 102
-    public IEnumerator<float> Pattern102(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false, int iFireCount = 0)
+    public IEnumerator<float> Pattern102(GameObject pEnemyObject, EnemyMain pEnemyMain, int iFireCount = 0)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -381,7 +381,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 103
-    public IEnumerator<float> Pattern103(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern103(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -487,7 +487,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 104
-    public IEnumerator<float> Pattern104(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern104(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -562,7 +562,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 105
-    public IEnumerator<float> Pattern105(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern105(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -627,7 +627,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 106
-    public IEnumerator<float> Pattern106(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern106(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -693,7 +693,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 107
-    public IEnumerator<float> Pattern107(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern107(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -756,7 +756,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 108
-    public IEnumerator<float> Pattern108(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern108(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -851,7 +851,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 109
-    public IEnumerator<float> Pattern109(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern109(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = Vector3.one;
@@ -923,7 +923,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 110
-    public IEnumerator<float> Pattern110(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern110(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         EnemyBase pEnemyBase = pEnemyObject.GetComponent<EnemyMain>().GetEnemyBase();
         Color pColor = new Color(1, 1, 1, 0.25f);
@@ -1000,7 +1000,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 111
-    public IEnumerator<float> Pattern111(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern111(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -1081,7 +1081,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 112
-    public IEnumerator<float> Pattern112(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false, int iFireCount = 0)
+    public IEnumerator<float> Pattern112(GameObject pEnemyObject, EnemyMain pEnemyMain, int iFireCount = 0)
     {
         Texture2D pTexture = Resources.Load("Sprites/Bullet/Bullets") as Texture2D;
         Color pColor = new Color(1, 1, 1, 1.0f);
@@ -1168,7 +1168,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 113
-    public IEnumerator<float> Pattern113(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern113(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 1.0f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -1256,7 +1256,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 114
-    public IEnumerator<float> Pattern114(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern114(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -1287,7 +1287,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
                 GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
                     (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
-                    EEnemyBulletType.enType_Capsule, EPlayerBulletType.None, 1.0f, 10.0f);
+                    EEnemyBulletType.enType_Capsule, EPlayerBulletType.None, 1.0f, 10.0f, true, 100.0f);
                 BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
                 BulletBase pBulletBase = pBulletMain.GetBulletBase();
 
@@ -1315,7 +1315,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 115
-    public IEnumerator<float> Pattern115(GameObject pEnemyObject, EnemyMain pEnemyMain, bool bCounter = false)
+    public IEnumerator<float> Pattern115(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
         Color pColor = new Color(1, 1, 1, 1.0f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
@@ -1371,48 +1371,47 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region COMMON METHOD
-    public CoroutineHandle PatternCall(GameObject pEnemyObject, EnemyMain pEnemyMain, int iPatternIndex, bool bCounter = false, int iFireCount = 0)
+    public CoroutineHandle PatternCall(GameObject pEnemyObject, EnemyMain pEnemyMain, int iPatternIndex, int iFireCount = 0)
     {
         switch (iPatternIndex)
         {
             case 1:
-                return Timing.RunCoroutine(Pattern1(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern1(pEnemyObject, pEnemyMain));
             case 100:
-                return Timing.RunCoroutine(Pattern100(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern100(pEnemyObject, pEnemyMain));
             case 101:
-                return Timing.RunCoroutine(Pattern101(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern101(pEnemyObject, pEnemyMain));
              case 102:
-                return Timing.RunCoroutine(Pattern102(pEnemyObject, pEnemyMain, bCounter, iFireCount));
+                return Timing.RunCoroutine(Pattern102(pEnemyObject, pEnemyMain, iFireCount));
             case 103:
-                return Timing.RunCoroutine(Pattern103(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern103(pEnemyObject, pEnemyMain));
             case 104:
-                return Timing.RunCoroutine(Pattern104(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern104(pEnemyObject, pEnemyMain));
             case 105:
-                return Timing.RunCoroutine(Pattern105(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern105(pEnemyObject, pEnemyMain));
             case 106:
-                return Timing.RunCoroutine(Pattern106(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern106(pEnemyObject, pEnemyMain));
             case 107:
-                return Timing.RunCoroutine(Pattern107(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern107(pEnemyObject, pEnemyMain));
             case 108:
-                return Timing.RunCoroutine(Pattern108(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern108(pEnemyObject, pEnemyMain));
             case 109:
-                return Timing.RunCoroutine(Pattern109(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern109(pEnemyObject, pEnemyMain));
             case 110:
-                return Timing.RunCoroutine(Pattern110(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern110(pEnemyObject, pEnemyMain));
             case 111:
-                return Timing.RunCoroutine(Pattern111(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern111(pEnemyObject, pEnemyMain));
             case 112:
-                return Timing.RunCoroutine(Pattern112(pEnemyObject, pEnemyMain, bCounter, iFireCount));
+                return Timing.RunCoroutine(Pattern112(pEnemyObject, pEnemyMain, iFireCount));
             case 113:
-                return Timing.RunCoroutine(Pattern113(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern113(pEnemyObject, pEnemyMain));
             case 114:
-                return Timing.RunCoroutine(Pattern114(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern114(pEnemyObject, pEnemyMain));
             case 115:
-                return Timing.RunCoroutine(Pattern115(pEnemyObject, pEnemyMain, bCounter));
+                return Timing.RunCoroutine(Pattern115(pEnemyObject, pEnemyMain));
             default:
                 return pTempHandle;
         }
-        return pTempHandle;
     }
     #endregion
 }

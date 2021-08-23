@@ -232,8 +232,8 @@ public class PlayerMain : MonoBehaviour
             pShotTimer.RunTimer();
             if (pShotTimer.GetTrigger().Equals(true))
             {
-                pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
                 ExtractBullet(pPlayerBase.GetPlayerType(), pPlayerBase.GetPlayerWeaponType());
+                pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
                 SoundManager.Instance.PlaySE(ESE.enSE_PlSt00, 1.0f);
                 pShotTimer.ResetTimer(pShotTimer.GetResetTime());
             }
@@ -270,6 +270,7 @@ public class PlayerMain : MonoBehaviour
                 pBulletBase.SetCondition(false);
                 pBulletBase.SetCollisionDestroy(true);
                 pBulletBase.SetColliderTrigger(true);
+                pBulletBase.SetHoming(false);
                 pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuPrimary)];
                 pBulletMain.pCommonDelegate = null;
                 pBulletMain.pConditionDelegate = null;
@@ -310,28 +311,45 @@ public class PlayerMain : MonoBehaviour
                     }
                     else
                     {
-                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                        if ((pShotTimer.GetRepeatCount() % 3).Equals(0))
+                        {
+                            GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
                             (pPlayerBase.GetChildTransform(2).GetChild(i).position, Vector3.one, EBulletType.enType_Box, EBulletShooter.enShooter_Player,
-                            EEnemyBulletType.None, EPlayerBulletType.enType_ReimuSecondary_Homing, 0.6f, 20.0f);
-                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+                            EEnemyBulletType.None, EPlayerBulletType.enType_ReimuSecondary_Homing, 0.6f, 20.0f, true);
+                            BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+                            BulletBase pBulletBase = pBulletMain.GetBulletBase();
 
-                        pBulletBase.SetChildRotationZ(0, 90.0f);
-                        pBulletBase.SetUniqueNumber(0);
-                        pBulletMain.GetPatternTimer().InitTimer();
-                        pBulletMain.GetRotateTimer().InitTimer();
-                        pBulletBase.SetBulletSpeed(12.0f);
-                        pBulletBase.SetBulletRotate(0.0f);
-                        pBulletBase.SetBulletOption();
-                        pBulletBase.SetCondition(false);
-                        pBulletBase.SetCollisionDestroy(true);
-                        pBulletBase.SetColliderTrigger(true);
-                        pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuSecondary_Homing)];
-                        pBulletMain.pCommonDelegate = null;
-                        pBulletMain.pConditionDelegate = null;
-                        pBulletMain.pChangeDelegate = null;
-                        pBulletMain.pSplitDelegate = null;
-                        pBulletMain.pAttachDelegate = null;
+                            pBulletBase.SetChildRotationZ(0, 90.0f);
+                            pBulletBase.SetUniqueNumber(0);
+                            pBulletMain.GetPatternTimer().InitTimer();
+                            pBulletMain.GetRotateTimer().InitTimer();
+                            pBulletBase.SetBulletSpeed(8.0f);
+                            switch ((int)pPlayerBase.GetPlayerPower())
+                            {
+                                case 1:
+                                    pBulletBase.SetBulletRotate(0.0f);
+                                    break;
+                                case 2:
+                                    pBulletBase.SetBulletRotate(-22.5f + (45.0f * i));
+                                    break;
+                                case 3:
+                                    pBulletBase.SetBulletRotate(i.Equals(2) ? 0.0f : -22.5f + (45.0f * i));
+                                    break;
+                                case 4:
+                                    pBulletBase.SetBulletRotate(((i < 2) ? 22.5f : 45.0f) - ((i < 2) ? 45.0f * (i % 2) : 90.0f * (i % 2)));
+                                    break;
+                            }
+                            pBulletBase.SetBulletOption();
+                            pBulletBase.SetCondition(false);
+                            pBulletBase.SetCollisionDestroy(true);
+                            pBulletBase.SetColliderTrigger(true);
+                            pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuSecondary_Homing)];
+                            pBulletMain.pCommonDelegate = null;
+                            pBulletMain.pConditionDelegate = null;
+                            pBulletMain.pChangeDelegate = null;
+                            pBulletMain.pSplitDelegate = null;
+                            pBulletMain.pAttachDelegate = null;
+                        }
                     }
                 }
             }

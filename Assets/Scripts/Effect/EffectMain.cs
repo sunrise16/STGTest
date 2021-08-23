@@ -167,7 +167,8 @@ public class EffectMain : MonoBehaviour
     #endregion
 
     #region COMMON METHOD
-    public void Init(GameObject pEffectObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, Color pColor, EEffectType enEffectType, EEffectAnimationType enEffectAnimationType)
+    public void Init(GameObject pEffectObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, Color pColor,
+        EEffectType enEffectType, EEffectAnimationType enEffectAnimationType)
     {
         if (pEffectBase == null)
         {
@@ -230,7 +231,7 @@ public class EffectMain : MonoBehaviour
         {
             fAlpha = 1.0f;
         }
-        pEffectBase.GetSpriteRenderer().color = new Color(pEffectBase.GetSpriteRenderer().color.r, pEffectBase.GetSpriteRenderer().color.g, pEffectBase.GetSpriteRenderer().color.b, fAlpha);
+        SpriteAlpha();
     }
     public void AlphaDown()
     {
@@ -239,7 +240,7 @@ public class EffectMain : MonoBehaviour
         {
             fAlpha = 0.0f;
         }
-        pEffectBase.GetSpriteRenderer().color = new Color(pEffectBase.GetSpriteRenderer().color.r, pEffectBase.GetSpriteRenderer().color.g, pEffectBase.GetSpriteRenderer().color.b, fAlpha);
+        SpriteAlpha();
     }
     public void ParentRotate()
     {
@@ -259,7 +260,8 @@ public class EffectMain : MonoBehaviour
     }
     public void SpriteAlpha()
     {
-        pEffectBase.GetSpriteRenderer().color = new Color(pEffectBase.GetSpriteRenderer().color.r, pEffectBase.GetSpriteRenderer().color.g, pEffectBase.GetSpriteRenderer().color.b, fAlpha);
+        pEffectBase.GetSpriteRenderer().color = new Color(pEffectBase.GetSpriteRenderer().color.r, pEffectBase.GetSpriteRenderer().color.g,
+            pEffectBase.GetSpriteRenderer().color.b, fAlpha);
     }
     public void DestroyEffect()
     {
