@@ -17,6 +17,7 @@ public class GameMain : MonoBehaviour
         BulletManager.Instance.Init();
         EffectManager.Instance.Init();
         EnemyManager.Instance.Init();
+        ItemManager.Instance.Init();
     }
     #endregion
 }

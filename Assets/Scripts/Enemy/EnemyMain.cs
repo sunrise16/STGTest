@@ -167,100 +167,100 @@ public class EnemyMain : MonoBehaviour
 		switch (enEnemyType)
         {
 			case EEnemyType.enType_TinyFairy_Type1:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[10];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[10];
 				break;
 			case EEnemyType.enType_TinyFairy_Type2:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[11];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[11];
 				break;
 			case EEnemyType.enType_TinyFairy_Type3:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[12];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[12];
 				break;
 			case EEnemyType.enType_TinyFairy_Type4:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[13];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[13];
 				break;
 			case EEnemyType.enType_TinyFairy_Type5:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[14];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[14];
 				break;
 			case EEnemyType.enType_TinyFairy_Type6:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[15];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[15];
 				break;
 			case EEnemyType.enType_TinyFairy_Type7:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[16];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[16];
 				break;
 			case EEnemyType.enType_TinyFairy_Type8:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[17];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[17];
 				break;
 			case EEnemyType.enType_TinyFairy_Type9:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[18];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[18];
 				break;
 			case EEnemyType.enType_TinyFairy_Type10:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[19];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[19];
 				break;
 			case EEnemyType.enType_TinyFairy_Type11:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[20];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[20];
 				break;
 			case EEnemyType.enType_TinyFairy_Type12:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[21];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[21];
 				break;
 			case EEnemyType.enType_TinyFairy_Type13:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[22];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[22];
 				break;
 			case EEnemyType.enType_TinyFairy_Type14:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[23];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[23];
 				break;
 			case EEnemyType.enType_TinyFairy_Type15:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[24];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[24];
 				break;
 			case EEnemyType.enType_TinyFairy_Type16:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[25];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[25];
 				break;
 			case EEnemyType.enType_TinyFairy_Type17:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[26];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[26];
 				break;
 			case EEnemyType.enType_TinyFairy_Type18:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[27];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[27];
 				break;
 			case EEnemyType.enType_TinyFairy_Type19:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[28];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[28];
 				break;
 			case EEnemyType.enType_TinyFairy_Type20:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[29];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[29];
 				break;
 			case EEnemyType.enType_TinyFairy_Type21:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[30];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[30];
 				break;
 			case EEnemyType.enType_TinyFairy_Type22:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[31];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[31];
 				break;
 			case EEnemyType.enType_HugeFairy_Type1:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[0];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[0];
 				break;
 			case EEnemyType.enType_HugeFairy_Type2:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[1];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[1];
 				break;
 			case EEnemyType.enType_HugeFairy_Type3:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[2];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[2];
 				break;
 			case EEnemyType.enType_HugeFairy_Type4:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[3];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[3];
 				break;
 			case EEnemyType.enType_HugeFairy_Type5:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[4];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[4];
 				break;
 			case EEnemyType.enType_HugeFairy_Type6:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[5];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[5];
 				break;
 			case EEnemyType.enType_HugeFairy_Type7:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[6];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[6];
 				break;
 			case EEnemyType.enType_HugeFairy_Type8:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[7];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[7];
 				break;
 			case EEnemyType.enType_HugeFairy_Type9:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[8];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[8];
 				break;
 			case EEnemyType.enType_HugeFairy_Type10:
-				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[9];
+				pEnemyBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pEnemyAnimator[9];
 				break;
 			default:
 				break;

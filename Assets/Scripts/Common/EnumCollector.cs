@@ -78,7 +78,7 @@ public enum EEnemyType
     enType_MagicCircle_Type2 = 428,
     enType_Ghost_Type5 = 432,
     enType_MagicCircle_Type3 = 440,
-    Max = 441
+    Max = 444
 }
 #endregion
 
@@ -170,6 +170,32 @@ public enum EEffectAnimationType
     enType_MovingCurvedLaserShot,
     enType_Animation,
     enType_Explosion,
+    Max
+}
+#endregion
+
+#region ITEM
+public enum EItemType
+{
+    None = -1,
+    enType_PowerS,
+    enType_PowerM,
+    enType_PowerL,
+    enType_ScoreS,
+    enType_ScoreM,
+    enType_LifeFragmentS,
+    enType_LifeS,
+    enType_LifeFragmentL,
+    enType_LifeL,
+    enType_SpellFragmentS,
+    enType_SpellS,
+    enType_SpellFragmentL,
+    enType_SpellL,
+    enType_FullPowerM,
+    enType_FullPowerL,
+    enType_SpecialScoreS,
+    enType_SpecialScoreM,
+    enType_SpecialScoreL,
     Max
 }
 #endregion

@@ -9,16 +9,21 @@ using MEC;
 public partial class GameManager : UnitySingleton<GameManager>
 {
     #region VARIABLE
-    public PlayerBase pPlayerBase;
     [HideInInspector] public GameObject pPlayer;
     [HideInInspector] public Camera pMainCamera;
     [HideInInspector] public Sprite[] pBulletEffectSprite;
     [HideInInspector] public Sprite[] pItemSprite;
     [HideInInspector] public Sprite[] pPlayerSprite;
     [HideInInspector] public Sprite[] pEnemySprite;
-    public RuntimeAnimatorController[] pAnimatonController;
-    public IEnumerator iGameProcedure;
+    [HideInInspector] public RuntimeAnimatorController[] pBulletAnimator;
+    [HideInInspector] public RuntimeAnimatorController[] pEffectAnimator;
+    [HideInInspector] public RuntimeAnimatorController[] pPlayerAnimator;
+    [HideInInspector] public RuntimeAnimatorController[] pEnemyAnimator;
+    [HideInInspector] public RuntimeAnimatorController[] pCommonAnimator;
     [HideInInspector] public float fDefaultPadding;
+
+    public PlayerBase pPlayerBase;
+    public IEnumerator iGameProcedure;
     #endregion
 
     #region COMMON METHOD
@@ -28,11 +33,20 @@ public partial class GameManager : UnitySingleton<GameManager>
 
         pMainCamera = Camera.main;
         pBulletEffectSprite = Resources.LoadAll<Sprite>(GlobalData.szBulletSpritePath);
-        // pItemSprite = Resources.LoadAll<Sprite>(GlobalData.szItemSpritePath);
+        pItemSprite = Resources.LoadAll<Sprite>(GlobalData.szItemSpritePath);
         pEnemySprite = Resources.LoadAll<Sprite>(GlobalData.szEnemySpritePath);
         pPlayerSprite = Resources.LoadAll<Sprite>(GlobalData.szPlayerSpritePath);
-        pAnimatonController = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szAnimationPath);
+        pBulletAnimator = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szBulletAnimationPath);
+        pEffectAnimator = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szEffectAnimationPath);
+        pPlayerAnimator = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szPlayerAnimationPath);
+        pEnemyAnimator = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szEnemyAnimationPath);
+        pCommonAnimator = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szCommonAnimationPath);
         fDefaultPadding = 150.0f;
+
+        // 자동 회수 존 (프리팹으로 사용할 경우)
+        // GameObject pAutoCollectZone = Instantiate(Resources.Load(GlobalData.szMiscellaneousPrefabPath + "AutoCollectZone")) as GameObject;
+        // pAutoCollectZone.transform.parent = transform;
+        // pAutoCollectZone.SetActive(true);
 
         iGameProcedure = StageProcedure(GlobalData.enGameDifficulty);
         iGameProcedure.MoveNext();
@@ -45,13 +59,18 @@ public partial class GameManager : UnitySingleton<GameManager>
         pPlayerMain.Init();
 
         pPlayerBase = pPlayerMain.GetPlayerBase();
+        pPlayerBase.SetPlayerType(GlobalData.enSelectPlayerType);
+        pPlayerBase.SetPlayerWeaponType(GlobalData.enSelectPlayerWeaponType);
         pPlayerBase.SetPlayerLife(GlobalData.iStartLife);
         pPlayerBase.SetPlayerLifeFragment(0);
         pPlayerBase.SetPlayerSpell(GlobalData.iStartSpell);
         pPlayerBase.SetPlayerSpellFragment(0);
         pPlayerBase.SetPlayerScoreItem(0);
         pPlayerBase.SetPlayerGrazeCount(0);
-        pPlayerBase.SetPlayerPower(4.0f);
+        pPlayerBase.SetPlayerMissCount(0);
+        pPlayerBase.SetPlayerMaxScore(0);
+        pPlayerBase.SetPlayerCurrentScore(0);
+        pPlayerBase.SetPlayerPower(2.0f);
 
         for (int i = 1; i <= 4; i++)
         {

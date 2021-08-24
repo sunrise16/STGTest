@@ -22,6 +22,9 @@ public class PlayerBase : GameObjectBase, IObjectBase
     private int iPlayerScoreItem;
     private int iPlayerGrazeCount;
     private int iPlayerMissCount;
+    private int iPlayerSpellUseCount;
+    private long iPlayerMaxScore;
+    private long iPlayerCurrentScore;
     private float fPlayerPower;
     private float fPlayerPrimaryDamage;
     private float fPlayerFastSecondaryDamage;
@@ -82,6 +85,9 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public int GetPlayerScoreItem() { return iPlayerScoreItem; }
     public int GetPlayerGrazeCount() { return iPlayerGrazeCount; }
     public int GetPlayerMissCount() { return iPlayerMissCount; }
+    public int GetPlayerSpellUseCount() { return iPlayerSpellUseCount; }
+    public long GetPlayerMaxScore() { return iPlayerMaxScore; }
+    public long GetPlayerCurrentScore() { return iPlayerCurrentScore; }
     public float GetPlayerPower() { return fPlayerPower; }
     public float GetPlayerPrimaryDamage() { return fPlayerPrimaryDamage; }
     public float GetPlayerFastSecondaryDamage() { return fPlayerFastSecondaryDamage; }
@@ -109,6 +115,9 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public void SetPlayerScoreItem(int iPlayerScoreItem) { this.iPlayerScoreItem = iPlayerScoreItem; }
     public void SetPlayerGrazeCount(int iPlayerGrazeCount) { this.iPlayerGrazeCount = iPlayerGrazeCount; }
     public void SetPlayerMissCount(int iPlayerMissCount) { this.iPlayerMissCount = iPlayerMissCount; }
+    public void SetPlayerSpellUseCount(int iPlayerSpellUseCount) { this.iPlayerSpellUseCount = iPlayerSpellUseCount; }
+    public void SetPlayerMaxScore(long iPlayerMaxScore) { this.iPlayerMaxScore = iPlayerMaxScore; }
+    public void SetPlayerCurrentScore(long iPlayerCurrentScore) { this.iPlayerCurrentScore = iPlayerCurrentScore; }
     public void SetPlayerPower(float fPlayerPower) { this.fPlayerPower = fPlayerPower; }
     public void SetPlayerPrimaryDamage(float fPlayerPrimaryDamage) { this.fPlayerPrimaryDamage = fPlayerPrimaryDamage; }
     public void SetPlayerFastSecondaryDamage(float fPlayerFastSecondaryDamage) { this.fPlayerFastSecondaryDamage = fPlayerFastSecondaryDamage; }
@@ -136,6 +145,9 @@ public class PlayerBase : GameObjectBase, IObjectBase
         SetPlayerScoreItem(0);
         SetPlayerGrazeCount(0);
         SetPlayerMissCount(0);
+        SetPlayerSpellUseCount(0);
+        SetPlayerMaxScore(0);
+        SetPlayerCurrentScore(0);
         SetPlayerPower(0.0f);
         SetPlayerPrimaryDamage(0.0f);
         SetPlayerFastSecondaryDamage(0.0f);

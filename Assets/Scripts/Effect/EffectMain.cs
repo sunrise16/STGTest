@@ -29,7 +29,7 @@ public class EffectMain : MonoBehaviour
     #endregion
 
     #region UNITY LIFE CYCLE
-    public void FixedUpdate()
+    private void FixedUpdate()
     {
         if (pEffectBase == null)
         {
@@ -131,8 +131,8 @@ public class EffectMain : MonoBehaviour
                     ScalePingpong();
                     break;
                 case EEffectAnimationType.enType_Animation:
-                    break;
                 case EEffectAnimationType.enType_Explosion:
+                    AlphaUp();
                     break;
                 default:
                     break;
@@ -162,7 +162,6 @@ public class EffectMain : MonoBehaviour
                 }
             }
         }
-
     }
     #endregion
 
@@ -186,7 +185,7 @@ public class EffectMain : MonoBehaviour
             pLaserDelayTimer.InitTimer();
             pLaserActiveTimer.InitTimer();
         }
-        pEffectBase.SetScale(Vector3.one);
+        pEffectBase.SetScale(vScale);
         pEffectBase.SetChildScale(0, vScale);
         pEffectBase.SetEffectScalePingpongFlag(false);
         pEffectBase.SetColor(pColor);

@@ -65,6 +65,10 @@ public class EffectPool : IPoolBase
                 {
                     EnemyManager.Instance.GetEnemyPool().ReturnPool(pTransform.GetChild(i).gameObject);
                 }
+                else if (pTransform.GetChild(i).GetComponent<ItemMain>())
+                {
+                    ItemManager.Instance.GetItemPool().ReturnPool(pTransform.GetChild(i).gameObject);
+                }
                 i--;
             }
         }

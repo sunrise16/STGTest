@@ -22,7 +22,7 @@ public class BulletMain : MonoBehaviour
     private Transform pTempTransform;
     private Timer pPatternTimer;
     private Timer pRotateTimer;
-    private CoroutineHandle pHomingHandle;
+    private CoroutineHandle cHomingHandle;
     private float fDistance;
     #endregion
 
@@ -39,7 +39,7 @@ public class BulletMain : MonoBehaviour
     #endregion
 
     #region UNITY LIFE CYCLE
-    public void FixedUpdate()
+    private void FixedUpdate()
     {
         if (pBulletBase == null)
         {
@@ -135,7 +135,7 @@ public class BulletMain : MonoBehaviour
 
                 if (pBulletBase.GetCollisionDestroy().Equals(true))
                 {
-                    DestroyBullet();
+                    DestroyBullet(0.5f);
                 }
             }
             else return;
@@ -146,7 +146,7 @@ public class BulletMain : MonoBehaviour
             {
                 if (pBulletBase.GetCollisionDestroy().Equals(true))
                 {
-                    DestroyBullet();
+                    DestroyBullet(0.5f);
                 }
                 if (pPlayerBase.GetDeath().Equals(false) && pPlayerBase.GetRevive().Equals(false))
                 {
@@ -207,7 +207,7 @@ public class BulletMain : MonoBehaviour
 
         if (bHoming.Equals(true))
         {
-            pHomingHandle = Timing.RunCoroutine(BulletHoming(EBulletShooter.enShooter_Player, fHomingSpeed, 0.03f));
+            cHomingHandle = Timing.RunCoroutine(BulletHoming(EBulletShooter.enShooter_Player, fHomingSpeed, 0.03f));
         }
     }
     public void Init(GameObject pBulletObject, Transform pTransform, Vector3 vSpawnPosition, Vector3 vScale, EBulletType enBulletType,
@@ -249,7 +249,7 @@ public class BulletMain : MonoBehaviour
 
         if (bHoming.Equals(true))
         {
-            pHomingHandle = Timing.RunCoroutine(BulletHoming(EBulletShooter.enShooter_Enemy, fHomingSpeed, 0.03f));
+            cHomingHandle = Timing.RunCoroutine(BulletHoming(EBulletShooter.enShooter_Enemy, fHomingSpeed, 0.03f));
         }
     }
     public void BulletMove()
@@ -308,7 +308,7 @@ public class BulletMain : MonoBehaviour
         if (vTempPosition.x < 0 - fPadding || vTempPosition.x > Screen.width + fPadding ||
             vTempPosition.y < 0 - fPadding || vTempPosition.y > Screen.height + fPadding)
         {
-            DestroyBullet();
+            DestroyBullet(0.5f);
         }
     }
     public void TouchScreenCheck(Transform pTransform)
@@ -450,19 +450,22 @@ public class BulletMain : MonoBehaviour
             }
         }
     }
-    public void DestroyBullet()
+    public void DestroyBullet(float fLimitTime = 0.5f)
     {
         pPatternTimer.InitTimer(0, 0.0f, false);
         pRotateTimer.InitTimer(0, 0.0f, false);
 
-        if (pHomingHandle != null)
+        if (cHomingHandle != null)
         {
-            Timing.Instance.KillCoroutinesOnInstance(pHomingHandle);
+            Timing.Instance.KillCoroutinesOnInstance(cHomingHandle);
         }
-        ExtractEffect(pBulletBase.GetPosition(), Vector3.one, Color.white);
+        ExtractDestroyEffect(pBulletBase.GetPosition(), Vector3.one, Color.white, fLimitTime);
         BulletManager.Instance.GetBulletPool().ReturnPool(pBulletBase.GetGameObject());
     }
-    public void ExtractEffect(Vector3 vPosition, Vector3 vScale, Color pColor)
+    /// <summary>
+    /// 임시 메소드입니다. 추후 내용이 바뀔 수 있음
+    /// </summary>
+    public void ExtractDestroyEffect(Vector3 vPosition, Vector3 vScale, Color pColor, float fLimitTime)
     {
         GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
             (vPosition, vScale, pColor, EEffectType.enType_DestroyEffect, EEffectAnimationType.enType_Explosion);
@@ -470,13 +473,13 @@ public class BulletMain : MonoBehaviour
         EffectBase pEffectBase = pEffectMain.GetEffectBase();
 
         pEffectBase.SetUniqueNumber(0);
-        pEffectMain.GetTimer().InitTimer(0.225f);
+        pEffectMain.GetTimer().InitTimer(fLimitTime);
         pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
         pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
         pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
         pEffectBase.SetCondition(false);
         pEffectBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[27];
-        pEffectBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pAnimatonController[0];
+        pEffectBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pBulletAnimator[0];
         pEffectBase.GetAnimator().SetTrigger("SecondaryBDestroy");
         pEffectMain.pStartDelegate = null;
         pEffectMain.pCommonDelegate = null;

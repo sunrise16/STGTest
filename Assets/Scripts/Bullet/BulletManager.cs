@@ -61,7 +61,10 @@ public class BulletPool : IPoolBase
     }
     #endregion
 
-    #region GET METHOD // 임시 카운트용
+    #region GET METHOD
+    /// <summary>
+    /// * 주의 : 임시 테스트용 카운트 메소드입니다. 정식 UI 도입 시 지울 것
+    /// </summary>
     public int GetBulletListCount(int iIndex)
     {
         switch (iIndex)
@@ -136,6 +139,10 @@ public class BulletPool : IPoolBase
                 else if (pTransform.GetChild(i).GetComponent<EnemyMain>())
                 {
                     EnemyManager.Instance.GetEnemyPool().ReturnPool(pTransform.GetChild(i).gameObject);
+                }
+                else if (pTransform.GetChild(i).GetComponent<ItemMain>())
+                {
+                    ItemManager.Instance.GetItemPool().ReturnPool(pTransform.GetChild(i).gameObject);
                 }
                 i--;
             }

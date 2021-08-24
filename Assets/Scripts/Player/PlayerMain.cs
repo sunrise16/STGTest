@@ -53,11 +53,11 @@ public class PlayerSecondary
 public class PlayerMain : MonoBehaviour
 {
     #region VARIABLE
+    private List<PlayerSecondary> pSecondaryList;
     private SpriteRenderer pPlayerSprite;
     private SpriteRenderer pHitPointSprite;
     private PlayerBase pPlayerBase;
     private Timer pShotTimer;
-    private List<PlayerSecondary> pSecondaryList;
     private Vector2 vMoveSpeedVector;
     private Vector2 vMargin;
     private float fPlayerAlpha;
