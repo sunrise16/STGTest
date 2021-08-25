@@ -45,6 +45,12 @@ public class TextLog : MonoBehaviour
 				case 3:
 					pText.text = GameManager.Instance.pPlayerBase.GetPlayerMissCount().ToString();
 					break;
+				case 4:
+					pText.text = GameManager.Instance.pPlayerBase.GetPlayerCurrentScore().ToString();
+					break;
+				case 5:
+					pText.text = GameManager.Instance.pPlayerBase.GetPlayerPower().ToString();
+					break;
 				default:
 					break;
             }

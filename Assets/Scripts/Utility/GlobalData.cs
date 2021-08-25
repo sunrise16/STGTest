@@ -25,7 +25,7 @@ public sealed class GlobalData
     public static string szMiscellaneousPrefabPath = "Prefabs/Miscellaneous/";
 
     public static string szBulletSpritePath = "Sprites/Bullet/Bullets";
-    public static string szItemSpritePath = "Sprites/Item/Items";
+    public static string szItemSpritePath = "Sprites/Item/Item";
     public static string szEnemySpritePath = "Sprites/Enemy/";
     public static string szPlayerSpritePath = "Sprites/Player/";
 

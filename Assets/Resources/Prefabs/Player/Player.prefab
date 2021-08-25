@@ -221,9 +221,10 @@ GameObject:
   - component: {fileID: 4567831316318462}
   - component: {fileID: 212347067798549500}
   - component: {fileID: 95229340520681766}
-  m_Layer: 0
+  - component: {fileID: 58271120195029834}
+  m_Layer: 15
   m_Name: Body
-  m_TagString: Untagged
+  m_TagString: AREA
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -237,8 +238,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4662868104064984}
   - component: {fileID: 212000388949369222}
-  - component: {fileID: 58079612063773644}
   - component: {fileID: 111494716132933742}
+  - component: {fileID: 58079612063773644}
   m_Layer: 15
   m_Name: HitPoint
   m_TagString: AREA
@@ -714,7 +715,22 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.35
+  m_Radius: 0.6
+--- !u!58 &58271120195029834
+CircleCollider2D:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1714219809713638}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.15
 --- !u!58 &58361088366912768
 CircleCollider2D:
   m_ObjectHideFlags: 1
@@ -729,7 +745,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.3
+  m_Radius: 0.25
 --- !u!95 &95229340520681766
 Animator:
   serializedVersion: 3

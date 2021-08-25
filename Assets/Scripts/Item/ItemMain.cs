@@ -1,5 +1,5 @@
 ﻿#region USING
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 using MEC;
 #endregion
@@ -7,14 +7,13 @@ using MEC;
 public class ItemMain : MonoBehaviour
 {
     #region VARIABLE
-    public event DelegateObject pEvent;
+    public event DelegateItemBase pEvent;
     public DelegateCommon pCommonDelegate;
 
     private ItemBase pItemBase;
     private PlayerMain pPlayerMain;
     private PlayerBase pPlayerBase;
     private Timer pTimer;
-    private Vector3 vRefVector;
     private CoroutineHandle cHomingHandle;
     #endregion
 
@@ -37,11 +36,11 @@ public class ItemMain : MonoBehaviour
         // AUTO COLLECT
         if (pPlayerBase.GetPositionY() >= 2.0f)
         {
-            pEvent(pItemBase.GetGameObject());
+            pEvent(pItemBase);
         }
         if (pItemBase.GetAutoCollect().Equals(true))
         {
-            pItemBase.SetPosition(Vector3.SmoothDamp(pItemBase.GetPosition(), pPlayerBase.GetPosition(), ref vRefVector, 0.2f));
+            pItemBase.SetPosition(Vector3.MoveTowards(pItemBase.GetPosition(), pPlayerBase.GetPosition(), 0.1f));
         }
 
         // MAIN TIMER RUN
@@ -52,7 +51,7 @@ public class ItemMain : MonoBehaviour
             if (pTimer.GetTrigger().Equals(true))
             {
                 pItemBase.GetRigidbody().velocity = Vector2.zero;
-                pItemBase.GetRigidbody().gravityScale = 3.0f;
+                pItemBase.GetRigidbody().gravityScale = 0.1f;
 
                 pTimer.ResetTimer(pTimer.GetResetTime());
                 pTimer.SetSwitch(false);
@@ -61,7 +60,7 @@ public class ItemMain : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D pCollider)
     {
-        if (pCollider.name.Equals("HitPoint"))
+        if (pCollider.name.Equals("Body"))
         {
             switch (pItemBase.GetItemType())
             {
@@ -173,6 +172,8 @@ public class ItemMain : MonoBehaviour
             pTimer = new Timer();
             pItemBase.SetSpriteRenderer(pItemBase.GetChildTransform(0).GetComponent<SpriteRenderer>());
             pItemBase.SetAnimator(pItemBase.GetChildTransform(0).GetComponent<Animator>());
+            pItemBase.SetRigidbody(GetComponent<Rigidbody2D>());
+            pItemBase.SetCircleCollider(GetComponent<CircleCollider2D>());
         }
         else
         {
@@ -185,9 +186,22 @@ public class ItemMain : MonoBehaviour
         pItemBase.SetPadding(fPadding);
         pItemBase.SetAutoCollect(false);
         pItemBase.SetSpriteRotate(bSpriteRotate);
-        vRefVector = Vector3.zero;
 
-        pItemBase.GetRigidbody().gravityScale = 3.0f;
+        pItemBase.GetSpriteRenderer().sprite = GameManager.Instance.pItemSprite[Convert.ToInt32(enItemType)];
+        pItemBase.GetRigidbody().gravityScale = 0.1f;
+        if (bSpriteRotate.Equals(false))
+        {
+            pItemBase.GetRigidbody().AddForce(Vector2.up * 75.0f);
+        }
+        switch (enItemType)
+        {
+            case EItemType.enType_PowerS:
+            case EItemType.enType_ScoreS:
+                pItemBase.GetCircleCollider().radius = 0.05f;
+                break;
+            default:
+                break;
+        }
     }
     public void OutScreenCheck(Transform pTransform, float fPadding)
     {
@@ -242,20 +256,138 @@ public class ItemMain : MonoBehaviour
         {
             pPlayerBase.SetPlayerPower(4.0f);
         }
+        for (int i = 0; i < (int)pPlayerBase.GetPlayerPower(); i++)
+        {
+            if (pPlayerMain.GetSecondary(i).GetSecondaryObject().activeSelf.Equals(false))
+            {
+                pPlayerMain.GetSecondary(i).GetSecondaryObject().SetActive(true);
+            }
+        }
     }
     public void SetGameScore(EItemType enItemType)
     {
         switch (enItemType)
         {
+            case EItemType.enType_PowerS:
+            case EItemType.enType_PowerM:
+            case EItemType.enType_PowerL:
+                pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 100);
+                break;
             case EItemType.enType_ScoreS:
+                switch (GlobalData.enGameDifficulty)
+                {
+                    case EGameDifficulty.enDifficulty_Easy:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 100000);
+                        break;
+                    case EGameDifficulty.enDifficulty_Normal:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 150000);
+                        break;
+                    case EGameDifficulty.enDifficulty_Hard:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 200000);
+                        break;
+                    case EGameDifficulty.enDifficulty_Lunatic:
+                    case EGameDifficulty.enDifficulty_Extra:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 300000);
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case EItemType.enType_ScoreM:
+                switch (GlobalData.enGameDifficulty)
+                {
+                    case EGameDifficulty.enDifficulty_Easy:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 200000);
+                        break;
+                    case EGameDifficulty.enDifficulty_Normal:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 300000);
+                        break;
+                    case EGameDifficulty.enDifficulty_Hard:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 400000);
+                        break;
+                    case EGameDifficulty.enDifficulty_Lunatic:
+                    case EGameDifficulty.enDifficulty_Extra:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 600000);
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case EItemType.enType_SpecialScoreS:
+                switch (GlobalData.enGameDifficulty)
+                {
+                    case EGameDifficulty.enDifficulty_Easy:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (10 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Normal:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (20 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Hard:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Lunatic:
+                    case EGameDifficulty.enDifficulty_Extra:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case EItemType.enType_SpecialScoreM:
+                switch (GlobalData.enGameDifficulty)
+                {
+                    case EGameDifficulty.enDifficulty_Easy:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (20 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Normal:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Hard:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Lunatic:
+                    case EGameDifficulty.enDifficulty_Extra:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (70 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case EItemType.enType_SpecialScoreL:
+                switch (GlobalData.enGameDifficulty)
+                {
+                    case EGameDifficulty.enDifficulty_Easy:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Normal:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Hard:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (70 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    case EGameDifficulty.enDifficulty_Lunatic:
+                    case EGameDifficulty.enDifficulty_Extra:
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (100 * pPlayerBase.GetPlayerScoreItem()));
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case EItemType.enType_LifeFragmentS:
+            case EItemType.enType_SpellFragmentS:
+                pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 1000);
+                break;
+            case EItemType.enType_LifeFragmentL:
+            case EItemType.enType_SpellFragmentL:
+                pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 5000);
+                break;
+            case EItemType.enType_LifeS:
+            case EItemType.enType_SpellS:
+                pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 10000);
+                break;
+            case EItemType.enType_LifeL:
+            case EItemType.enType_SpellL:
+                pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 50000);
                 break;
             default:
                 break;

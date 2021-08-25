@@ -8,6 +8,7 @@ using MEC;
 public class PlayerSecondary
 {
     #region VARIABLE
+    private GameObject pSecondaryObject;
     private PlayerBase pPlayerBase;
     private Vector3 vRefVector;
     private int iNumber;
@@ -16,10 +17,15 @@ public class PlayerSecondary
     #region CONSTRUCTOR
     public PlayerSecondary(PlayerBase pPlayerBase, int iNumber)
     {
+        pSecondaryObject = pPlayerBase.GetChildTransform(2).GetChild(iNumber).gameObject;
         this.pPlayerBase = pPlayerBase;
         vRefVector = Vector3.one;
         this.iNumber = iNumber;
     }
+    #endregion
+
+    #region GET METHOD
+    public GameObject GetSecondaryObject() { return pSecondaryObject; }
     #endregion
 
     #region COMMON METHOD
@@ -53,9 +59,9 @@ public class PlayerSecondary
 public class PlayerMain : MonoBehaviour
 {
     #region VARIABLE
-    private List<PlayerSecondary> pSecondaryList;
     private SpriteRenderer pPlayerSprite;
     private SpriteRenderer pHitPointSprite;
+    private List<PlayerSecondary> pSecondaryList;
     private PlayerBase pPlayerBase;
     private Timer pShotTimer;
     private Vector2 vMoveSpeedVector;
@@ -87,6 +93,7 @@ public class PlayerMain : MonoBehaviour
     #endregion
 
     #region GET METHOD
+    public PlayerSecondary GetSecondary(int iIndex) { return pSecondaryList[iIndex]; }
     public PlayerBase GetPlayerBase() { return pPlayerBase; }
     #endregion
 
@@ -392,6 +399,25 @@ public class PlayerMain : MonoBehaviour
 
         pPlayerBase.SetPosition(pPlayerBase.GetCamera().ViewportToWorldPoint(vPosition));
     }
+    public void SetPlayerPower()
+    {
+        pPlayerBase.SetPlayerPower(pPlayerBase.GetPlayerPower() - 0.5f);
+        if (pPlayerBase.GetPlayerPower() < 0.0f)
+        {
+            pPlayerBase.SetPlayerPower(0.0f);
+        }
+        foreach (PlayerSecondary pSecondary in pSecondaryList)
+        {
+            pSecondary.GetSecondaryObject().SetActive(false);
+        }
+        for (int i = 0; i < (int)pPlayerBase.GetPlayerPower(); i++)
+        {
+            if (GetSecondary(i).GetSecondaryObject().activeSelf.Equals(false))
+            {
+                GetSecondary(i).GetSecondaryObject().SetActive(true);
+            }
+        }
+    }
     #endregion
 
     #region IENUMERATOR
@@ -400,6 +426,7 @@ public class PlayerMain : MonoBehaviour
         pPlayerBase.SetDeath(true);
         pPlayerBase.SetSlowMode(false);
         pPlayerBase.SetPlayerMissCount(pPlayerBase.GetPlayerMissCount() + 1);
+        SetPlayerPower();
 
         fPlayerAlpha = 0.0f;
         pPlayerBase.GetRigidbody2D().velocity = Vector2.zero;

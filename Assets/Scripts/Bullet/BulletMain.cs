@@ -123,12 +123,7 @@ public class BulletMain : MonoBehaviour
                     default:
                         break;
                 }
-                if (pEnemyMain.GetEnemyBase().GetEnemyHP() <= 0.0f)
-                {
-                    SoundManager.Instance.PlaySE(ESE.enSE_EnEp00, 1.0f);
-                    pEnemyMain.DestroyEnemy();
-                }
-                else
+                if (pEnemyMain.GetEnemyBase().GetEnemyHP() > 0.0f)
                 {
                     SoundManager.Instance.PlaySE(ESE.enSE_Damage00, 1.0f);
                 }

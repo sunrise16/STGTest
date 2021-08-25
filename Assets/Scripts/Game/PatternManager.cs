@@ -140,7 +140,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(2.0f, 2.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
         int iSpriteIndex = UnityEngine.Random.Range(2, 7);
         float fAngle = 0.0f;
         float fTempAngle = 0.0f;
@@ -155,7 +155,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             for (int j = 0; j < 54; j++)
             {
                 fTempAngle = fAngle + (7.5f * j);
-                vTempPosition = Utility.Instance.GetBulletPosition(vPosition, 0.25f, fTempAngle);
+                vTempPosition = Utility.Instance.GetPosition(vPosition, 0.25f, fTempAngle);
 
                 GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                     (vTempPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -166,7 +166,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 pEffectMain.GetTimer().InitTimer(0.15f);
                 pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
                 pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
-                pEffectBase.SetEffect(fTempAngle, 0.0f, 0.0f, 0.0f, 0.15f, 0.1f, 0.0f);
+                pEffectBase.SetEffect(fTempAngle, 0.0f, 0.0f, 0.0f, 0.1f, 0.1f, 0.0f);
                 pEffectBase.SetCondition(false);
                 pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect)];
                 pEffectMain.pStartDelegate = null;
@@ -237,7 +237,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float[] fAngle = new float[8];
         float fDestinationAngle = 0.0f;
 
@@ -255,7 +255,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    vTempPosition = Utility.Instance.GetBulletPosition(vPosition, 0.15f, fAngle[j]);
+                    vTempPosition = Utility.Instance.GetPosition(vPosition, 0.15f, fAngle[j]);
 
                     GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                         (vTempPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -309,7 +309,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = UnityEngine.Random.Range(0.0f, 360.0f);
         float fTempAngle = 0.0f;
 
@@ -322,7 +322,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             for (int j = 0; j < 5; j++)
             {
                 fTempAngle = (iFireCount % 2).Equals(0) ? fAngle + (72.0f * j) + (6.0f * i) : fAngle + (72.0f * j) - (6.0f * i);
-                vTempPosition = Utility.Instance.GetBulletPosition(vPosition, 0.3f, fTempAngle);
+                vTempPosition = Utility.Instance.GetPosition(vPosition, 0.3f, fTempAngle);
 
                 GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                     (vTempPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -385,7 +385,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
         float fTempAngle = 0.0f;
 
@@ -491,7 +491,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
         float fTempAngle = 0.0f;
 
@@ -567,7 +567,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = fAngle = UnityEngine.Random.Range(0.0f, 360.0f);
         float fTempAngle = 0.0f;
 
@@ -576,7 +576,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         for (int i = 0; i < 32; i++)
         {
             fTempAngle = fAngle + (11.25f * i);
-            vTempPosition = Utility.Instance.GetBulletPosition(vPosition, 0.2f, fTempAngle);
+            vTempPosition = Utility.Instance.GetPosition(vPosition, 0.2f, fTempAngle);
 
             GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                 (vTempPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -631,7 +631,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
         float fTempAngle = 0.0f;
 
@@ -697,7 +697,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(3.0f, 3.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
 
         yield return Timing.WaitForOneFrame;
@@ -761,7 +761,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(6.0f, 6.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         int iFireCount = 0;
         float fAngle = 0.0f;
         float fFirstAngle = 0.0f;
@@ -818,7 +818,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 for (int i = 0; i < 24; i++)
                 {
                     fAngle = fFirstAngle + (15.0f * i);
-                    vTempPosition = Utility.Instance.GetBulletPosition(vPosition, 0.35f, fAngle);
+                    vTempPosition = Utility.Instance.GetPosition(vPosition, 0.35f, fAngle);
 
                     GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
                         (vTempPosition, Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy, 
@@ -855,7 +855,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = Vector3.one;
-        Vector3 vScale = new Vector3(3.0f, 3.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         int iFireCount = 0;
         float fAngle = 0.0f;
         float fTempAngle = 0.0f;
@@ -925,10 +925,9 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #region PATTERN 110
     public IEnumerator<float> Pattern110(GameObject pEnemyObject, EnemyMain pEnemyMain)
     {
-        EnemyBase pEnemyBase = pEnemyObject.GetComponent<EnemyMain>().GetEnemyBase();
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(3.0f, 3.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
         float fTempSpeed = 0.0f;
 
@@ -1004,7 +1003,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(3.0f, 3.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
         float fTempAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
 
@@ -1087,7 +1086,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         Color pColor = new Color(1, 1, 1, 1.0f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(2.0f, 2.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
         float fTempAngle = 0.0f;
 
@@ -1098,7 +1097,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         for (int i = 0; i < 36; i++)
         {
             fTempAngle = fAngle + (10.0f * i);
-            vTempPosition = Utility.Instance.GetBulletPosition(vPosition, 0.2f, fTempAngle);
+            vTempPosition = Utility.Instance.GetPosition(vPosition, 0.2f, fTempAngle);
 
             GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                 (vTempPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_MovingCurvedLaserShot);
@@ -1172,7 +1171,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 1.0f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(2.0f, 2.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
 
         yield return Timing.WaitForOneFrame;
@@ -1260,7 +1259,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 0);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
         float fTempAngle = 0.0f;
 
@@ -1319,7 +1318,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     {
         Color pColor = new Color(1, 1, 1, 1.0f);
         Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(2.0f, 2.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
 
         yield return Timing.WaitForOneFrame;
@@ -1365,6 +1364,82 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         pEffectMain.pCommonDelegate = null;
         pEffectMain.pConditionDelegate = null;
         pEnemyMain.GetSinglePatternList().Remove(115);
+        yield break;
+    }
+    #endregion
+
+    #region PATTERN 116
+    public IEnumerator<float> Pattern116(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    {
+        Color pColor = new Color(1, 1, 1, 0.4f);
+        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
+        float fAngle = 0.0f;
+        float fTempSpeed = 0.0f;
+
+        yield return Timing.WaitForOneFrame;
+
+        SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.8f);
+
+        for (int i = 0; i < 2; i++)
+        {
+            GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
+                (vPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
+            EffectMain pEffectMain = pEffectObject.GetComponent<EffectMain>();
+            EffectBase pEffectBase = pEffectMain.GetEffectBase();
+
+            pEffectBase.SetUniqueNumber(i);
+            pEffectMain.GetTimer().InitTimer(0.2f);
+            pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
+            pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
+            pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.15f, 0.12f, 0.0f);
+            pEffectBase.SetCondition(false);
+            pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + (i.Equals(0) ? 1 : 3)];
+            pEffectMain.pStartDelegate = null;
+            pEffectMain.pCommonDelegate = () =>
+            {
+                for (int j = 0; j < 160; j++)
+                {
+                    fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
+                    fTempSpeed = UnityEngine.Random.Range(2.0f, 8.0f);
+
+                    GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                        (vPosition, Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+                        EEnemyBulletType.enType_Butterfly, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
+                    BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+                    BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+                    pBulletBase.SetUniqueNumber(pEffectBase.GetUniqueNumber());
+                    pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+                    pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+                    pBulletBase.SetBulletSpeed(fTempSpeed, 0.0f, 0.0f, fTempSpeed * 0.007f, 0.0f);
+                    pBulletBase.SetBulletRotate(fAngle - 90.0f);
+                    pBulletBase.SetBulletOption();
+                    pBulletBase.SetCondition(false);
+                    pBulletBase.SetCollisionDestroy(true);
+                    pBulletBase.SetColliderTrigger(true);
+                    pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + (pBulletBase.GetUniqueNumber().Equals(0) ? 1 : 2)];
+                    pBulletMain.pCommonDelegate = null;
+                    pBulletMain.pConditionDelegate = () =>
+                    {
+                        if (pBulletBase.GetBulletMoveSpeed() <= 0.0f && pBulletBase.GetCondition().Equals(false))
+                        {
+                            SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
+
+                            pBulletMain.GetRotateTimer().InitTimer(2.5f);
+                            pBulletBase.SetBulletSpeed(0.0f, 0.01f, 3.0f, 0.0f, 0.0f);
+                            pBulletBase.SetBulletRotate(pBulletBase.GetRotationZ(), (pBulletBase.GetUniqueNumber() % 2).Equals(0) ? 75.0f : -75.0f);
+                            pBulletBase.SetCondition(true);
+                        }
+                    };
+                    pBulletMain.pChangeDelegate = null;
+                    pBulletMain.pSplitDelegate = null;
+                    pBulletMain.pAttachDelegate = null;
+                }
+            };
+            pEffectMain.pConditionDelegate = null;
+        }
+        pEnemyMain.GetSinglePatternList().Remove(110);
         yield break;
     }
     #endregion

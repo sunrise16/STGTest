@@ -11,6 +11,7 @@ public class ItemBase : GameObjectBase, IObjectBase
 	private CircleCollider2D pCircleCollider;
 	private Color pColor;
 	private EItemType enItemType;
+    private int iItemScore;
 	private float fPadding;
 	private bool bAutoCollect;
 	private bool bSpriteRotate;
@@ -30,6 +31,7 @@ public class ItemBase : GameObjectBase, IObjectBase
     public CircleCollider2D GetCircleCollider() { return pCircleCollider; }
     public Color GetColor() { return pColor; }
     public EItemType GetItemType() { return enItemType; }
+    public int GetItemScore() { return iItemScore; }
     public float GetPadding() { return fPadding; }
     public bool GetAutoCollect() { return bAutoCollect; }
     public bool GetSpriteRotate() { return bSpriteRotate; }
@@ -42,6 +44,7 @@ public class ItemBase : GameObjectBase, IObjectBase
     public void SetCircleCollider(CircleCollider2D pCircleCollider) { this.pCircleCollider = pCircleCollider; }
     public void SetColor(Color pColor) { this.pColor = pColor; }
     public void SetItemType(EItemType enItemType) { this.enItemType = enItemType; }
+    public void SetItemScore(int iItemScore) { this.iItemScore = iItemScore; }
     public void SetPadding(float fPadding) { this.fPadding = fPadding; }
     public void SetAutoCollect(bool bAutoCollect) { this.bAutoCollect = bAutoCollect; }
     public void SetSpriteRotate(bool bSpriteRotate) { this.bSpriteRotate = bSpriteRotate; }
@@ -52,6 +55,7 @@ public class ItemBase : GameObjectBase, IObjectBase
     {
         SetColor(Color.white);
         SetItemType(EItemType.None);
+        SetItemScore(0);
         SetPadding(0.0f);
         SetAutoCollect(false);
         SetSpriteRotate(false);

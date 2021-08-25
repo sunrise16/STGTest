@@ -43,11 +43,6 @@ public partial class GameManager : UnitySingleton<GameManager>
         pCommonAnimator = Resources.LoadAll<RuntimeAnimatorController>(GlobalData.szCommonAnimationPath);
         fDefaultPadding = 150.0f;
 
-        // 자동 회수 존 (프리팹으로 사용할 경우)
-        // GameObject pAutoCollectZone = Instantiate(Resources.Load(GlobalData.szMiscellaneousPrefabPath + "AutoCollectZone")) as GameObject;
-        // pAutoCollectZone.transform.parent = transform;
-        // pAutoCollectZone.SetActive(true);
-
         iGameProcedure = StageProcedure(GlobalData.enGameDifficulty);
         iGameProcedure.MoveNext();
     }
@@ -70,7 +65,7 @@ public partial class GameManager : UnitySingleton<GameManager>
         pPlayerBase.SetPlayerMissCount(0);
         pPlayerBase.SetPlayerMaxScore(0);
         pPlayerBase.SetPlayerCurrentScore(0);
-        pPlayerBase.SetPlayerPower(2.0f);
+        pPlayerBase.SetPlayerPower(1.98f);
 
         for (int i = 1; i <= 4; i++)
         {
@@ -121,19 +116,29 @@ public partial class GameManager : UnitySingleton<GameManager>
 
         yield return Timing.WaitForSeconds(2.0f);
 
-        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 100.0f, true, false);
-        EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 114, 0, 4.0f, 1.0f);
+        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 1000.0f, true, false);
+        EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 114, 0, 3.0f, 1.0f);
         // EnemyManager.Instance.GetEnemyPool().AddRepeatPattern(pEnemy, 101, 1.0f);
         // EnemyManager.Instance.GetEnemyPool().AddCounterPattern(pEnemy, 102);
+        EnemyManager.Instance.GetEnemyPool().AddItemDictionary(pEnemy, EItemType.enType_PowerS, 3);
+        EnemyManager.Instance.GetEnemyPool().AddItemDictionary(pEnemy, EItemType.enType_ScoreS, 1);
         EnemyManager.Instance.GetEnemyPool().SetEnemyMoveX(pEnemy, 0.0f);
         EnemyManager.Instance.GetEnemyPool().SetEnemyMoveY(pEnemy, 0.0f);
 
-        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(1.5f, -1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 100.0f, true, false);
-        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(-1.5f, 2.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 100.0f, true, false);
+        EnemyManager.Instance.GetEnemyPool().SetEnemyMoving(pEnemy, 1.0f,
+            new KeyValuePair<DelegateGameObject, float>(MovingTest1, 1.5f), new KeyValuePair<DelegateGameObject, float>(MovingTest2, 2.0f));
 
         yield return Timing.WaitForOneFrame;
 
         // UNDER CONSTRUCTION
+    }
+    public void MovingTest1(GameObject pObject)
+    {
+        iTween.MoveTo(pObject, iTween.Hash("position", new Vector3(2.0f, 2.0f), "easetype", iTween.EaseType.easeOutQuad, "time", 1.0f));
+    }
+    public void MovingTest2(GameObject pObject)
+    {
+        iTween.MoveTo(pObject, iTween.Hash("position", new Vector3(-2.0f, 2.0f), "easetype", iTween.EaseType.easeOutQuad, "time", 1.5f));
     }
     #endregion
 

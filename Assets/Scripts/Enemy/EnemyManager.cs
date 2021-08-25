@@ -46,6 +46,8 @@ public class EnemyPool : IPoolBase
         pEnemyBase.GetSpriteRenderer().color = Color.white;
         pEnemyBase.GetSpriteRenderer().sprite = null;
         pEnemyBase.GetAnimator().runtimeAnimatorController = null;
+        pEnemyMain.pEnemyMoveDelegateList.Clear();
+        pEnemyBase.GetItemDictionary().Clear();
         pEnemyBase.AllReset();
         if (pTransform.childCount > 1)
         {
@@ -95,6 +97,20 @@ public class EnemyPool : IPoolBase
     {
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
         pEnemyMain.GetCounterPatternList().Add(iFlag);
+    }
+    public void AddItemDictionary(GameObject pEnemyObject, EItemType enItemType, int iAmount)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        pEnemyMain.GetEnemyBase().GetItemDictionary().Add(enItemType, iAmount);
+    }
+    public void SetEnemyMoving(GameObject pEnemyObject, float fStartDelay, params KeyValuePair<DelegateGameObject, float>[] pDelegate)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        foreach (KeyValuePair<DelegateGameObject, float> pDel in pDelegate)
+        {
+            pEnemyMain.pEnemyMoveDelegateList.Add(pDel.Key, pDel.Value);
+        }
+        Timing.RunCoroutine(pEnemyMain.EnemyMove(fStartDelay));
     }
     public void SetEnemyMoveX(GameObject pEnemyObject, float fEnemyMoveSpeedX, float fEnemyMoveAccelerationSpeedX = 0.0f, float fEnemyMoveAccelerationSpeedXMax = 0.0f, float fEnemyMoveDecelerationSpeedX = 0.0f, float fEnemyMoveDecelerationSpeedXMin = 0.0f)
     {

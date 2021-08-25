@@ -1,4 +1,5 @@
 ﻿#region USING
+using System.Collections.Generic;
 using UnityEngine;
 #endregion
 
@@ -8,6 +9,7 @@ public class EnemyBase : GameObjectBase, IObjectBase
     private SpriteRenderer pSpriteRenderer;
     private Animator pAnimator;
     private CircleCollider2D pCircleCollider;
+    private Dictionary<EItemType, int> pItemDictionary;
     private Color pColor;
     private EEnemyType enEnemyType;
     private float fEnemyHP;
@@ -38,6 +40,7 @@ public class EnemyBase : GameObjectBase, IObjectBase
     public CircleCollider2D GetCircleCollider() { return pCircleCollider; }
     public Color GetColor() { return pColor; }
     public EEnemyType GetEnemyType() { return enEnemyType; }
+    public Dictionary<EItemType, int> GetItemDictionary() { return pItemDictionary; }
     public float GetEnemyHP() { return fEnemyHP; }
     public float GetEnemyMoveSpeedX() { return fEnemyMoveSpeedX; }
     public float GetEnemyMoveAccelerationSpeedX() { return fEnemyMoveAccelerationSpeedX; }
@@ -57,6 +60,7 @@ public class EnemyBase : GameObjectBase, IObjectBase
     public void SetSpriteRenderer(SpriteRenderer pSpriteRenderer) { this.pSpriteRenderer = pSpriteRenderer; }
     public void SetAnimator(Animator pAnimator) { this.pAnimator = pAnimator; }
     public void SetCircleCollider(CircleCollider2D pCircleCollider) { this.pCircleCollider = pCircleCollider; }
+    public void SetItemDictionary(Dictionary<EItemType, int> pItemDictionary) { this.pItemDictionary = pItemDictionary; }
     public void SetColor(Color pColor) { this.pColor = pColor; }
     public void SetEnemyType(EEnemyType enEnemyType) { this.enEnemyType = enEnemyType; }
     public void SetEnemyHP(float fEnemyHP) { this.fEnemyHP = fEnemyHP; }

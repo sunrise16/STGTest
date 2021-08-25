@@ -45,6 +45,8 @@ public class ItemPool : IPoolBase
         pItemBase.GetSpriteRenderer().color = new Color(1, 1, 1, 0);
         pItemBase.GetSpriteRenderer().sprite = null;
         pItemBase.GetAnimator().runtimeAnimatorController = null;
+        pItemBase.GetRigidbody().gravityScale = 0.0f;
+        pItemBase.GetCircleCollider().radius = 0.0f;
         pItemMain.pEvent -= ItemManager.Instance.ActiveAutoCollect;
         pItemMain.pCommonDelegate = null;
         pItemBase.AllReset();
@@ -104,9 +106,8 @@ public class ItemManager : Singleton<ItemManager>
         Transform pActiveItemParent = GameObject.Find("ActiveItems").GetComponent<Transform>();
         pItemPool = new ItemPool(pItemParent, pActiveItemParent);
     }
-    public void ActiveAutoCollect(GameObject pItemObject)
+    public void ActiveAutoCollect(ItemBase pItemBase)
     {
-        ItemBase pItemBase = pItemObject.GetComponent<ItemMain>().GetItemBase();
         pItemBase.SetAutoCollect(true);
     }
     #endregion

@@ -8,6 +8,8 @@ using MEC;
 public class EnemyMain : MonoBehaviour
 {
 	#region VARIABLE
+	public Dictionary<DelegateGameObject, float> pEnemyMoveDelegateList;
+
 	private EnemyBase pEnemyBase;
 	private List<Timer> pPatternTimerList;
 	private Dictionary<int, CoroutineHandle> pSinglePatternList;
@@ -39,12 +41,18 @@ public class EnemyMain : MonoBehaviour
 		}
 
 		// ENEMY MOVE
-		if (pEnemyBase.GetEnemyMoveAccelerationSpeedX() != 0.0f || pEnemyBase.GetEnemyMoveAccelerationSpeedY() != 0.0f)
-			EnemyMoveAcceleration();
-		if (pEnemyBase.GetEnemyMoveDecelerationSpeedX() != 0.0f || pEnemyBase.GetEnemyMoveDecelerationSpeedY() != 0.0f)
-			EnemyMoveDeceleration();
-		if (pEnemyBase.GetEnemyMoveSpeedX() != 0.0f || pEnemyBase.GetEnemyMoveSpeedY() != 0.0f)
-			EnemyMove();
+		// if (pEnemyBase.GetEnemyMoveAccelerationSpeedX() != 0.0f || pEnemyBase.GetEnemyMoveAccelerationSpeedY() != 0.0f)
+		// 	EnemyMoveAcceleration();
+		// if (pEnemyBase.GetEnemyMoveDecelerationSpeedX() != 0.0f || pEnemyBase.GetEnemyMoveDecelerationSpeedY() != 0.0f)
+		// 	EnemyMoveDeceleration();
+		// if (pEnemyBase.GetEnemyMoveSpeedX() != 0.0f || pEnemyBase.GetEnemyMoveSpeedY() != 0.0f)
+		// 	EnemyMove();
+
+		// ENEMY DESTROY
+		if (pEnemyBase.GetEnemyHP() <= 0.0f)
+        {
+			DestroyEnemy();
+        }
 
 		// SCREEN CHECK
 		OutScreenCheck(pEnemyBase.GetTransform());
@@ -76,7 +84,7 @@ public class EnemyMain : MonoBehaviour
 			}
 		}
 
-		// TIMER CHECK
+		// PATTERN TIMER CHECK
 		if (pPatternTimerList.Count > 0)
         {
 			for (int i = 0; i < pPatternTimerList.Count; i++)
@@ -134,6 +142,7 @@ public class EnemyMain : MonoBehaviour
 		if (pEnemyBase == null)
 		{
 			pEnemyBase = new EnemyBase(pEnemyObject, pTransform, vSpawnPosition, vScale);
+			pEnemyMoveDelegateList = new Dictionary<DelegateGameObject, float>();
 			pPatternTimerList = new List<Timer>();
 			pSinglePatternList = new Dictionary<int, CoroutineHandle>();
 			pRepeatPatternList = new List<CoroutineHandle>();
@@ -141,11 +150,14 @@ public class EnemyMain : MonoBehaviour
 			pEnemyBase.SetSpriteRenderer(pEnemyBase.GetTransform().GetChild(0).GetComponent<SpriteRenderer>());
 			pEnemyBase.SetAnimator(pEnemyBase.GetTransform().GetChild(0).GetComponent<Animator>());
 			pEnemyBase.SetCircleCollider(GetComponent<CircleCollider2D>());
+			pEnemyBase.SetItemDictionary(new Dictionary<EItemType, int>());
 		}
 		else
 		{
 			pEnemyBase.Init(pEnemyObject, pTransform, vSpawnPosition, vScale, EGameObjectType.enType_Enemy);
+			pEnemyMoveDelegateList.Clear();
 			pPatternTimerList.Clear();
+			pSinglePatternList.Clear();
 			pRepeatPatternList.Clear();
 			pCounterPatternList.Clear();
 		}
@@ -267,52 +279,52 @@ public class EnemyMain : MonoBehaviour
 		}
         #endregion
     }
-	public void EnemyMove()
-	{
-		pEnemyBase.GetTransform().Translate(new Vector2(pEnemyBase.GetEnemyMoveSpeedX() * Time.deltaTime, pEnemyBase.GetEnemyMoveSpeedY() * Time.deltaTime));
-		// pEnemyBase.GetTransform().Translate(Vector2.right * pEnemyBase.GetEnemyMoveSpeedX() * Time.deltaTime);
-		// pEnemyBase.GetTransform().Translate(Vector2.up * pEnemyBase.GetEnemyMoveSpeedY() * Time.deltaTime);
-	}
-	public void EnemyMoveAcceleration()
-	{
-		// ACCELERATION X
-		pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveSpeedX() + pEnemyBase.GetEnemyMoveAccelerationSpeedX());
-		if (pEnemyBase.GetEnemyMoveSpeedX() >= pEnemyBase.GetEnemyMoveAccelerationSpeedXMax())
-		{
-			pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveAccelerationSpeedXMax());
-			pEnemyBase.SetEnemyMoveAccelerationSpeedX(0.0f);
-			pEnemyBase.SetEnemyMoveAccelerationSpeedXMax(0.0f);
-		}
-
-		// ACCELERATION Y
-		pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveSpeedY() + pEnemyBase.GetEnemyMoveAccelerationSpeedY());
-		if (pEnemyBase.GetEnemyMoveSpeedY() >= pEnemyBase.GetEnemyMoveAccelerationSpeedYMax())
-		{
-			pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveAccelerationSpeedYMax());
-			pEnemyBase.SetEnemyMoveAccelerationSpeedY(0.0f);
-			pEnemyBase.SetEnemyMoveAccelerationSpeedYMax(0.0f);
-		}
-	}
-	public void EnemyMoveDeceleration()
-	{
-		// DECELERTAION X
-		pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveSpeedX() - pEnemyBase.GetEnemyMoveDecelerationSpeedX());
-		if (pEnemyBase.GetEnemyMoveSpeedX() <= pEnemyBase.GetEnemyMoveDecelerationSpeedXMin())
-		{
-			pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveDecelerationSpeedXMin());
-			pEnemyBase.SetEnemyMoveDecelerationSpeedX(0.0f);
-			pEnemyBase.SetEnemyMoveDecelerationSpeedXMin(0.0f);
-		}
-
-		// DECELERATION Y
-		pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveSpeedY() - pEnemyBase.GetEnemyMoveDecelerationSpeedY());
-		if (pEnemyBase.GetEnemyMoveSpeedY() <= pEnemyBase.GetEnemyMoveDecelerationSpeedYMin())
-		{
-			pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveDecelerationSpeedYMin());
-			pEnemyBase.SetEnemyMoveDecelerationSpeedY(0.0f);
-			pEnemyBase.SetEnemyMoveDecelerationSpeedYMin(0.0f);
-		}
-	}
+	// public void EnemyMove()
+	// {
+	// 	pEnemyBase.GetTransform().Translate(new Vector2(pEnemyBase.GetEnemyMoveSpeedX() * Time.deltaTime, pEnemyBase.GetEnemyMoveSpeedY() * Time.deltaTime));
+	// 	// pEnemyBase.GetTransform().Translate(Vector2.right * pEnemyBase.GetEnemyMoveSpeedX() * Time.deltaTime);
+	// 	// pEnemyBase.GetTransform().Translate(Vector2.up * pEnemyBase.GetEnemyMoveSpeedY() * Time.deltaTime);
+	// }
+	// public void EnemyMoveAcceleration()
+	// {
+	// 	// ACCELERATION X
+	// 	pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveSpeedX() + pEnemyBase.GetEnemyMoveAccelerationSpeedX());
+	// 	if (pEnemyBase.GetEnemyMoveSpeedX() >= pEnemyBase.GetEnemyMoveAccelerationSpeedXMax())
+	// 	{
+	// 		pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveAccelerationSpeedXMax());
+	// 		pEnemyBase.SetEnemyMoveAccelerationSpeedX(0.0f);
+	// 		pEnemyBase.SetEnemyMoveAccelerationSpeedXMax(0.0f);
+	// 	}
+	// 
+	// 	// ACCELERATION Y
+	// 	pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveSpeedY() + pEnemyBase.GetEnemyMoveAccelerationSpeedY());
+	// 	if (pEnemyBase.GetEnemyMoveSpeedY() >= pEnemyBase.GetEnemyMoveAccelerationSpeedYMax())
+	// 	{
+	// 		pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveAccelerationSpeedYMax());
+	// 		pEnemyBase.SetEnemyMoveAccelerationSpeedY(0.0f);
+	// 		pEnemyBase.SetEnemyMoveAccelerationSpeedYMax(0.0f);
+	// 	}
+	// }
+	// public void EnemyMoveDeceleration()
+	// {
+	// 	// DECELERTAION X
+	// 	pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveSpeedX() - pEnemyBase.GetEnemyMoveDecelerationSpeedX());
+	// 	if (pEnemyBase.GetEnemyMoveSpeedX() <= pEnemyBase.GetEnemyMoveDecelerationSpeedXMin())
+	// 	{
+	// 		pEnemyBase.SetEnemyMoveSpeedX(pEnemyBase.GetEnemyMoveDecelerationSpeedXMin());
+	// 		pEnemyBase.SetEnemyMoveDecelerationSpeedX(0.0f);
+	// 		pEnemyBase.SetEnemyMoveDecelerationSpeedXMin(0.0f);
+	// 	}
+	// 
+	// 	// DECELERATION Y
+	// 	pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveSpeedY() - pEnemyBase.GetEnemyMoveDecelerationSpeedY());
+	// 	if (pEnemyBase.GetEnemyMoveSpeedY() <= pEnemyBase.GetEnemyMoveDecelerationSpeedYMin())
+	// 	{
+	// 		pEnemyBase.SetEnemyMoveSpeedY(pEnemyBase.GetEnemyMoveDecelerationSpeedYMin());
+	// 		pEnemyBase.SetEnemyMoveDecelerationSpeedY(0.0f);
+	// 		pEnemyBase.SetEnemyMoveDecelerationSpeedYMin(0.0f);
+	// 	}
+	// }
 	public void OutScreenCheck(Transform pTransform)
 	{
 		Vector3 vTempPosition = GameManager.Instance.pMainCamera.WorldToScreenPoint(pTransform.position);
@@ -364,7 +376,38 @@ public class EnemyMain : MonoBehaviour
 		}
 		pCounterPatternList.Clear();
 
+		ItemDrop();
+		SoundManager.Instance.PlaySE(ESE.enSE_EnEp00, 1.0f);
 		EnemyManager.Instance.GetEnemyPool().ReturnPool(pEnemyBase.GetGameObject());
 	}
+	public void ItemDrop()
+    {
+		GameObject pItemObject;
+		Vector3 vPosition = Vector3.zero;
+
+		foreach (KeyValuePair<EItemType, int> pValue in pEnemyBase.GetItemDictionary())
+        {
+			for (int i = 0; i < pValue.Value; i++)
+            {
+				vPosition = Utility.Instance.GetRandomPosition(pEnemyBase.GetPosition(), 0.25f);
+				pItemObject = ItemManager.Instance.GetItemPool().ExtractItem(vPosition, Vector3.one, Color.white, pValue.Key, 10.0f);
+			}
+        }
+	}
+	#endregion
+
+	#region IENUMERATOR
+	public IEnumerator<float> EnemyMove(float fStartDelay)
+    {
+		yield return Timing.WaitForSeconds(fStartDelay);
+
+		foreach (KeyValuePair<DelegateGameObject, float> pDel in pEnemyMoveDelegateList)
+        {
+			pDel.Key(pEnemyBase.GetGameObject());
+
+			yield return Timing.WaitForSeconds(pDel.Value);
+        }
+		yield break;
+    }
 	#endregion
 }
