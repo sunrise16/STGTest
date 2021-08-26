@@ -309,10 +309,15 @@ public class BulletPool : IPoolBase
                     pBulletBase.GetCircleCollider().radius = 0.025f;
                     pBulletBase.GetCircleCollider().offset = Vector2.zero;
                     break;
+                case EEnemyBulletType.enType_GhostCircle:
+                    pBulletBase.GetCircleCollider().radius = 0.04f;
+                    pBulletBase.GetCircleCollider().offset = new Vector2(0.0f, 0.035f);
+                    break;
                 case EEnemyBulletType.enType_LightCircle:
                     pBulletBase.GetCircleCollider().radius = 0.125f;
                     pBulletBase.GetCircleCollider().offset = Vector2.zero;
                     break;
+
                 default:
                     break;
             }

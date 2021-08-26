@@ -116,29 +116,33 @@ public partial class GameManager : UnitySingleton<GameManager>
 
         yield return Timing.WaitForSeconds(2.0f);
 
-        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type3, 1000.0f, true, false);
-        EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 114, 0, 3.0f, 1.0f);
+        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type1, 1000.0f, true, false);
+        EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 110, 0, 4.5f, 1.0f);
+        // EnemyManager.Instance.GetEnemyPool().AddRepeatPattern(pEnemy, new KeyValuePair<int, float>(117, 1.0f));
+        EnemyManager.Instance.GetEnemyPool().AddItemDictionary(pEnemy, new KeyValuePair<EItemType, int>(EItemType.enType_PowerS, 3), new KeyValuePair<EItemType, int>(EItemType.enType_ScoreS, 1));
+        // EnemyManager.Instance.GetEnemyPool().SetEnemyMoveRepeat(pEnemy, 3.0f, EnemyMoveTest);
+        // EnemyManager.Instance.GetEnemyPool().SetEnemyMoveOnce(pEnemy, 1.0f,
+        //     new KeyValuePair<DelegateGameObject, float>((GameObject pObject) => { iTween.MoveTo(pObject, iTween.Hash("position", new Vector3(2.0f, 2.0f), "easetype", iTween.EaseType.easeOutQuad, "time", 1.0f)); }, 1.5f),
+        //     new KeyValuePair<DelegateGameObject, float>((GameObject pObject) => { iTween.MoveTo(pObject, iTween.Hash("position", new Vector3(-2.0f, 2.0f), "easetype", iTween.EaseType.easeOutQuad, "time", 1.5f)); }, 2.0f));
         // EnemyManager.Instance.GetEnemyPool().AddRepeatPattern(pEnemy, 101, 1.0f);
         // EnemyManager.Instance.GetEnemyPool().AddCounterPattern(pEnemy, 102);
-        EnemyManager.Instance.GetEnemyPool().AddItemDictionary(pEnemy, EItemType.enType_PowerS, 3);
-        EnemyManager.Instance.GetEnemyPool().AddItemDictionary(pEnemy, EItemType.enType_ScoreS, 1);
-        EnemyManager.Instance.GetEnemyPool().SetEnemyMoveX(pEnemy, 0.0f);
-        EnemyManager.Instance.GetEnemyPool().SetEnemyMoveY(pEnemy, 0.0f);
-
-        EnemyManager.Instance.GetEnemyPool().SetEnemyMoving(pEnemy, 1.0f,
-            new KeyValuePair<DelegateGameObject, float>(MovingTest1, 1.5f), new KeyValuePair<DelegateGameObject, float>(MovingTest2, 2.0f));
 
         yield return Timing.WaitForOneFrame;
 
         // UNDER CONSTRUCTION
     }
-    public void MovingTest1(GameObject pObject)
+    public IEnumerator<float> EnemyMoveTest(GameObject pEnemy)
     {
-        iTween.MoveTo(pObject, iTween.Hash("position", new Vector3(2.0f, 2.0f), "easetype", iTween.EaseType.easeOutQuad, "time", 1.0f));
-    }
-    public void MovingTest2(GameObject pObject)
-    {
-        iTween.MoveTo(pObject, iTween.Hash("position", new Vector3(-2.0f, 2.0f), "easetype", iTween.EaseType.easeOutQuad, "time", 1.5f));
+        Vector3 vPosition = Vector3.zero;
+
+        while (pEnemy.activeSelf.Equals(true))
+        {
+            vPosition = new Vector2(UnityEngine.Random.Range(-2.0f, 2.0f), UnityEngine.Random.Range(1.0f, 2.5f));
+            iTween.MoveTo(pEnemy, iTween.Hash("position", vPosition, "easetype", iTween.EaseType.easeOutQuad, "time", 1.0f));
+
+            yield return Timing.WaitForSeconds(3.0f);
+        }
+        yield break;
     }
     #endregion
 

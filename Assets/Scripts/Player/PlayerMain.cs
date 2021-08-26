@@ -70,6 +70,11 @@ public class PlayerMain : MonoBehaviour
     private float fHitPointAlpha;
     #endregion
 
+    #region GET METHOD
+    public PlayerSecondary GetSecondary(int iIndex) { return pSecondaryList[iIndex]; }
+    public PlayerBase GetPlayerBase() { return pPlayerBase; }
+    #endregion
+
     #region UNITY LIFE CYCLE
     public void FixedUpdate()
     {
@@ -90,11 +95,6 @@ public class PlayerMain : MonoBehaviour
             pSecondaryList[i].MoveSecondary(pPlayerBase.GetSlowMode().Equals(true) ? true : false);
         }
     }
-    #endregion
-
-    #region GET METHOD
-    public PlayerSecondary GetSecondary(int iIndex) { return pSecondaryList[iIndex]; }
-    public PlayerBase GetPlayerBase() { return pPlayerBase; }
     #endregion
 
     #region COMMON METHOD

@@ -5,6 +5,14 @@ using UnityEngine;
 public class Utility : Singleton<Utility>
 {
     #region OBJECT DESTINATION
+    public Vector2 GetDestination(GameObject pObject, GameObject pTargetObject)
+    {
+        Vector2 vObjectPosition = pObject.GetComponent<Transform>().position;
+        Vector2 vTargetPosition = pTargetObject.GetComponent<Transform>().position;
+        float fDistance = Vector2.Distance(vTargetPosition, vObjectPosition);
+
+        return !fDistance.Equals(0) ? new Vector2(vTargetPosition.x - vObjectPosition.x, vTargetPosition.y - vObjectPosition.y) : Vector2.zero;
+    }
     public Vector2 GetDestination(GameObject pObject, Vector2 vTargetPosition)
     {
         Vector2 vObjectPosition = pObject.GetComponent<Transform>().position;

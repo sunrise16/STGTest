@@ -130,7 +130,7 @@ public class BulletMain : MonoBehaviour
 
                 if (pBulletBase.GetCollisionDestroy().Equals(true))
                 {
-                    DestroyBullet(0.5f);
+                    DestroyBullet(0.5f, false);
                 }
             }
             else return;
@@ -141,7 +141,7 @@ public class BulletMain : MonoBehaviour
             {
                 if (pBulletBase.GetCollisionDestroy().Equals(true))
                 {
-                    DestroyBullet(0.5f);
+                    DestroyBullet(0.5f, false);
                 }
                 if (pPlayerBase.GetDeath().Equals(false) && pPlayerBase.GetRevive().Equals(false))
                 {
@@ -445,7 +445,7 @@ public class BulletMain : MonoBehaviour
             }
         }
     }
-    public void DestroyBullet(float fLimitTime = 0.5f)
+    public void DestroyBullet(float fLimitTime = 0.5f, bool bOutScreen = true)
     {
         pPatternTimer.InitTimer(0, 0.0f, false);
         pRotateTimer.InitTimer(0, 0.0f, false);
@@ -454,7 +454,10 @@ public class BulletMain : MonoBehaviour
         {
             Timing.Instance.KillCoroutinesOnInstance(cHomingHandle);
         }
-        ExtractDestroyEffect(pBulletBase.GetPosition(), Vector3.one, Color.white, fLimitTime);
+        if (bOutScreen.Equals(false))
+        {
+            ExtractDestroyEffect(pBulletBase.GetPosition(), Vector3.one, new Color(1, 1, 1, 0.7f), fLimitTime);
+        }
         BulletManager.Instance.GetBulletPool().ReturnPool(pBulletBase.GetGameObject());
     }
     /// <summary>
@@ -462,23 +465,24 @@ public class BulletMain : MonoBehaviour
     /// </summary>
     public void ExtractDestroyEffect(Vector3 vPosition, Vector3 vScale, Color pColor, float fLimitTime)
     {
-        GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
-            (vPosition, vScale, pColor, EEffectType.enType_DestroyEffect, EEffectAnimationType.enType_Explosion);
-        EffectMain pEffectMain = pEffectObject.GetComponent<EffectMain>();
-        EffectBase pEffectBase = pEffectMain.GetEffectBase();
-
-        pEffectBase.SetUniqueNumber(0);
-        pEffectMain.GetTimer().InitTimer(fLimitTime);
-        pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
-        pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
-        pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
-        pEffectBase.SetCondition(false);
-        pEffectBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[27];
-        pEffectBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pBulletAnimator[0];
-        pEffectBase.GetAnimator().SetTrigger("SecondaryBDestroy");
-        pEffectMain.pStartDelegate = null;
-        pEffectMain.pCommonDelegate = null;
-        pEffectMain.pConditionDelegate = null;
+        // GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
+        //     (vPosition, vScale, pColor, EEffectType.enType_DestroyEffect, EEffectAnimationType.enType_Explosion);
+        // EffectMain pEffectMain = pEffectObject.GetComponent<EffectMain>();
+        // EffectBase pEffectBase = pEffectMain.GetEffectBase();
+        // 
+        // pEffectBase.SetUniqueNumber(0);
+        // pEffectMain.GetTimer().InitTimer(fLimitTime);
+        // pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
+        // pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
+        // pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.0f);
+        // pEffectBase.SetCondition(false);
+        // pEffectBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[27];
+        // pEffectBase.GetAnimator().runtimeAnimatorController = GameManager.Instance.pBulletAnimator[0];
+        // pEffectBase.GetAnimator().SetTrigger("SecondaryBDestroy");
+        // pEffectMain.pStartDelegate = null;
+        // pEffectMain.pCommonDelegate = null;
+        // pEffectMain.pConditionDelegate = null;
+        // pEffectBase.SetChildRotationZ(0, -90.0f);
     }
     public void ColliderCheck(float fDistance)
     {

@@ -13,10 +13,10 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
     #region SHOOT PATTERN METHOD
     #region PATTERN 1
-    public IEnumerator<float> Pattern1(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern1(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(2.5f, 2.5f, 1.0f);
         float fAngle = 0.0f;
 
@@ -30,6 +30,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 for (int i = 0; i < (GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Easy) ? 1 : 3); i++)
                 {
                     fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y,Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
+                    SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
 
                     GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                         (vPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -44,31 +45,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                     pEffectBase.SetCondition(false);
                     pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + 3];
                     pEffectMain.pStartDelegate = null;
-                    pEffectMain.pCommonDelegate = () =>
-                    {
-                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                            EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
-                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                        pBulletBase.SetUniqueNumber(0);
-                        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                        pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
-                        pBulletBase.SetBulletSpeed(GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Easy) ? 3.0f : 5.0f, 0.0f, 0.0f, 0.1f,
-                            GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Easy) ? 2.0f : 2.5f);
-                        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f);
-                        pBulletBase.SetBulletOption();
-                        pBulletBase.SetCondition(false);
-                        pBulletBase.SetCollisionDestroy(true);
-                        pBulletBase.SetColliderTrigger(true);
-                        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Circle) + 6];
-                        pBulletMain.pCommonDelegate = null;
-                        pBulletMain.pConditionDelegate = null;
-                        pBulletMain.pChangeDelegate = null;
-                        pBulletMain.pSplitDelegate = null;
-                        pBulletMain.pAttachDelegate = null;
-                    };
+                    pEffectMain.pCommonDelegate = () => { Pattern1_DelegateEasyNormal(pEffectBase); };
                     pEffectMain.pConditionDelegate = null;
 
                     yield return Timing.WaitForSeconds(1.0f);
@@ -78,9 +55,10 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             #region HARD / LUNATIC
             case EGameDifficulty.enDifficulty_Hard:
             case EGameDifficulty.enDifficulty_Lunatic:
-                for (int i = 0; i < 30; i++)
+                for (int i = 0; i < (GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Hard) ? 30 : 40); i++)
                 {
                     fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
+                    SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
 
                     GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                         (vPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -95,31 +73,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                     pEffectBase.SetCondition(false);
                     pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + 3];
                     pEffectMain.pStartDelegate = null;
-                    pEffectMain.pCommonDelegate = () =>
-                    {
-                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                            EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
-                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                        pBulletBase.SetUniqueNumber(0);
-                        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                        pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
-                        pBulletBase.SetBulletSpeed(GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Hard) ? 1.5f : 2.0f, 0.1f,
-                            GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Hard) ? 4.5f : 6.0f, 0.0f, 0.0f);
-                        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f);
-                        pBulletBase.SetBulletOption();
-                        pBulletBase.SetCondition(false);
-                        pBulletBase.SetCollisionDestroy(true);
-                        pBulletBase.SetColliderTrigger(true);
-                        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Circle) + 6];
-                        pBulletMain.pCommonDelegate = null;
-                        pBulletMain.pConditionDelegate = null;
-                        pBulletMain.pChangeDelegate = null;
-                        pBulletMain.pSplitDelegate = null;
-                        pBulletMain.pAttachDelegate = null;
-                    };
+                    pEffectMain.pCommonDelegate = () => { Pattern1_DelegateHardLunatic(pEffectBase); };
                     pEffectMain.pConditionDelegate = null;
 
                     yield return Timing.WaitForSeconds(GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Hard) ? 0.25f : 0.15f);
@@ -129,16 +83,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             default:
                 break;
         }
-        pEnemyMain.GetSinglePatternList().Remove(1);
+        pEnemy.Value.GetSinglePatternList().Remove(1);
         yield break;
     }
     #endregion
 
     #region PATTERN 100
-    public IEnumerator<float> Pattern100(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern100(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
         Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
         int iSpriteIndex = UnityEngine.Random.Range(2, 7);
@@ -150,7 +104,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         for (int i = 0; i < 4; i++)
         {
             fAngle = UnityEngine.Random.Range(-8.0f, 8.0f);
-            SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.8f);
+            SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
 
             for (int j = 0; j < 54; j++)
             {
@@ -170,72 +124,21 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 pEffectBase.SetCondition(false);
                 pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect)];
                 pEffectMain.pStartDelegate = null;
-                pEffectMain.pCommonDelegate = () =>
-                {
-                    GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                        (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                        EEnemyBulletType.enType_Butterfly, EPlayerBulletType.None, 1.0f, 10.0f);
-                    BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                    BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                    pBulletBase.SetUniqueNumber(0);
-                    pBulletMain.GetPatternTimer().InitTimer(1.0f);
-                    pBulletMain.GetRotateTimer().InitTimer(2.0f);
-                    pBulletBase.SetBulletSpeed(0.1f, 0.01f, 2.0f);
-                    pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f, (pEffectBase.GetUniqueNumber() % 2).Equals(0) ? 40.0f : -40.0f);
-                    pBulletBase.SetBulletOption();
-                    pBulletBase.SetCondition(false);
-                    pBulletBase.SetCollisionDestroy(true);
-                    pBulletBase.SetColliderTrigger(true);
-                    pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + iSpriteIndex];
-                    pBulletMain.pCommonDelegate = () =>
-                    {
-                        for (int k = 0; k < 4; k++)
-                        {
-                            SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
-
-                            GameObject pBulletObjectSub = BulletManager.Instance.GetBulletPool().ExtractBullet
-                                (pBulletBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                                EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, 10.0f);
-                            BulletMain pBulletMainSub = pBulletObjectSub.GetComponent<BulletMain>();
-                            BulletBase pBulletBaseSub = pBulletMainSub.GetBulletBase();
-
-                            pBulletBaseSub.SetUniqueNumber(0);
-                            pBulletMainSub.GetPatternTimer().InitTimer(0, 0.0f, false);
-                            pBulletMainSub.GetRotateTimer().InitTimer(1.0f);
-                            pBulletBaseSub.SetBulletSpeed(pBulletBase.GetBulletMoveSpeed(), 0.015f + (0.005f * k), 2.25f + (0.25f * k));
-                            pBulletBaseSub.SetBulletRotate(pBulletBase.GetRotationZ(), pBulletBase.GetBulletRotateSpeed());
-                            pBulletBaseSub.SetBulletOption();
-                            pBulletBaseSub.SetCondition(false);
-                            pBulletBaseSub.SetCollisionDestroy(true);
-                            pBulletBaseSub.SetColliderTrigger(true);
-                            pBulletBaseSub.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + iSpriteIndex];
-                            pBulletMainSub.pCommonDelegate = null;
-                            pBulletMainSub.pConditionDelegate = null;
-                            pBulletMainSub.pChangeDelegate = null;
-                            pBulletMainSub.pSplitDelegate = null;
-                            pBulletMainSub.pAttachDelegate = null;
-                        }
-                    };
-                    pBulletMain.pConditionDelegate = null;
-                    pBulletMain.pChangeDelegate = null;
-                    pBulletMain.pSplitDelegate = null;
-                    pBulletMain.pAttachDelegate = null;
-                };
+                pEffectMain.pCommonDelegate = () => { Pattern100_Delegate(pEffectBase, iSpriteIndex); };
                 pEffectMain.pConditionDelegate = null;
             }
             yield return Timing.WaitForSeconds(0.5f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(100);
+        pEnemy.Value.GetSinglePatternList().Remove(100);
         yield break;
     }
     #endregion
 
     #region PATTERN 101
-    public IEnumerator<float> Pattern101(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern101(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float[] fAngle = new float[8];
@@ -253,6 +156,8 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             }
             for (int i = 0; i < 16; i++)
             {
+                SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
+
                 for (int j = 0; j < 8; j++)
                 {
                     vTempPosition = Utility.Instance.GetPosition(vPosition, 0.15f, fAngle[j]);
@@ -270,30 +175,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                     pEffectBase.SetCondition(false);
                     pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + 4];
                     pEffectMain.pStartDelegate = null;
-                    pEffectMain.pCommonDelegate = () =>
-                    {
-                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
-                            EEnemyBulletType.enType_Capsule, EPlayerBulletType.None, 1.0f, 10.0f);
-                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                        pBulletBase.SetUniqueNumber(0);
-                        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                        pBulletMain.GetRotateTimer().InitTimer(2.0f);
-                        pBulletBase.SetBulletSpeed(2.0f);
-                        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f, (pEffectBase.GetUniqueNumber() % 2).Equals(0) ? 30.0f : -30.0f);
-                        pBulletBase.SetBulletOption();
-                        pBulletBase.SetCondition(false);
-                        pBulletBase.SetCollisionDestroy(true);
-                        pBulletBase.SetColliderTrigger(true);
-                        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Arrowhead) + 8];
-                        pBulletMain.pCommonDelegate = null;
-                        pBulletMain.pConditionDelegate = null;
-                        pBulletMain.pChangeDelegate = null;
-                        pBulletMain.pSplitDelegate = null;
-                        pBulletMain.pAttachDelegate = null;
-                    };
+                    pEffectMain.pCommonDelegate = () => { Pattern101_Delegate(pEffectBase); };
                     pEffectMain.pConditionDelegate = null;
                 }
                 yield return Timing.WaitForSeconds(0.03f);
@@ -304,12 +186,12 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 102
-    public IEnumerator<float> Pattern102(GameObject pEnemyObject, EnemyMain pEnemyMain, int iFireCount = 0)
+    public IEnumerator<float> Pattern102(KeyValuePair<GameObject, EnemyMain> pEnemy, int iEnemyFireCount = 0)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
-        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
+        Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
         float fAngle = UnityEngine.Random.Range(0.0f, 360.0f);
         float fTempAngle = 0.0f;
 
@@ -317,11 +199,11 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
         for (int i = 0; i < 12; i++)
         {
-            SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.8f);
+            SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
 
             for (int j = 0; j < 5; j++)
             {
-                fTempAngle = (iFireCount % 2).Equals(0) ? fAngle + (72.0f * j) + (6.0f * i) : fAngle + (72.0f * j) - (6.0f * i);
+                fTempAngle = (iEnemyFireCount % 2).Equals(0) ? fAngle + (72.0f * j) + (6.0f * i) : fAngle + (72.0f * j) - (6.0f * i);
                 vTempPosition = Utility.Instance.GetPosition(vPosition, 0.3f, fTempAngle);
 
                 GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
@@ -335,61 +217,28 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
                 pEffectBase.SetEffect(fTempAngle, 0.0f, 0.0f, 0.0f, 0.1f, 0.1f, 0.0f);
                 pEffectBase.SetCondition(false);
-                pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + ((iFireCount % 2).Equals(0) ? 1 : 3)];
+                pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + ((iEnemyFireCount % 2).Equals(0) ? 1 : 3)];
                 pEffectMain.pStartDelegate = null;
-                pEffectMain.pCommonDelegate = () =>
-                {
-                    for (int k = 0; k < 2; k++)
-                    {
-                        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
-                            EEnemyBulletType.enType_Knife, EPlayerBulletType.None, 1.0f, 15.0f);
-                        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                        BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                        pBulletBase.SetUniqueNumber(0);
-                        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                        pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
-                        pBulletBase.SetBulletSpeed((3.0f - (0.08f * pEffectBase.GetUniqueNumber())) * (1.0f - (0.5f * k)));
-                        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f);
-                        pBulletBase.SetBulletOption(true);
-                        pBulletBase.SetCondition(false);
-                        pBulletBase.SetCollisionDestroy(true);
-                        pBulletBase.SetColliderTrigger(true);
-                        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Knife) + ((iFireCount % 2).Equals(0) ? 1 : 3)];
-                        pBulletMain.pCommonDelegate = null;
-                        pBulletMain.pConditionDelegate = () =>
-                        {
-                            if (pBulletBase.GetBulletReflect().Equals(false))
-                            {
-                                SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
-                                pBulletMain.pConditionDelegate = null;
-                            }
-                        };
-                        pBulletMain.pChangeDelegate = null;
-                        pBulletMain.pSplitDelegate = null;
-                        pBulletMain.pAttachDelegate = null;
-                    }
-                };
+                pEffectMain.pCommonDelegate = () => { Pattern102_Delegate(pEffectBase, iEnemyFireCount); };
                 pEffectMain.pConditionDelegate = null;
             }
             yield return Timing.WaitForSeconds(0.06f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(102);
+        pEnemy.Value.GetSinglePatternList().Remove(102);
         yield break;
     }
     #endregion
 
     #region PATTERN 103
-    public IEnumerator<float> Pattern103(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern103(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
-        float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
-        float fTempAngle = 0.0f;
 
         yield return Timing.WaitForOneFrame;
+
+        SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
 
         GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
             (vPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -404,93 +253,19 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         pEffectBase.SetCondition(false);
         pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect)];
         pEffectMain.pStartDelegate = null;
-        pEffectMain.pCommonDelegate = () =>
-        {
-            for (int i = 0; i < 72; i++)
-            {
-                for (int j = 0; j < 3; j++)
-                {
-                    fTempAngle = fAngle + (5.0f * i) + ((j % 2).Equals(1) ? 2.5f : 0.0f);
+        pEffectMain.pCommonDelegate = () => { Pattern103_Delegate1(pEffectBase, vPosition, vScale, pColor); };
+        pEffectMain.pConditionDelegate = null;
 
-                    GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                        (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                        EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, 10.0f);
-                    BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                    BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                    pBulletBase.SetUniqueNumber(0);
-                    pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                    pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
-                    pBulletBase.SetBulletSpeed(3.6f - (0.9f * j));
-                    pBulletBase.SetBulletRotate(fTempAngle - 90.0f);
-                    pBulletBase.SetBulletOption(false, false, true);
-                    pBulletBase.SetCondition(false);
-                    pBulletBase.SetCollisionDestroy(true);
-                    pBulletBase.SetColliderTrigger(true);
-                    pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Circle)];
-                    pBulletMain.pCommonDelegate = null;
-                    pBulletMain.pConditionDelegate = null;
-                    pBulletMain.pChangeDelegate = () =>
-                    {
-                        if (pBulletBase.GetPositionY() < -3.75f)
-                        {
-                            return;
-                        }
-
-                        GameObject pEffectObjectSub = EffectManager.Instance.GetEffectPool().ExtractEffect
-                            (pBulletBase.GetPosition(), vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
-                        EffectMain pEffectMainSub = pEffectObjectSub.GetComponent<EffectMain>();
-                        EffectBase pEffectBaseSub = pEffectMainSub.GetEffectBase();
-
-                        pEffectBaseSub.SetUniqueNumber(0);
-                        pEffectMainSub.GetTimer().InitTimer(0.1f);
-                        pEffectBaseSub.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.12f, 0.15f, 0.0f);
-                        pEffectBaseSub.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect)];
-                        pEffectMainSub.pCommonDelegate = null;
-
-                        fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(pBulletBase.GetPosition(), pPlayer).y, Utility.Instance.GetAimedDestination(pBulletBase.GetPosition(), pPlayer).x) * Mathf.Rad2Deg;
-                        
-                        GameObject pBulletObjectSub = BulletManager.Instance.GetBulletPool().ExtractBullet
-                            (pBulletBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
-                            EEnemyBulletType.enType_Knife, EPlayerBulletType.None, 1.0f, 15.0f);
-                        BulletMain pBulletMainSub = pBulletObjectSub.GetComponent<BulletMain>();
-                        BulletBase pBulletBaseSub = pBulletMainSub.GetBulletBase();
-
-                        pBulletBaseSub.SetUniqueNumber(0);
-                        pBulletMainSub.GetPatternTimer().InitTimer(0, 0.0f, false);
-                        pBulletMainSub.GetRotateTimer().InitTimer(0, 0.0f, false);
-                        pBulletBaseSub.SetBulletSpeed(0.0f, 0.02f, 3.0f);
-                        pBulletBaseSub.SetBulletRotate(fAngle - 90.0f);
-                        pBulletBaseSub.SetBulletOption();
-                        pBulletBaseSub.SetCondition(false);
-                        pBulletBaseSub.SetCollisionDestroy(true);
-                        pBulletBaseSub.SetColliderTrigger(true);
-                        pBulletBaseSub.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Knife) + UnityEngine.Random.Range(1, 7)];
-                        pBulletMainSub.pCommonDelegate = null;
-                        pBulletMainSub.pConditionDelegate = null;
-                        pBulletMainSub.pChangeDelegate = null;
-                        pBulletMainSub.pSplitDelegate = null;
-                        pBulletMainSub.pAttachDelegate = null;
-
-                        pBulletMain.GetRotateTimer().ResetTimer(pBulletMain.GetRotateTimer().GetResetTime());
-                        BulletManager.Instance.GetBulletPool().ReturnPool(pBulletObject);
-                    };
-                    pBulletMain.pSplitDelegate = null;
-                    pBulletMain.pAttachDelegate = null;
-                }
-            }
-            pEffectMain.pConditionDelegate = null;
-        };
-        pEnemyMain.GetSinglePatternList().Remove(103);
+        pEnemy.Value.GetSinglePatternList().Remove(103);
         yield break;
     }
     #endregion
 
     #region PATTERN 104
-    public IEnumerator<float> Pattern104(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern104(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
         float fTempAngle = 0.0f;
@@ -556,16 +331,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             }
             yield return Timing.WaitForSeconds(0.07f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(104);
+        pEnemy.Value.GetSinglePatternList().Remove(104);
         yield break;
     }
     #endregion
 
     #region PATTERN 105
-    public IEnumerator<float> Pattern105(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern105(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = fAngle = UnityEngine.Random.Range(0.0f, 360.0f);
@@ -620,17 +395,17 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             };
             pEffectMain.pConditionDelegate = null;
         }
-        pEnemyMain.GetSinglePatternList().Remove(105);
+        pEnemy.Value.GetSinglePatternList().Remove(105);
         yield break;
     }
 
     #endregion
 
     #region PATTERN 106
-    public IEnumerator<float> Pattern106(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern106(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
         float fTempAngle = 0.0f;
@@ -687,16 +462,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
             yield return Timing.WaitForSeconds(0.1f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(106);
+        pEnemy.Value.GetSinglePatternList().Remove(106);
         yield break;
     }
     #endregion
 
     #region PATTERN 107
-    public IEnumerator<float> Pattern107(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern107(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
 
@@ -750,16 +525,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
             yield return Timing.WaitForSeconds(0.1f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(107);
+        pEnemy.Value.GetSinglePatternList().Remove(107);
         yield break;
     }
     #endregion
 
     #region PATTERN 108
-    public IEnumerator<float> Pattern108(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern108(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         int iFireCount = 0;
@@ -851,7 +626,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 109
-    public IEnumerator<float> Pattern109(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern109(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
         Vector3 vPosition = Vector3.one;
@@ -865,7 +640,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         while (true)
         {
             fAngle = 3.5f * iFireCount;
-            vPosition = pEnemyObject.GetComponent<Transform>().position;
+            vPosition = pEnemy.Key.GetComponent<Transform>().position;
 
             GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                 (vPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
@@ -923,17 +698,15 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
     #endregion
 
     #region PATTERN 110
-    public IEnumerator<float> Pattern110(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern110(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
-        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
-        float fAngle = 0.0f;
-        float fTempSpeed = 0.0f;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
+        Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
 
         yield return Timing.WaitForOneFrame;
 
-        SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.8f);
+        SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
 
         for (int i = 0; i < 2; i++)
         {
@@ -946,63 +719,23 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             pEffectMain.GetTimer().InitTimer(0.2f);
             pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
             pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
-            pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.15f, 0.12f, 0.0f);
+            pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.08f, 0.12f, 0.0f);
             pEffectBase.SetCondition(false);
             pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + (i.Equals(0) ? 1 : 3)];
             pEffectMain.pStartDelegate = null;
-            pEffectMain.pCommonDelegate = () =>
-            {
-                for (int j = 0; j < 160; j++)
-                {
-                    fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
-                    fTempSpeed = UnityEngine.Random.Range(2.0f, 8.0f);
-
-                    GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                        (vPosition, Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                        EEnemyBulletType.enType_Butterfly, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
-                    BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                    BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                    pBulletBase.SetUniqueNumber(pEffectBase.GetUniqueNumber());
-                    pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                    pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
-                    pBulletBase.SetBulletSpeed(fTempSpeed, 0.0f, 0.0f, fTempSpeed * 0.007f, 0.0f);
-                    pBulletBase.SetBulletRotate(fAngle - 90.0f);
-                    pBulletBase.SetBulletOption();
-                    pBulletBase.SetCondition(false);
-                    pBulletBase.SetCollisionDestroy(true);
-                    pBulletBase.SetColliderTrigger(true);
-                    pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + (pBulletBase.GetUniqueNumber().Equals(0) ? 1 : 2)];
-                    pBulletMain.pCommonDelegate = null;
-                    pBulletMain.pConditionDelegate = () =>
-                    {
-                        if (pBulletBase.GetBulletMoveSpeed() <= 0.0f && pBulletBase.GetCondition().Equals(false))
-                        {
-                            SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
-
-                            pBulletMain.GetRotateTimer().InitTimer(2.5f);
-                            pBulletBase.SetBulletSpeed(0.0f, 0.01f, 3.0f, 0.0f, 0.0f);
-                            pBulletBase.SetBulletRotate(pBulletBase.GetRotationZ(), (pBulletBase.GetUniqueNumber() % 2).Equals(0) ? 75.0f : -75.0f);
-                            pBulletBase.SetCondition(true);
-                        }
-                    };
-                    pBulletMain.pChangeDelegate = null;
-                    pBulletMain.pSplitDelegate = null;
-                    pBulletMain.pAttachDelegate = null;
-                }
-            };
+            pEffectMain.pCommonDelegate = () => { Pattern110_Delegate(pEffectBase, vPosition); };
             pEffectMain.pConditionDelegate = null;
         }
-        pEnemyMain.GetSinglePatternList().Remove(110);
+        pEnemy.Value.GetSinglePatternList().Remove(110);
         yield break;
     }
     #endregion
 
     #region PATTERN 111
-    public IEnumerator<float> Pattern111(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern111(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0.25f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = 0.0f;
         float fTempAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
@@ -1074,17 +807,17 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
 
             yield return Timing.WaitForSeconds(0.04f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(111);
+        pEnemy.Value.GetSinglePatternList().Remove(111);
         yield break;
     }
     #endregion
 
     #region PATTERN 112
-    public IEnumerator<float> Pattern112(GameObject pEnemyObject, EnemyMain pEnemyMain, int iFireCount = 0)
+    public IEnumerator<float> Pattern112(KeyValuePair<GameObject, EnemyMain> pEnemy, int iEnemyFireCount = 0)
     {
         Texture2D pTexture = Resources.Load("Sprites/Bullet/Bullets") as Texture2D;
         Color pColor = new Color(1, 1, 1, 1.0f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vTempPosition = Vector3.zero;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
@@ -1127,7 +860,7 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
                 pBulletMain.GetRotateTimer().InitTimer(0, 2.0f, 0);
                 pBulletBase.SetBulletSpeed(3.5f);
-                pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f, (iFireCount % 2).Equals(0) ? 180.0f : -180.0f);
+                pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f, (iEnemyFireCount % 2).Equals(0) ? 180.0f : -180.0f);
                 pBulletBase.SetBulletOption();
                 pBulletBase.SetCondition(false);
                 pBulletBase.SetCollisionDestroy(true);
@@ -1161,16 +894,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             };
             pEffectMain.pConditionDelegate = null;
         }
-        pEnemyMain.GetSinglePatternList().Remove(112);
+        pEnemy.Value.GetSinglePatternList().Remove(112);
         yield break;
     }
     #endregion
 
     #region PATTERN 113
-    public IEnumerator<float> Pattern113(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern113(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 1.0f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
 
@@ -1249,16 +982,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
                 pEffectBase.SetEffectParentRotateSpeed(60.0f);
             }
         };
-        pEnemyMain.GetSinglePatternList().Remove(113);
+        pEnemy.Value.GetSinglePatternList().Remove(113);
         yield break;
     }
     #endregion
 
     #region PATTERN 114
-    public IEnumerator<float> Pattern114(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern114(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
         float fTempAngle = 0.0f;
@@ -1308,16 +1041,16 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
             }
         };
         pEffectMain.pConditionDelegate = null;
-        pEnemyMain.GetSinglePatternList().Remove(114);
+        pEnemy.Value.GetSinglePatternList().Remove(114);
         yield break;
     }
     #endregion
 
     #region PATTERN 115
-    public IEnumerator<float> Pattern115(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern115(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 1.0f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = pEnemy.Key.GetComponent<Transform>().position;
         Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
         float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
 
@@ -1363,130 +1096,570 @@ public partial class GameManager : UnitySingleton<GameManager> // a.k.a PatternM
         };
         pEffectMain.pCommonDelegate = null;
         pEffectMain.pConditionDelegate = null;
-        pEnemyMain.GetSinglePatternList().Remove(115);
+
+        pEnemy.Value.GetSinglePatternList().Remove(115);
         yield break;
     }
     #endregion
 
     #region PATTERN 116
-    public IEnumerator<float> Pattern116(GameObject pEnemyObject, EnemyMain pEnemyMain)
+    public IEnumerator<float> Pattern116(KeyValuePair<GameObject, EnemyMain> pEnemy)
     {
         Color pColor = new Color(1, 1, 1, 0.4f);
-        Vector3 vPosition = pEnemyObject.GetComponent<Transform>().position;
+        Vector3 vPosition = Vector3.zero;
         Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
-        float fAngle = 0.0f;
-        float fTempSpeed = 0.0f;
 
         yield return Timing.WaitForOneFrame;
 
-        SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.8f);
-
-        for (int i = 0; i < 2; i++)
+        while (true)
         {
+            SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
+            vPosition = pEnemy.Key.GetComponent<Transform>().position;
+
             GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
                 (vPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
             EffectMain pEffectMain = pEffectObject.GetComponent<EffectMain>();
             EffectBase pEffectBase = pEffectMain.GetEffectBase();
 
-            pEffectBase.SetUniqueNumber(i);
+            pEffectBase.SetUniqueNumber(0);
             pEffectMain.GetTimer().InitTimer(0.2f);
             pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
             pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
             pEffectBase.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.15f, 0.12f, 0.0f);
             pEffectBase.SetCondition(false);
-            pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + (i.Equals(0) ? 1 : 3)];
+            pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + 3];
             pEffectMain.pStartDelegate = null;
-            pEffectMain.pCommonDelegate = () =>
-            {
-                for (int j = 0; j < 160; j++)
-                {
-                    fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
-                    fTempSpeed = UnityEngine.Random.Range(2.0f, 8.0f);
-
-                    GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
-                        (vPosition, Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
-                        EEnemyBulletType.enType_Butterfly, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
-                    BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
-                    BulletBase pBulletBase = pBulletMain.GetBulletBase();
-
-                    pBulletBase.SetUniqueNumber(pEffectBase.GetUniqueNumber());
-                    pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
-                    pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
-                    pBulletBase.SetBulletSpeed(fTempSpeed, 0.0f, 0.0f, fTempSpeed * 0.007f, 0.0f);
-                    pBulletBase.SetBulletRotate(fAngle - 90.0f);
-                    pBulletBase.SetBulletOption();
-                    pBulletBase.SetCondition(false);
-                    pBulletBase.SetCollisionDestroy(true);
-                    pBulletBase.SetColliderTrigger(true);
-                    pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + (pBulletBase.GetUniqueNumber().Equals(0) ? 1 : 2)];
-                    pBulletMain.pCommonDelegate = null;
-                    pBulletMain.pConditionDelegate = () =>
-                    {
-                        if (pBulletBase.GetBulletMoveSpeed() <= 0.0f && pBulletBase.GetCondition().Equals(false))
-                        {
-                            SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
-
-                            pBulletMain.GetRotateTimer().InitTimer(2.5f);
-                            pBulletBase.SetBulletSpeed(0.0f, 0.01f, 3.0f, 0.0f, 0.0f);
-                            pBulletBase.SetBulletRotate(pBulletBase.GetRotationZ(), (pBulletBase.GetUniqueNumber() % 2).Equals(0) ? 75.0f : -75.0f);
-                            pBulletBase.SetCondition(true);
-                        }
-                    };
-                    pBulletMain.pChangeDelegate = null;
-                    pBulletMain.pSplitDelegate = null;
-                    pBulletMain.pAttachDelegate = null;
-                }
-            };
+            pEffectMain.pCommonDelegate = () => { Pattern116_Delegate1(vPosition); };
             pEffectMain.pConditionDelegate = null;
+
+            yield return Timing.WaitForSeconds(0.25f);
         }
-        pEnemyMain.GetSinglePatternList().Remove(110);
+    }
+    #endregion
+
+    #region PATTERN 117
+    public IEnumerator<float> Pattern117(KeyValuePair<GameObject, EnemyMain> pEnemy)
+    {
+        Color pColor = new Color(1, 1, 1, 0.4f);
+        Vector3 vPosition = Vector3.zero;
+        Vector3 vTempPosition = Vector3.zero;
+        Vector3 vScale = new Vector3(1.5f, 1.5f, 1.0f);
+        float fAngleA = 0.0f;
+        float fAngleB = 0.0f;
+
+        yield return Timing.WaitForOneFrame;
+
+        while (true)
+        {
+            vPosition = pEnemy.Key.GetComponent<Transform>().position;
+            SoundManager.Instance.PlaySE(ESE.enSE_Tan00, 0.5f);
+
+            for (int i = 0; i < 4; i++)
+            {
+                vTempPosition = Utility.Instance.GetPosition(vPosition, 0.1f, ((i / 2).Equals(0) ? -90.0f : 90.0f) + ((i % 2).Equals(0) ? fAngleA : fAngleB));
+
+                GameObject pEffectObject = EffectManager.Instance.GetEffectPool().ExtractEffect
+                    (vTempPosition, vScale, pColor, EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
+                EffectMain pEffectMain = pEffectObject.GetComponent<EffectMain>();
+                EffectBase pEffectBase = pEffectMain.GetEffectBase();
+
+                pEffectBase.SetUniqueNumber(0);
+                pEffectMain.GetTimer().InitTimer(0.25f);
+                pEffectMain.GetLaserDelayTimer().InitTimer(0, 0.0f, false);
+                pEffectMain.GetLaserActiveTimer().InitTimer(0, 0.0f, false);
+                pEffectBase.SetEffect(((i / 2).Equals(0) ? -90.0f : 90.0f) + ((i % 2).Equals(0) ? fAngleA : fAngleB), 0.0f, 0.0f, 0.0f, 0.1f, 0.1f, 0.0f);
+                pEffectBase.SetCondition(false);
+                pEffectBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect) + 1];
+                pEffectMain.pStartDelegate = null;
+                pEffectMain.pCommonDelegate = () => { Pattern117_Delegate(vTempPosition, pEffectBase.GetEffectRotateAngle()); };
+                pEffectMain.pConditionDelegate = null;
+            }
+            fAngleA += 7.0f;
+            fAngleB -= 7.0f;
+
+            yield return Timing.WaitForSeconds(0.1f);
+        }
+    }
+    #endregion
+
+    #region PATTERN 118
+    public IEnumerator<float> Pattern118(KeyValuePair<GameObject, EnemyMain> pEnemy)
+    {
+
+
         yield break;
     }
     #endregion
     #endregion
 
     #region COMMON METHOD
-    public CoroutineHandle PatternCall(GameObject pEnemyObject, EnemyMain pEnemyMain, int iPatternIndex, int iFireCount = 0)
+    public CoroutineHandle PatternCall(KeyValuePair<GameObject, EnemyMain> pEnemy, int iPatternIndex, int iEnemyFireCount = 0)
     {
         switch (iPatternIndex)
         {
             case 1:
-                return Timing.RunCoroutine(Pattern1(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern1(pEnemy));
             case 100:
-                return Timing.RunCoroutine(Pattern100(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern100(pEnemy));
             case 101:
-                return Timing.RunCoroutine(Pattern101(pEnemyObject, pEnemyMain));
-             case 102:
-                return Timing.RunCoroutine(Pattern102(pEnemyObject, pEnemyMain, iFireCount));
+                return Timing.RunCoroutine(Pattern101(pEnemy));
+            case 102:
+                return Timing.RunCoroutine(Pattern102(pEnemy, iEnemyFireCount));
             case 103:
-                return Timing.RunCoroutine(Pattern103(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern103(pEnemy));
             case 104:
-                return Timing.RunCoroutine(Pattern104(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern104(pEnemy));
             case 105:
-                return Timing.RunCoroutine(Pattern105(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern105(pEnemy));
             case 106:
-                return Timing.RunCoroutine(Pattern106(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern106(pEnemy));
             case 107:
-                return Timing.RunCoroutine(Pattern107(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern107(pEnemy));
             case 108:
-                return Timing.RunCoroutine(Pattern108(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern108(pEnemy));
             case 109:
-                return Timing.RunCoroutine(Pattern109(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern109(pEnemy));
             case 110:
-                return Timing.RunCoroutine(Pattern110(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern110(pEnemy));
             case 111:
-                return Timing.RunCoroutine(Pattern111(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern111(pEnemy));
             case 112:
-                return Timing.RunCoroutine(Pattern112(pEnemyObject, pEnemyMain, iFireCount));
+                return Timing.RunCoroutine(Pattern112(pEnemy, iEnemyFireCount));
             case 113:
-                return Timing.RunCoroutine(Pattern113(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern113(pEnemy));
             case 114:
-                return Timing.RunCoroutine(Pattern114(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern114(pEnemy));
             case 115:
-                return Timing.RunCoroutine(Pattern115(pEnemyObject, pEnemyMain));
+                return Timing.RunCoroutine(Pattern115(pEnemy));
+            case 116:
+                return Timing.RunCoroutine(Pattern116(pEnemy));
+            case 117:
+                return Timing.RunCoroutine(Pattern117(pEnemy));
+            case 118:
+                return Timing.RunCoroutine(Pattern118(pEnemy));
             default:
                 return pTempHandle;
         }
     }
+    #endregion
+
+    #region DELEGATE METHOD
+    #region PATTERN 1
+    public void Pattern1_DelegateEasyNormal(EffectBase pEffectBase)
+    {
+        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+            EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
+        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+        pBulletBase.SetUniqueNumber(0);
+        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+        pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+        pBulletBase.SetBulletSpeed(GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Easy) ? 3.0f : 5.0f, 0.0f, 0.0f, 0.1f,
+            GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Easy) ? 2.0f : 2.5f);
+        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f);
+        pBulletBase.SetBulletOption();
+        pBulletBase.SetCondition(false);
+        pBulletBase.SetCollisionDestroy(true);
+        pBulletBase.SetColliderTrigger(true);
+        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Circle) + 6];
+        pBulletMain.pCommonDelegate = null;
+        pBulletMain.pConditionDelegate = null;
+        pBulletMain.pChangeDelegate = null;
+        pBulletMain.pSplitDelegate = null;
+        pBulletMain.pAttachDelegate = null;
+    }
+    public void Pattern1_DelegateHardLunatic(EffectBase pEffectBase)
+    {
+        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+            EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
+        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+        pBulletBase.SetUniqueNumber(0);
+        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+        pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+        pBulletBase.SetBulletSpeed(GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Hard) ? 1.5f : 2.0f, 0.1f,
+            GlobalData.enGameDifficulty.Equals(EGameDifficulty.enDifficulty_Hard) ? 4.5f : 6.0f, 0.0f, 0.0f);
+        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f);
+        pBulletBase.SetBulletOption();
+        pBulletBase.SetCondition(false);
+        pBulletBase.SetCollisionDestroy(true);
+        pBulletBase.SetColliderTrigger(true);
+        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Circle) + 6];
+        pBulletMain.pCommonDelegate = null;
+        pBulletMain.pConditionDelegate = null;
+        pBulletMain.pChangeDelegate = null;
+        pBulletMain.pSplitDelegate = null;
+        pBulletMain.pAttachDelegate = null;
+    }
+    #endregion
+
+    #region PATTERN 100
+    public void Pattern100_Delegate(EffectBase pEffectBase, int iSpriteIndex)
+    {
+        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+            EEnemyBulletType.enType_Butterfly, EPlayerBulletType.None, 1.0f, 10.0f);
+        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+        pBulletBase.SetUniqueNumber(0);
+        pBulletMain.GetPatternTimer().InitTimer(1.0f);
+        pBulletMain.GetRotateTimer().InitTimer(2.0f);
+        pBulletBase.SetBulletSpeed(0.1f, 0.01f, 2.0f);
+        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f, (pEffectBase.GetUniqueNumber() % 2).Equals(0) ? 40.0f : -40.0f);
+        pBulletBase.SetBulletOption();
+        pBulletBase.SetCondition(false);
+        pBulletBase.SetCollisionDestroy(true);
+        pBulletBase.SetColliderTrigger(true);
+        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + iSpriteIndex];
+        pBulletMain.pCommonDelegate = () =>
+        {
+            for (int k = 0; k < 4; k++)
+            {
+                SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
+
+                GameObject pBulletObjectSub = BulletManager.Instance.GetBulletPool().ExtractBullet
+                    (pBulletBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+                    EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, 10.0f);
+                BulletMain pBulletMainSub = pBulletObjectSub.GetComponent<BulletMain>();
+                BulletBase pBulletBaseSub = pBulletMainSub.GetBulletBase();
+
+                pBulletBaseSub.SetUniqueNumber(0);
+                pBulletMainSub.GetPatternTimer().InitTimer(0, 0.0f, false);
+                pBulletMainSub.GetRotateTimer().InitTimer(1.0f);
+                pBulletBaseSub.SetBulletSpeed(pBulletBase.GetBulletMoveSpeed(), 0.015f + (0.005f * k), 2.25f + (0.25f * k));
+                pBulletBaseSub.SetBulletRotate(pBulletBase.GetRotationZ(), pBulletBase.GetBulletRotateSpeed());
+                pBulletBaseSub.SetBulletOption();
+                pBulletBaseSub.SetCondition(false);
+                pBulletBaseSub.SetCollisionDestroy(true);
+                pBulletBaseSub.SetColliderTrigger(true);
+                pBulletBaseSub.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + iSpriteIndex];
+                pBulletMainSub.pCommonDelegate = null;
+                pBulletMainSub.pConditionDelegate = null;
+                pBulletMainSub.pChangeDelegate = null;
+                pBulletMainSub.pSplitDelegate = null;
+                pBulletMainSub.pAttachDelegate = null;
+            }
+        };
+        pBulletMain.pConditionDelegate = null;
+        pBulletMain.pChangeDelegate = null;
+        pBulletMain.pSplitDelegate = null;
+        pBulletMain.pAttachDelegate = null;
+    }
+    #endregion
+
+    #region PATTERN 101
+    public void Pattern101_Delegate(EffectBase pEffectBase)
+    {
+        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+            (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
+            EEnemyBulletType.enType_Capsule, EPlayerBulletType.None, 1.0f, 10.0f);
+        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+        pBulletBase.SetUniqueNumber(0);
+        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+        pBulletMain.GetRotateTimer().InitTimer(2.0f);
+        pBulletBase.SetBulletSpeed(2.0f);
+        pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle() - 90.0f, (pEffectBase.GetUniqueNumber() % 2).Equals(0) ? 30.0f : -30.0f);
+        pBulletBase.SetBulletOption();
+        pBulletBase.SetCondition(false);
+        pBulletBase.SetCollisionDestroy(true);
+        pBulletBase.SetColliderTrigger(true);
+        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Arrowhead) + 8];
+        pBulletMain.pCommonDelegate = null;
+        pBulletMain.pConditionDelegate = null;
+        pBulletMain.pChangeDelegate = null;
+        pBulletMain.pSplitDelegate = null;
+        pBulletMain.pAttachDelegate = null;
+    }
+    #endregion
+
+    #region PATTERN 102
+    public void Pattern102_Delegate(EffectBase pEffectBase, int iEnemyFireCount)
+    {
+        for (int i = 0; i < 2; i++)
+        {
+            GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
+                EEnemyBulletType.enType_Knife, EPlayerBulletType.None, 1.0f, 15.0f);
+            BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+            BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+            pBulletBase.SetUniqueNumber(0);
+            pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+            pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+            pBulletBase.SetBulletSpeed((3.0f - (0.08f * pEffectBase.GetUniqueNumber())) * (1.0f - (0.5f * i)));
+            pBulletBase.SetBulletRotate(pEffectBase.GetEffectRotateAngle());
+            pBulletBase.SetBulletOption();
+            pBulletBase.SetCondition(false);
+            pBulletBase.SetCollisionDestroy(true);
+            pBulletBase.SetColliderTrigger(true);
+            pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Knife) + ((iEnemyFireCount % 2).Equals(0) ? 1 : 3)];
+            pBulletMain.pCommonDelegate = null;
+            pBulletMain.pConditionDelegate = () =>
+            {
+                if (pBulletBase.GetBulletReflect().Equals(false))
+                {
+                    SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.5f);
+                    pBulletMain.pConditionDelegate = null;
+                }
+            };
+            pBulletMain.pChangeDelegate = null;
+            pBulletMain.pSplitDelegate = null;
+            pBulletMain.pAttachDelegate = null;
+        }
+    }
+    #endregion
+
+    #region PATTERN 103
+    public void Pattern103_Delegate1(EffectBase pEffectBase, Vector3 vPosition, Vector3 vScale, Color pColor)
+    {
+        float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
+        float fTempAngle = 0.0f;
+
+        for (int i = 0; i < 72; i++)
+        {
+            for (int j = 0; j < 3; j++)
+            {
+                fTempAngle = fAngle + (5.0f * i) + ((j % 2).Equals(1) ? 2.5f : 0.0f);
+
+                GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                    (pEffectBase.GetPosition(), Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+                    EEnemyBulletType.enType_Circle, EPlayerBulletType.None, 1.0f, 10.0f);
+                BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+                BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+                pBulletBase.SetUniqueNumber(0);
+                pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+                pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+                pBulletBase.SetBulletSpeed(3.6f - (0.9f * j));
+                pBulletBase.SetBulletRotate(fTempAngle - 90.0f);
+                pBulletBase.SetBulletOption(false, false, true);
+                pBulletBase.SetCondition(false);
+                pBulletBase.SetCollisionDestroy(true);
+                pBulletBase.SetColliderTrigger(true);
+                pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Circle)];
+                pBulletMain.pCommonDelegate = null;
+                pBulletMain.pConditionDelegate = null;
+                pBulletMain.pChangeDelegate = () => { Pattern103_Delegate2(pBulletBase, pBulletMain); };
+                pBulletMain.pSplitDelegate = null;
+                pBulletMain.pAttachDelegate = null;
+            }
+        }
+    }
+    public void Pattern103_Delegate2(BulletBase pBulletBase, BulletMain pBulletMain)
+    {
+        if (pBulletBase.GetPositionY() < -3.5f)
+        {
+            return;
+        }
+
+        float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(pBulletBase.GetPosition(), pPlayer).y, Utility.Instance.GetAimedDestination(pBulletBase.GetPosition(), pPlayer).x) * Mathf.Rad2Deg;
+        SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.5f);
+
+        GameObject pEffectObjectSub = EffectManager.Instance.GetEffectPool().ExtractEffect
+            (pBulletBase.GetPosition(), new Vector3(1.5f, 1.5f, 1.0f), new Color(1, 1, 1, 0.4f), EEffectType.enType_CommonEffect, EEffectAnimationType.enType_BulletShot);
+        EffectMain pEffectMainSub = pEffectObjectSub.GetComponent<EffectMain>();
+        EffectBase pEffectBaseSub = pEffectMainSub.GetEffectBase();
+
+        pEffectBaseSub.SetUniqueNumber(0);
+        pEffectMainSub.GetTimer().InitTimer(0.15f);
+        pEffectBaseSub.SetEffect(0.0f, 0.0f, 0.0f, 0.0f, 0.1f, 0.12f, 0.0f);
+        pEffectBaseSub.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEffectType.enType_CommonEffect)];
+        pEffectMainSub.pStartDelegate = null;
+        pEffectMainSub.pCommonDelegate = null;
+        pEffectMainSub.pConditionDelegate = null;
+
+        GameObject pBulletObjectSub = BulletManager.Instance.GetBulletPool().ExtractBullet
+            (pBulletBase.GetPosition(), Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
+            EEnemyBulletType.enType_Knife, EPlayerBulletType.None, 1.0f, 15.0f);
+        BulletMain pBulletMainSub = pBulletObjectSub.GetComponent<BulletMain>();
+        BulletBase pBulletBaseSub = pBulletMainSub.GetBulletBase();
+
+        pBulletBaseSub.SetUniqueNumber(0);
+        pBulletMainSub.GetPatternTimer().InitTimer(0, 0.0f, false);
+        pBulletMainSub.GetRotateTimer().InitTimer(0, 0.0f, false);
+        pBulletBaseSub.SetBulletSpeed(0.0f, 0.02f, 3.0f);
+        pBulletBaseSub.SetBulletRotate(fAngle - 90.0f);
+        pBulletBaseSub.SetBulletOption();
+        pBulletBaseSub.SetCondition(false);
+        pBulletBaseSub.SetCollisionDestroy(true);
+        pBulletBaseSub.SetColliderTrigger(true);
+        pBulletBaseSub.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Knife) + UnityEngine.Random.Range(1, 7)];
+        pBulletMainSub.pCommonDelegate = null;
+        pBulletMainSub.pConditionDelegate = null;
+        pBulletMainSub.pChangeDelegate = null;
+        pBulletMainSub.pSplitDelegate = null;
+        pBulletMainSub.pAttachDelegate = null;
+
+        pBulletMain.GetRotateTimer().ResetTimer(pBulletMain.GetRotateTimer().GetResetTime());
+        BulletManager.Instance.GetBulletPool().ReturnPool(pBulletBase.GetGameObject());
+    }
+    #endregion
+
+    #region PATTERN 110
+    public void Pattern110_Delegate(EffectBase pEffectBase, Vector3 vPosition)
+    {
+        float fAngle = 0.0f;
+        float fTempSpeed = 0.0f;
+
+        for (int i = 0; i < 160; i++)
+        {
+            fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
+            fTempSpeed = UnityEngine.Random.Range(2.0f, 8.0f);
+
+            GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                (vPosition, Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+                EEnemyBulletType.enType_Butterfly, EPlayerBulletType.None, 1.0f, GameManager.Instance.fDefaultPadding);
+            BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+            BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+            pBulletBase.SetUniqueNumber(pEffectBase.GetUniqueNumber());
+            pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+            pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+            pBulletBase.SetBulletSpeed(fTempSpeed, 0.0f, 0.0f, fTempSpeed * 0.007f, 0.0f);
+            pBulletBase.SetBulletRotate(fAngle - 90.0f);
+            pBulletBase.SetBulletOption();
+            pBulletBase.SetCondition(false);
+            pBulletBase.SetCollisionDestroy(true);
+            pBulletBase.SetColliderTrigger(true);
+            pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Butterfly) + (pBulletBase.GetUniqueNumber().Equals(0) ? 1 : 2)];
+            pBulletMain.pCommonDelegate = null;
+            pBulletMain.pConditionDelegate = () =>
+            {
+                if (pBulletBase.GetBulletMoveSpeed() <= 0.0f && pBulletBase.GetCondition().Equals(false))
+                {
+                    SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.8f);
+
+                    pBulletMain.GetRotateTimer().InitTimer(2.5f);
+                    pBulletBase.SetBulletSpeed(0.0f, 0.01f, 3.0f, 0.0f, 0.0f);
+                    pBulletBase.SetBulletRotate(pBulletBase.GetRotationZ(), (pBulletBase.GetUniqueNumber() % 2).Equals(0) ? 75.0f : -75.0f);
+                    pBulletBase.SetCondition(true);
+                }
+            };
+            pBulletMain.pChangeDelegate = null;
+            pBulletMain.pSplitDelegate = null;
+            pBulletMain.pAttachDelegate = null;
+        }
+    }
+    #endregion
+
+    #region PATTERN 116
+    public void Pattern116_Delegate1(Vector3 vPosition)
+    {
+        float fTempSpeed = 0.0f;
+        float fAngle = Mathf.Atan2(Utility.Instance.GetRandomDestination(vPosition).y, Utility.Instance.GetRandomDestination(vPosition).x) * Mathf.Rad2Deg;
+
+        for (int i = 0; i < 8; i++)
+        {
+            fTempSpeed = UnityEngine.Random.Range(3.0f, 6.0f);
+
+            for (int j = 0; j < 5; j++)
+            {
+                GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                    (vPosition, Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
+                    EEnemyBulletType.enType_Capsule, EPlayerBulletType.None, 1.0f, 10.0f);
+                BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+                BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+                pBulletBase.SetUniqueNumber(0);
+                pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+                pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+                pBulletBase.SetBulletSpeed(fTempSpeed * (1.0f - (0.2f * j)), 0.0f, 0.0f, 0.0f, 0.0f);
+                pBulletBase.SetBulletRotate(fAngle - 90.0f + (45.0f * i));
+                pBulletBase.SetBulletOption();
+                pBulletBase.SetCondition(false);
+                pBulletBase.SetCollisionDestroy(true);
+                pBulletBase.SetColliderTrigger(true);
+                pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Capsule) + 6];
+                pBulletMain.pCommonDelegate = null;
+                pBulletMain.pConditionDelegate = () =>
+                {
+                    if (pBulletBase.GetGraze().Equals(true))
+                    {
+                        Pattern116_Delegate2(pBulletObject);
+                    }
+                };
+                pBulletMain.pChangeDelegate = null;
+                pBulletMain.pSplitDelegate = null;
+                pBulletMain.pAttachDelegate = null;
+            }
+        }
+    }
+    public void Pattern116_Delegate2(GameObject pPreviousObject)
+    {
+        Color pColor = new Color(1, 1, 1, 1.0f);
+        Vector3 vPosition = pPreviousObject.GetComponent<Transform>().position;
+        Vector3 vScale = new Vector3(1.0f, 1.0f, 1.0f);
+        float fAngle = Mathf.Atan2(Utility.Instance.GetAimedDestination(vPosition, pPlayer).y, Utility.Instance.GetAimedDestination(vPosition, pPlayer).x) * Mathf.Rad2Deg;
+
+        SoundManager.Instance.PlaySE(ESE.enSE_Kira00, 0.5f);
+
+        GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+            (vPosition, Vector3.one, EBulletType.enType_Capsule, EBulletShooter.enShooter_Enemy,
+            EEnemyBulletType.enType_Capsule, EPlayerBulletType.None, 1.0f, 10.0f);
+        BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+        BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+        pBulletBase.SetUniqueNumber(0);
+        pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+        pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+        pBulletBase.SetBulletSpeed(0.0f, 0.01f, 2.0f, 0.0f, 0.0f);
+        pBulletBase.SetBulletRotate(fAngle - 90.0f);
+        pBulletBase.SetBulletOption();
+        pBulletBase.SetCondition(false);
+        pBulletBase.SetCollisionDestroy(true);
+        pBulletBase.SetColliderTrigger(true);
+        pBulletBase.SetGraze(true);
+        pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_Capsule) + 8];
+        pBulletMain.pCommonDelegate = null;
+        pBulletMain.pConditionDelegate = null;
+        pBulletMain.pChangeDelegate = null;
+        pBulletMain.pSplitDelegate = null;
+        pBulletMain.pAttachDelegate = null;
+
+        BulletManager.Instance.GetBulletPool().ReturnPool(pPreviousObject);
+    }
+    #endregion
+
+    #region PATTERN 117
+    public void Pattern117_Delegate(Vector3 vPosition, float fAngle)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            GameObject pBulletObject = BulletManager.Instance.GetBulletPool().ExtractBullet
+                (vPosition, Vector3.one, EBulletType.enType_Circle, EBulletShooter.enShooter_Enemy,
+                EEnemyBulletType.enType_GhostCircle, EPlayerBulletType.None, 1.0f, 25.0f);
+            BulletMain pBulletMain = pBulletObject.GetComponent<BulletMain>();
+            BulletBase pBulletBase = pBulletMain.GetBulletBase();
+
+            pBulletBase.SetUniqueNumber(0);
+            pBulletMain.GetPatternTimer().InitTimer(0, 0.0f, false);
+            pBulletMain.GetRotateTimer().InitTimer(0, 0.0f, false);
+            pBulletBase.SetBulletSpeed(2.0f + (0.5f * i));
+            pBulletBase.SetBulletRotate(fAngle - 90.0f);
+            pBulletBase.SetBulletOption();
+            pBulletBase.SetCondition(false);
+            pBulletBase.SetCollisionDestroy(true);
+            pBulletBase.SetColliderTrigger(true);
+            pBulletBase.GetSpriteRenderer().sprite = pBulletEffectSprite[Convert.ToInt32(EEnemyBulletType.enType_GhostCircle)];
+            pBulletBase.GetAnimator().runtimeAnimatorController = pBulletAnimator[0];
+            pBulletMain.pCommonDelegate = null;
+            pBulletMain.pConditionDelegate = null;
+            pBulletMain.pChangeDelegate = null;
+            pBulletMain.pSplitDelegate = null;
+            pBulletMain.pAttachDelegate = null;
+        }
+    }
+    #endregion
+
+    #region PATTERN 118
+
+    #endregion
     #endregion
 }

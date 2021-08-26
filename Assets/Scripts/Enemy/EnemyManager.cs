@@ -46,7 +46,8 @@ public class EnemyPool : IPoolBase
         pEnemyBase.GetSpriteRenderer().color = Color.white;
         pEnemyBase.GetSpriteRenderer().sprite = null;
         pEnemyBase.GetAnimator().runtimeAnimatorController = null;
-        pEnemyMain.pEnemyMoveDelegateList.Clear();
+        pEnemyMain.pEnemyMoveOnceList.Clear();
+        pEnemyMain.pEnemyMoveRepeat = null;
         pEnemyBase.GetItemDictionary().Clear();
         pEnemyBase.AllReset();
         if (pTransform.childCount > 1)
@@ -89,28 +90,43 @@ public class EnemyPool : IPoolBase
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
         pEnemyMain.GetPatternTimerList().Add(new Timer(iShotTimerRepeatLimit, iShotTimerLimitTime, iFlag, 0.0f, 0.0f, iDelayTimerLimitTime));
     }
-    public void AddRepeatPattern(GameObject pEnemyObject, int iPatternIndex, float fShotDelay)
+    public void AddRepeatPattern(GameObject pEnemyObject, params KeyValuePair<int, float>[] pPatternPair)
     {
-        Timing.RunCoroutine(Delay(pEnemyObject, iPatternIndex, fShotDelay));
-    }
-    public void AddCounterPattern(GameObject pEnemyObject, int iFlag)
-    {
-        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
-        pEnemyMain.GetCounterPatternList().Add(iFlag);
-    }
-    public void AddItemDictionary(GameObject pEnemyObject, EItemType enItemType, int iAmount)
-    {
-        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
-        pEnemyMain.GetEnemyBase().GetItemDictionary().Add(enItemType, iAmount);
-    }
-    public void SetEnemyMoving(GameObject pEnemyObject, float fStartDelay, params KeyValuePair<DelegateGameObject, float>[] pDelegate)
-    {
-        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
-        foreach (KeyValuePair<DelegateGameObject, float> pDel in pDelegate)
+        for (int i = 0; i < pPatternPair.Length; i++)
         {
-            pEnemyMain.pEnemyMoveDelegateList.Add(pDel.Key, pDel.Value);
+            Timing.RunCoroutine(Delay(pEnemyObject, pPatternPair[i]));
         }
-        Timing.RunCoroutine(pEnemyMain.EnemyMove(fStartDelay));
+    }
+    public void AddCounterPattern(GameObject pEnemyObject, params int[] iPattern)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        for (int i = 0; i < iPattern.Length; i++)
+        {
+            pEnemyMain.GetCounterPatternList().Add(iPattern[i]);
+        }
+    }
+    public void AddItemDictionary(GameObject pEnemyObject, params KeyValuePair<EItemType, int>[] pItemPair)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        foreach (KeyValuePair<EItemType, int> pItem in pItemPair)
+        {
+            pEnemyMain.GetEnemyBase().GetItemDictionary().Add(pItem.Key, pItem.Value);
+        }
+    }
+    public void SetEnemyMoveOnce(GameObject pEnemyObject, float fStartDelay, params KeyValuePair<DelegateGameObject, float>[] pDelegatePair)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        foreach (KeyValuePair<DelegateGameObject, float> pDelegate in pDelegatePair)
+        {
+            pEnemyMain.pEnemyMoveOnceList.Add(pDelegate.Key, pDelegate.Value);
+        }
+        Timing.RunCoroutine(pEnemyMain.EnemyMoveOnce(fStartDelay));
+    }
+    public void SetEnemyMoveRepeat(GameObject pEnemyObject, float fStartDelay, DelegateEnemyMoveRepeat pDelegate)
+    {
+        EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
+        pEnemyMain.pEnemyMoveRepeat = pDelegate;
+        Timing.RunCoroutine(pEnemyMain.EnemyMoveRepeat(fStartDelay));
     }
     public void SetEnemyMoveX(GameObject pEnemyObject, float fEnemyMoveSpeedX, float fEnemyMoveAccelerationSpeedX = 0.0f, float fEnemyMoveAccelerationSpeedXMax = 0.0f, float fEnemyMoveDecelerationSpeedX = 0.0f, float fEnemyMoveDecelerationSpeedXMin = 0.0f)
     {
@@ -127,12 +143,12 @@ public class EnemyPool : IPoolBase
     #endregion
 
     #region IENUMERATOR
-    public IEnumerator<float> Delay(GameObject pEnemyObject, int iPatternIndex, float fShotDelay)
+    public IEnumerator<float> Delay(GameObject pEnemyObject, KeyValuePair<int, float> pPattern)
     {
-        yield return Timing.WaitForSeconds(fShotDelay);
+        yield return Timing.WaitForSeconds(pPattern.Value);
 
         EnemyMain pEnemyMain = pEnemyObject.GetComponent<EnemyMain>();
-        pEnemyMain.GetRepeatPatternList().Add(GameManager.Instance.PatternCall(pEnemyObject, pEnemyMain, iPatternIndex));
+        pEnemyMain.GetRepeatPatternList().Add(GameManager.Instance.PatternCall(new KeyValuePair<GameObject, EnemyMain>(pEnemyObject, pEnemyMain), pPattern.Key));
 
         yield break;
     }
