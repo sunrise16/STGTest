@@ -42,7 +42,7 @@ public class EnemyMain : MonoBehaviour
 		}
 
 		// ENEMY DESTROY
-		if (pEnemyBase.GetEnemyHP() <= 0.0f)
+		if (pEnemyBase.GetEnemyCurrentHP() <= 0.0f)
         {
 			DestroyEnemy();
         }
@@ -155,7 +155,8 @@ public class EnemyMain : MonoBehaviour
 			pCounterPatternList.Clear();
 		}
 		pEnemyBase.SetEnemyType(enEnemyType);
-		pEnemyBase.SetEnemyHP(fEnemyHP);
+		pEnemyBase.SetEnemyCurrentHP(fEnemyHP);
+		pEnemyBase.SetEnemyMaxHP(fEnemyHP);
 		pEnemyBase.SetCounter(bCounter);
 		pEnemyBase.SetOutScreenShot(bOutScreenShot);
 		iFireCount = 0;
@@ -348,11 +349,11 @@ public class EnemyMain : MonoBehaviour
     {
 		yield return Timing.WaitForSeconds(fStartDelay);
 
-		foreach (KeyValuePair<DelegateGameObject, float> pDel in pEnemyMoveOnceList)
+		foreach (KeyValuePair<DelegateGameObject, float> pDelegate in pEnemyMoveOnceList)
         {
-			pDel.Key(pEnemyBase.GetGameObject());
+			pDelegate.Key(pEnemyBase.GetGameObject());
 
-			yield return Timing.WaitForSeconds(pDel.Value);
+			yield return Timing.WaitForSeconds(pDelegate.Value);
         }
 		yield break;
     }

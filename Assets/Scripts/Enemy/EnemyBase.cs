@@ -12,7 +12,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
     private Dictionary<EItemType, int> pItemDictionary;
     private Color pColor;
     private EEnemyType enEnemyType;
-    private float fEnemyHP;
+    private float fEnemyCurrentHP;
+    private float fEnemyMaxHP;
     private float fEnemyMoveSpeedX;
     private float fEnemyMoveAccelerationSpeedX;
     private float fEnemyMoveAccelerationSpeedXMax;
@@ -41,7 +42,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
     public Color GetColor() { return pColor; }
     public EEnemyType GetEnemyType() { return enEnemyType; }
     public Dictionary<EItemType, int> GetItemDictionary() { return pItemDictionary; }
-    public float GetEnemyHP() { return fEnemyHP; }
+    public float GetEnemyCurrentHP() { return fEnemyCurrentHP; }
+    public float GetEnemyMaxHP() { return fEnemyMaxHP; }
     public float GetEnemyMoveSpeedX() { return fEnemyMoveSpeedX; }
     public float GetEnemyMoveAccelerationSpeedX() { return fEnemyMoveAccelerationSpeedX; }
     public float GetEnemyMoveAccelerationSpeedXMax() { return fEnemyMoveAccelerationSpeedXMax; }
@@ -63,7 +65,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
     public void SetItemDictionary(Dictionary<EItemType, int> pItemDictionary) { this.pItemDictionary = pItemDictionary; }
     public void SetColor(Color pColor) { this.pColor = pColor; }
     public void SetEnemyType(EEnemyType enEnemyType) { this.enEnemyType = enEnemyType; }
-    public void SetEnemyHP(float fEnemyHP) { this.fEnemyHP = fEnemyHP; }
+    public void SetEnemyCurrentHP(float fEnemyCurrentHP) { this.fEnemyCurrentHP = fEnemyCurrentHP; }
+    public void SetEnemyMaxHP(float fEnemyMaxHP) { this.fEnemyMaxHP = fEnemyMaxHP; }
     public void SetEnemyMoveSpeedX(float fEnemyMoveSpeedX) { this.fEnemyMoveSpeedX = fEnemyMoveSpeedX; }
     public void SetEnemyMoveAccelerationSpeedX(float fEnemyMoveAccelerationSpeedX) { this.fEnemyMoveAccelerationSpeedX = fEnemyMoveAccelerationSpeedX; }
     public void SetEnemyMoveAccelerationSpeedXMax(float fEnemyMoveAccelerationSpeedXMax) { this.fEnemyMoveAccelerationSpeedXMax = fEnemyMoveAccelerationSpeedXMax; }
@@ -98,7 +101,8 @@ public class EnemyBase : GameObjectBase, IObjectBase
     public override void AllReset()
     {
         SetEnemyType(EEnemyType.None);
-        SetEnemyHP(0.0f);
+        SetEnemyCurrentHP(0.0f);
+        SetEnemyMaxHP(0.0f);
         SetEnemySpeedX(0.0f);
         SetEnemySpeedY(0.0f);
         SetCounter(false);

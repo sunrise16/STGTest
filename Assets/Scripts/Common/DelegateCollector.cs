@@ -5,6 +5,7 @@ using MEC;
 #endregion
 
 public delegate void DelegateCommon();
+public delegate void DelegateFlag(int iFlag);
 public delegate void DelegateGameObject(GameObject pObject);
 public delegate IEnumerator<float> DelegateEnemyMoveRepeat(GameObject pObject);
 public delegate void DelegateItemBase(ItemBase pItemBase);

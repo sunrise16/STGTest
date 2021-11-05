@@ -50,14 +50,16 @@ public class BulletPool : IPoolBase
     private List<GameObject> pBulletList;
     private Transform pBulletParent;
     private Transform pActiveBulletParent;
+    private Transform pActivePlayerBulletParent;
     #endregion
 
     #region CONSTRUCTOR
-    public BulletPool(Transform pBulletParent, Transform pActiveBulletParent)
+    public BulletPool(Transform pBulletParent, Transform pActiveBulletParent, Transform pActivePlayerBulletParent)
     {
         pBulletList = new List<GameObject>();
         this.pBulletParent = pBulletParent;
         this.pActiveBulletParent = pActiveBulletParent;
+        this.pActivePlayerBulletParent = pActivePlayerBulletParent;
     }
     #endregion
 
@@ -118,11 +120,7 @@ public class BulletPool : IPoolBase
             pBulletBase.GetSpriteRenderer().sprite = null;
             pBulletBase.GetAnimator().runtimeAnimatorController = null;
         }
-        pBulletMain.pCommonDelegate = null;
-        pBulletMain.pConditionDelegate = null;
-        pBulletMain.pChangeDelegate = null;
-        pBulletMain.pSplitDelegate = null;
-        pBulletMain.pAttachDelegate = null;
+        pBulletMain.pDelegateDictionary.Clear();
         pBulletBase.AllReset();
         if (pTransform.childCount > 1)
         {
@@ -154,7 +152,14 @@ public class BulletPool : IPoolBase
         GameObject pBulletObject = pBulletList.Count.Equals(0) ? AddPool() : pBulletList[0];
         Transform pTransform = pBulletObject.GetComponent<Transform>();
         
-        pTransform.parent = pActiveBulletParent;
+        if (enBulletShooter.Equals(EBulletShooter.enShooter_Player))
+        {
+            pTransform.parent = pActivePlayerBulletParent;
+        }
+        else if (enBulletShooter.Equals(EBulletShooter.enShooter_Enemy))
+        {
+            pTransform.parent = pActiveBulletParent;
+        }
         pBulletList.RemoveAt(0);
         switch (enBulletType)
         {
@@ -364,7 +369,8 @@ public class BulletManager : Singleton<BulletManager>
     {
         Transform pBulletParent = GameObject.Find("BulletPool").GetComponent<Transform>();
         Transform pActiveBulletParent = GameObject.Find("ActiveBullets").GetComponent<Transform>();
-        pBulletPool = new BulletPool(pBulletParent, pActiveBulletParent);
+        Transform pActivePlayerBulletParent = GameObject.Find("ActivePlayerBullets").GetComponent<Transform>();
+        pBulletPool = new BulletPool(pBulletParent, pActiveBulletParent, pActivePlayerBulletParent);
     }
     #endregion
 }

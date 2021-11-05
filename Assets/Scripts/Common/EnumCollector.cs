@@ -216,7 +216,7 @@ public enum EGameDifficulty
 }
 #endregion
 
-#region SYSTEM
+#region SOUND
 public enum EBGM
 {
     None = -1,
@@ -299,6 +299,20 @@ public enum ESE
     enSE_TimeOut2,
     enSE_UFO,
     enSE_UFOAlert,
+    Max
+}
+#endregion
+
+#region MISC
+public enum EDelegateType
+{
+    None = -1,
+    enType_Start,
+    enType_Common,
+    enType_Condition,
+    enType_Change,
+    enType_Split,
+    enType_Attach,
     Max
 }
 #endregion

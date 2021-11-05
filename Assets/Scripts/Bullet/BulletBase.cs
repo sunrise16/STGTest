@@ -35,7 +35,6 @@ public class BulletBase : GameObjectBase, IObjectBase
     private bool bBulletSplit;
     private bool bBulletBottomSplit;
     private bool bBulletAttach;
-    private bool bCondition;
     private bool bCollisionDestroy;
     private bool bColliderTrigger;
     private bool bGraze;
@@ -80,7 +79,6 @@ public class BulletBase : GameObjectBase, IObjectBase
     public bool GetBulletSplit() { return bBulletSplit; }
     public bool GetBulletBottomSplit() { return bBulletBottomSplit; }
     public bool GetBulletAttach() { return bBulletAttach; }
-    public bool GetCondition() { return bCondition; }
     public bool GetCollisionDestroy() { return bCollisionDestroy; }
     public bool GetColliderTrigger() { return bColliderTrigger; }
     public bool GetGraze() { return bGraze; }
@@ -145,7 +143,6 @@ public class BulletBase : GameObjectBase, IObjectBase
         SetBulletBottomSplit(bBulletBottomSplit);
         SetBulletAttach(bBulletAttach);
     }
-    public void SetCondition(bool bCondition) { this.bCondition = bCondition; }
     public void SetCollisionDestroy(bool bCollisionDestroy) { this.bCollisionDestroy = bCollisionDestroy; }
     public void SetColliderTrigger(bool bColliderTrigger) { this.bColliderTrigger = bColliderTrigger; }
     public void SetGraze(bool bGraze) { this.bGraze = bGraze; }
@@ -168,7 +165,6 @@ public class BulletBase : GameObjectBase, IObjectBase
         SetBulletRotateAngle(0.0f);
         SetPadding(0.0f);
         SetBulletOption();
-        SetCondition(false);
         SetCollisionDestroy(false);
         SetColliderTrigger(false);
         SetGraze(false);

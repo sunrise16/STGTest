@@ -33,7 +33,8 @@ public class PlayerBase : GameObjectBase, IObjectBase
     private float fPlayerMoveSpeedSlow;
     private bool bSlowMode;
     private bool bDeath;
-    private bool bRevive;
+    private bool bInvincible;
+    private bool bUsingSpell;
     #endregion
 
     #region CONSTRUCTOR
@@ -64,7 +65,8 @@ public class PlayerBase : GameObjectBase, IObjectBase
         }
         bSlowMode = false;
         bDeath = false;
-        bRevive = false;
+        bInvincible = false;
+        bUsingSpell = false;
     }
     #endregion
 
@@ -95,7 +97,8 @@ public class PlayerBase : GameObjectBase, IObjectBase
     public float GetPlayerMoveSpeed() { return !bSlowMode ? fPlayerMoveSpeedFast : fPlayerMoveSpeedSlow; }
     public bool GetSlowMode() { return bSlowMode; }
     public bool GetDeath() { return bDeath; }
-    public bool GetRevive() { return bRevive; }
+    public bool GetInvincible() { return bInvincible; }
+    public bool GetUsingSpell() { return bUsingSpell; }
     #endregion
 
     #region SET METHOD
@@ -129,7 +132,8 @@ public class PlayerBase : GameObjectBase, IObjectBase
     }
     public void SetSlowMode(bool bSlowMode) { this.bSlowMode = bSlowMode; }
     public void SetDeath(bool bDeath) { this.bDeath = bDeath; }
-    public void SetRevive(bool bRevive) { this.bRevive = bRevive; }
+    public void SetInvincible(bool bInvincible) { this.bInvincible = bInvincible; }
+    public void SetUsingSpell(bool bUsingSpell) { this.bUsingSpell = bUsingSpell; }
     #endregion
 
     #region COMMON METHOD
@@ -155,7 +159,8 @@ public class PlayerBase : GameObjectBase, IObjectBase
         SetPlayerMoveSpeed(0.0f, 0.0f);
         SetSlowMode(false);
         SetDeath(false);
-        SetRevive(false);
+        SetInvincible(false);
+        SetUsingSpell(false);
 
         base.AllReset();
     }

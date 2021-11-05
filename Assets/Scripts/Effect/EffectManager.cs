@@ -42,12 +42,10 @@ public class EffectPool : IPoolBase
 
         pEffectList.Add(pEffectObject);
         pTransform.parent = pEffectParent;
-        pEffectBase.GetSpriteRenderer().color = new Color(1, 1, 1, 0);
+        pEffectBase.GetSpriteRenderer().color = Color.white;
         pEffectBase.GetSpriteRenderer().sprite = null;
         pEffectBase.GetAnimator().runtimeAnimatorController = null;
-        pEffectMain.pStartDelegate = null;
-        pEffectMain.pCommonDelegate = null;
-        pEffectMain.pConditionDelegate = null;
+        pEffectMain.pDelegateDictionary.Clear();
         pEffectBase.AllReset();
         if (pTransform.childCount > 1)
         {

@@ -64,6 +64,7 @@ public class PlayerMain : MonoBehaviour
     private List<PlayerSecondary> pSecondaryList;
     private PlayerBase pPlayerBase;
     private Timer pShotTimer;
+    private Timer pSpellTimer;
     private Vector2 vMoveSpeedVector;
     private Vector2 vMargin;
     private float fPlayerAlpha;
@@ -82,6 +83,7 @@ public class PlayerMain : MonoBehaviour
         {
             PlayerMove();
             ShotBullet();
+            UseSpell();
             MoveInScreen();
         }
         ControlHitPoint();
@@ -93,6 +95,17 @@ public class PlayerMain : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             pSecondaryList[i].MoveSecondary(pPlayerBase.GetSlowMode().Equals(true) ? true : false);
+        }
+
+        // PLAYER SPELL TIMER
+        if (pPlayerBase.GetUsingSpell().Equals(true))
+        {
+            pSpellTimer.RunTimer();
+            if (pSpellTimer.GetTrigger().Equals(true))
+            {
+                pPlayerBase.SetUsingSpell(false);
+                pSpellTimer.ResetTimer(pSpellTimer.GetResetTime());
+            }
         }
     }
     #endregion
@@ -109,6 +122,7 @@ public class PlayerMain : MonoBehaviour
         {
             pPlayerBase = new PlayerBase(pPlayerObject, pTransform, vSpawnPosition, vScale);
             pShotTimer = new Timer(0, 0.03f, 0);
+            pSpellTimer = new Timer(0, 3.0f, 0);
             pPlayerBase.SetCamera(Camera.main);
             pPlayerBase.SetAnimator(pTransform.GetChild(0).GetComponent<Animator>());
             pPlayerBase.SetSpriteRenderer(pTransform.GetChild(1).GetComponent<SpriteRenderer>());
@@ -133,11 +147,13 @@ public class PlayerMain : MonoBehaviour
         {
             pPlayerBase.Init(pPlayerObject, pTransform, vSpawnPosition, vScale, EGameObjectType.enType_Player);
             pShotTimer.InitTimer(0, 0.03f, 0);
+            pSpellTimer.InitTimer(0, 3.0f, 0);
         }
         pPlayerBase.SetColor(new Color(1, 1, 1, 0));
         pPlayerBase.SetSlowMode(false);
         pPlayerBase.SetDeath(false);
-        pPlayerBase.SetRevive(false);
+        pPlayerBase.SetInvincible(false);
+        pPlayerBase.SetUsingSpell(false);
         vMoveSpeedVector = Vector2.zero;
         vMargin = new Vector2(0.03f, 0.03f);
         fPlayerAlpha = 1.0f;
@@ -236,13 +252,23 @@ public class PlayerMain : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Z))
         {
-            pShotTimer.RunTimer();
-            if (pShotTimer.GetTrigger().Equals(true))
+            if (pShotTimer.GetRepeatCount().Equals(0))
             {
                 ExtractBullet(pPlayerBase.GetPlayerType(), pPlayerBase.GetPlayerWeaponType());
                 pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
                 SoundManager.Instance.PlaySE(ESE.enSE_PlSt00, 1.0f);
                 pShotTimer.ResetTimer(pShotTimer.GetResetTime());
+            }
+            else
+            {
+                pShotTimer.RunTimer();
+                if (pShotTimer.GetTrigger().Equals(true))
+                {
+                    ExtractBullet(pPlayerBase.GetPlayerType(), pPlayerBase.GetPlayerWeaponType());
+                    pShotTimer.SetRepeatCount(pShotTimer.GetRepeatCount() + 1);
+                    SoundManager.Instance.PlaySE(ESE.enSE_PlSt00, 1.0f);
+                    pShotTimer.ResetTimer(pShotTimer.GetResetTime());
+                }
             }
         }
         else if (Input.GetKeyUp(KeyCode.Z))
@@ -274,16 +300,10 @@ public class PlayerMain : MonoBehaviour
                 pBulletBase.SetBulletSpeed(18.0f);
                 pBulletBase.SetBulletRotate(0.0f);
                 pBulletBase.SetBulletOption();
-                pBulletBase.SetCondition(false);
                 pBulletBase.SetCollisionDestroy(true);
                 pBulletBase.SetColliderTrigger(true);
                 pBulletBase.SetHoming(false);
                 pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuPrimary)];
-                pBulletMain.pCommonDelegate = null;
-                pBulletMain.pConditionDelegate = null;
-                pBulletMain.pChangeDelegate = null;
-                pBulletMain.pSplitDelegate = null;
-                pBulletMain.pAttachDelegate = null;
             }
 
             // SECONDARY SHOT
@@ -306,15 +326,9 @@ public class PlayerMain : MonoBehaviour
                         pBulletBase.SetBulletSpeed(18.0f);
                         pBulletBase.SetBulletRotate(0.0f);
                         pBulletBase.SetBulletOption();
-                        pBulletBase.SetCondition(false);
                         pBulletBase.SetCollisionDestroy(true);
                         pBulletBase.SetColliderTrigger(true);
                         pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuSecondary_Niddle)];
-                        pBulletMain.pCommonDelegate = null;
-                        pBulletMain.pConditionDelegate = null;
-                        pBulletMain.pChangeDelegate = null;
-                        pBulletMain.pSplitDelegate = null;
-                        pBulletMain.pAttachDelegate = null;
                     }
                     else
                     {
@@ -347,15 +361,9 @@ public class PlayerMain : MonoBehaviour
                                     break;
                             }
                             pBulletBase.SetBulletOption();
-                            pBulletBase.SetCondition(false);
                             pBulletBase.SetCollisionDestroy(true);
                             pBulletBase.SetColliderTrigger(true);
                             pBulletBase.GetSpriteRenderer().sprite = GameManager.Instance.pPlayerSprite[Convert.ToInt32(EPlayerBulletType.enType_ReimuSecondary_Homing)];
-                            pBulletMain.pCommonDelegate = null;
-                            pBulletMain.pConditionDelegate = null;
-                            pBulletMain.pChangeDelegate = null;
-                            pBulletMain.pSplitDelegate = null;
-                            pBulletMain.pAttachDelegate = null;
                         }
                     }
                 }
@@ -364,6 +372,27 @@ public class PlayerMain : MonoBehaviour
         else if (enPlayerType.Equals(EPlayerType.enType_Marisa))
         {
             // UNDER CONSTRUCTION
+        }
+    }
+    public void UseSpell()
+    {
+        if (Input.GetKeyDown(KeyCode.X) && pPlayerBase.GetUsingSpell().Equals(false) && pPlayerBase.GetPlayerSpell() > 0)
+        {
+            pPlayerBase.SetUsingSpell(true);
+            pPlayerBase.SetPlayerSpell(pPlayerBase.GetPlayerSpell() - 1);
+            Timing.RunCoroutine(PlayerInvincible(3.0f));
+            Transform pTransform = GameObject.Find("ActiveBullets").transform;
+
+            for (int i = 0; i < pTransform.childCount; i++)
+            {
+                ItemManager.Instance.GetItemPool().ExtractItem(pTransform.GetChild(i).position, Vector3.one, Color.white, EItemType.enType_SpecialScoreS, 10.0f);
+            }
+            ItemManager.Instance.ActiveAutoCollectAll(true);
+            for (int i = 0; i < pTransform.childCount; i++)
+            {
+                BulletManager.Instance.GetBulletPool().ReturnPool(pTransform.GetChild(i).gameObject);
+                i--;
+            }
         }
     }
     public void ControlHitPoint()
@@ -433,7 +462,7 @@ public class PlayerMain : MonoBehaviour
         vMoveSpeedVector = Vector2.zero;
         pPlayerBase.GetAction()("isIdle", "isLeftMove", "isRightMove");
         pPlayerBase.GetChildGameObject(2).SetActive(false);
-        SoundManager.Instance.PlaySE(ESE.enSE_PlDead00, 1.0f);
+        SoundManager.Instance.PlaySE(ESE.enSE_PlDead00, 0.5f);
 
         // CREATE EFFECT HERE
 
@@ -442,29 +471,40 @@ public class PlayerMain : MonoBehaviour
         fPlayerAlpha = 0.8f;
         pPlayerBase.SetPosition(new Vector3(0.0f, -4.5f, 0.0f));
         pPlayerBase.GetChildGameObject(2).SetActive(true);
+        if (pPlayerBase.GetPlayerLife() <= 0)
+        {
+            // 임시 게임 종료
+            UnityEditor.EditorApplication.isPlaying = false;
+        }
+        else
+        {
+            pPlayerBase.SetPlayerLife(pPlayerBase.GetPlayerLife() - 1);
+            pPlayerBase.SetPlayerSpell(GlobalData.iStartSpell);
+        }
         iTween.MoveTo(pPlayerBase.GetGameObject(), iTween.Hash("position", new Vector3(0.0f, -3.25f, 0.0f), "easetype", iTween.EaseType.linear, "time", 1.0f));
 
         yield return Timing.WaitForSeconds(1.0f);
 
         pPlayerBase.SetDeath(false);
-        pPlayerBase.SetRevive(true);
-        Timing.RunCoroutine(PlayerRevive());
+        Timing.RunCoroutine(PlayerInvincible(3.0f));
 
         yield break;
     }
-    public IEnumerator<float> PlayerRevive()
+    public IEnumerator<float> PlayerInvincible(float fTime)
     {
-        int iCount = 0;
+        float fTempTime = 0.0f;
 
-        while (iCount <= 96)
+        pPlayerBase.SetInvincible(true);
+
+        while (fTempTime <= fTime)
         {
-            fPlayerAlpha = (iCount % 2).Equals(0) ? 0.8f : 0.3f;
-            iCount++;
+            fPlayerAlpha = fPlayerAlpha.Equals(0.3f) ? 0.8f : 0.3f;
 
             yield return Timing.WaitForSeconds(0.03f);
+            fTempTime += 0.03f;
         }
         fPlayerAlpha = 1.0f;
-        pPlayerBase.SetRevive(false);
+        pPlayerBase.SetInvincible(false);
 
         yield break;
     }

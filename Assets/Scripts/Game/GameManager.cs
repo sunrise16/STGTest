@@ -116,7 +116,7 @@ public partial class GameManager : UnitySingleton<GameManager>
 
         yield return Timing.WaitForSeconds(2.0f);
 
-        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type1, 1000.0f, true, false);
+        pEnemy = EnemyManager.Instance.GetEnemyPool().ExtractEnemy(new Vector2(0.0f, 1.0f), Vector3.one, EEnemyType.enType_TinyFairy_Type1, 100.0f, true, false);
         EnemyManager.Instance.GetEnemyPool().AddSinglePattern(pEnemy, 110, 0, 4.5f, 1.0f);
         // EnemyManager.Instance.GetEnemyPool().AddRepeatPattern(pEnemy, new KeyValuePair<int, float>(117, 1.0f));
         EnemyManager.Instance.GetEnemyPool().AddItemDictionary(pEnemy, new KeyValuePair<EItemType, int>(EItemType.enType_PowerS, 3), new KeyValuePair<EItemType, int>(EItemType.enType_ScoreS, 1));

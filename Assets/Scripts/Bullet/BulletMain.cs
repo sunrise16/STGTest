@@ -8,11 +8,7 @@ using MEC;
 public class BulletMain : MonoBehaviour
 {
     #region VARIABLE
-    public DelegateCommon pCommonDelegate;
-    public DelegateCommon pConditionDelegate;
-    public DelegateCommon pChangeDelegate;
-    public DelegateCommon pSplitDelegate;
-    public DelegateCommon pAttachDelegate;
+    public Dictionary<EDelegateType, DelegateCommon> pDelegateDictionary;
 
     private BulletBase pBulletBase;
     private PlayerMain pPlayerMain;
@@ -81,18 +77,18 @@ public class BulletMain : MonoBehaviour
             pPatternTimer.RunTimer();
             if (pPatternTimer.GetTrigger().Equals(true))
             {
-                if (pCommonDelegate != null)
+                if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Common))
                 {
-                    pCommonDelegate();
+                    pDelegateDictionary[EDelegateType.enType_Common]();
                 }
                 pPatternTimer.ResetTimer(pPatternTimer.GetResetTime());
             }
         }
 
         // CONDITION PATTERN
-        if (pConditionDelegate != null)
+        if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Condition))
         {
-            pConditionDelegate();
+            pDelegateDictionary[EDelegateType.enType_Condition]();
         }
     }
     private void OnTriggerEnter2D(Collider2D pCollider)
@@ -107,26 +103,31 @@ public class BulletMain : MonoBehaviour
                 {
                     case EPlayerBulletType.enType_ReimuPrimary:
                     case EPlayerBulletType.enType_MarisaPrimary:
-                        pEnemyMain.GetEnemyBase().SetEnemyHP
-                            (pEnemyMain.GetEnemyBase().GetEnemyHP() - (pPlayerBase.GetPlayerPrimaryDamage() + pPlayerBase.GetPlayerPower()));
+                        pEnemyMain.GetEnemyBase().SetEnemyCurrentHP
+                            (pEnemyMain.GetEnemyBase().GetEnemyCurrentHP() - (pPlayerBase.GetPlayerPrimaryDamage() + pPlayerBase.GetPlayerPower()));
                         break;
                     case EPlayerBulletType.enType_ReimuSecondary_Homing:
                     case EPlayerBulletType.enType_MarisaSecondary_Missile:
-                        pEnemyMain.GetEnemyBase().SetEnemyHP
-                            (pEnemyMain.GetEnemyBase().GetEnemyHP() - (pPlayerBase.GetPlayerFastSecondaryDamage() + (pPlayerBase.GetPlayerPower() * 0.5f)));
+                        pEnemyMain.GetEnemyBase().SetEnemyCurrentHP
+                            (pEnemyMain.GetEnemyBase().GetEnemyCurrentHP() - (pPlayerBase.GetPlayerFastSecondaryDamage() + (pPlayerBase.GetPlayerPower() * 0.5f)));
                         break;
                     case EPlayerBulletType.enType_ReimuSecondary_Niddle:
                     case EPlayerBulletType.enType_MarisaSecondary_Laser:
-                        pEnemyMain.GetEnemyBase().SetEnemyHP
-                            (pEnemyMain.GetEnemyBase().GetEnemyHP() - (pPlayerBase.GetPlayerSlowSecondaryDamage() + (pPlayerBase.GetPlayerPower() * 0.5f)));
+                        pEnemyMain.GetEnemyBase().SetEnemyCurrentHP
+                            (pEnemyMain.GetEnemyBase().GetEnemyCurrentHP() - (pPlayerBase.GetPlayerSlowSecondaryDamage() + (pPlayerBase.GetPlayerPower() * 0.5f)));
                         break;
                     default:
                         break;
                 }
-                if (pEnemyMain.GetEnemyBase().GetEnemyHP() > 0.0f)
+                if (pEnemyMain.GetEnemyBase().GetEnemyCurrentHP() > pEnemyMain.GetEnemyBase().GetEnemyMaxHP() * 0.1f)
                 {
-                    SoundManager.Instance.PlaySE(ESE.enSE_Damage00, 1.0f);
+                    SoundManager.Instance.PlaySE(ESE.enSE_Damage00, 0.5f);
                 }
+                else if (pEnemyMain.GetEnemyBase().GetEnemyCurrentHP() < pEnemyMain.GetEnemyBase().GetEnemyMaxHP() * 0.15f && pEnemyMain.GetEnemyBase().GetEnemyCurrentHP() > 0.0f)
+                {
+                    SoundManager.Instance.PlaySE(ESE.enSE_Damage01, 0.5f);
+                }
+                pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + 10);
 
                 if (pBulletBase.GetCollisionDestroy().Equals(true))
                 {
@@ -143,7 +144,7 @@ public class BulletMain : MonoBehaviour
                 {
                     DestroyBullet(0.5f, false);
                 }
-                if (pPlayerBase.GetDeath().Equals(false) && pPlayerBase.GetRevive().Equals(false))
+                if (pPlayerBase.GetDeath().Equals(false) && pPlayerBase.GetInvincible().Equals(false))
                 {
                     Timing.RunCoroutine(pPlayerMain.PlayerDeath());
                 }
@@ -168,6 +169,7 @@ public class BulletMain : MonoBehaviour
     {
         if (pBulletBase == null)
         {
+            pDelegateDictionary = new Dictionary<EDelegateType, DelegateCommon>();
             pBulletBase = new BulletBase(pBulletObject, pTransform, vSpawnPosition, vScale);
             pPlayerObject = GameManager.Instance.pPlayer;
             pPlayerMain = pPlayerObject.GetComponent<PlayerMain>();
@@ -210,6 +212,7 @@ public class BulletMain : MonoBehaviour
     {
         if (pBulletBase == null)
         {
+            pDelegateDictionary = new Dictionary<EDelegateType, DelegateCommon>();
             pBulletBase = new BulletBase(pBulletObject, pTransform, vSpawnPosition, vScale);
             pPlayerObject = GameManager.Instance.pPlayer;
             pPlayerMain = pPlayerObject.GetComponent<PlayerMain>();
@@ -350,9 +353,9 @@ public class BulletMain : MonoBehaviour
                 if (pBulletBase.GetBulletChange().Equals(true))
                 {
                     pBulletBase.SetBulletChange(false);
-                    if (pChangeDelegate != null)
+                    if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Change))
                     {
-                        pChangeDelegate();
+                        pDelegateDictionary[EDelegateType.enType_Change]();
                     }
 
                     if (pBulletBase.GetBulletBottomChange().Equals(true))
@@ -365,9 +368,9 @@ public class BulletMain : MonoBehaviour
                 if (pBulletBase.GetBulletSplit().Equals(true))
                 {
                     pBulletBase.SetBulletSplit(false);
-                    if (pSplitDelegate != null)
+                    if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Split))
                     {
-                        pSplitDelegate();
+                        pDelegateDictionary[EDelegateType.enType_Split]();
                     }
 
                     if (pBulletBase.GetBulletBottomSplit().Equals(true))
@@ -407,9 +410,9 @@ public class BulletMain : MonoBehaviour
                 if (pBulletBase.GetBulletBottomChange().Equals(true))
                 {
                     pBulletBase.SetBulletBottomChange(false);
-                    if (pChangeDelegate != null)
+                    if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Change))
                     {
-                        pChangeDelegate();
+                        pDelegateDictionary[EDelegateType.enType_Change]();
                     }
 
                     if (pBulletBase.GetBulletChange().Equals(true))
@@ -422,9 +425,9 @@ public class BulletMain : MonoBehaviour
                 if (pBulletBase.GetBulletBottomSplit().Equals(true))
                 {
                     pBulletBase.SetBulletBottomSplit(false);
-                    if (pSplitDelegate != null)
+                    if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Split))
                     {
-                        pSplitDelegate();
+                        pDelegateDictionary[EDelegateType.enType_Split]();
                     }
 
                     if (pBulletBase.GetBulletSplit().Equals(true))
@@ -438,9 +441,9 @@ public class BulletMain : MonoBehaviour
             if (pBulletBase.GetBulletAttach().Equals(true))
             {
                 pBulletBase.SetBulletAttach(false);
-                if (pAttachDelegate != null)
+                if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Attach))
                 {
-                    pAttachDelegate();
+                    pDelegateDictionary[EDelegateType.enType_Attach]();
                 }
             }
         }

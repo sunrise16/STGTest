@@ -20,6 +20,10 @@ public class ItemPool : IPoolBase
     }
     #endregion
 
+    #region GET METHOD
+    public List<GameObject> GetItemList() { return pItemList; }
+    #endregion
+
     #region COMMON METHOD
     public GameObject AddPool()
     {
@@ -42,7 +46,7 @@ public class ItemPool : IPoolBase
 
         pItemList.Add(pItemObject);
         pTransform.parent = pItemParent;
-        pItemBase.GetSpriteRenderer().color = new Color(1, 1, 1, 0);
+        pItemBase.GetSpriteRenderer().color = Color.white;
         pItemBase.GetSpriteRenderer().sprite = null;
         pItemBase.GetAnimator().runtimeAnimatorController = null;
         pItemBase.GetRigidbody().gravityScale = 0.0f;
@@ -93,6 +97,7 @@ public class ItemManager : Singleton<ItemManager>
 {
     #region VARIABLE
     private ItemPool pItemPool;
+    private Transform pActiveItemParent;
     #endregion
 
     #region GET METHOD
@@ -103,12 +108,19 @@ public class ItemManager : Singleton<ItemManager>
     public void Init()
     {
         Transform pItemParent = GameObject.Find("ItemPool").GetComponent<Transform>();
-        Transform pActiveItemParent = GameObject.Find("ActiveItems").GetComponent<Transform>();
+        pActiveItemParent = GameObject.Find("ActiveItems").GetComponent<Transform>();
         pItemPool = new ItemPool(pItemParent, pActiveItemParent);
     }
     public void ActiveAutoCollect(ItemBase pItemBase)
     {
         pItemBase.SetAutoCollect(true);
+    }
+    public void ActiveAutoCollectAll(bool bAutoCollect)
+    {
+        for (int i = 0; i < pActiveItemParent.childCount; i++)
+        {
+            pActiveItemParent.GetChild(i).GetComponent<ItemMain>().GetItemBase().SetAutoCollect(bAutoCollect);
+        }
     }
     #endregion
 }

@@ -13,8 +13,12 @@ public class ItemMain : MonoBehaviour
     private ItemBase pItemBase;
     private PlayerMain pPlayerMain;
     private PlayerBase pPlayerBase;
+    private GameObject pPlayerObject;
+    private Transform pPlayerTransform;
+    private Transform pTempTransform;
     private Timer pTimer;
     private CoroutineHandle cHomingHandle;
+    private float fDistance;
     #endregion
 
     #region GET METHOD
@@ -32,6 +36,11 @@ public class ItemMain : MonoBehaviour
 
         // SCREEN CHECK
         OutScreenCheck(pItemBase.GetTransform(), pItemBase.GetPadding());
+
+        // COLLIDER CHECK
+        // pTempTransform = pPlayerTransform;
+        // fDistance = Vector3.Distance(pItemBase.GetTransform().position, pTempTransform.position);
+        // ColliderCheck(fDistance);
 
         // AUTO COLLECT
         if (pPlayerBase.GetPositionY() >= 2.0f)
@@ -167,8 +176,10 @@ public class ItemMain : MonoBehaviour
         if (pItemBase == null)
         {
             pItemBase = new ItemBase(pItemObject, pTransform, vSpawnPosition, vScale);
-            pPlayerMain = GameManager.Instance.pPlayer.GetComponent<PlayerMain>();
+            pPlayerObject = GameManager.Instance.pPlayer;
+            pPlayerMain = pPlayerObject.GetComponent<PlayerMain>();
             pPlayerBase = pPlayerMain.GetPlayerBase();
+            pPlayerTransform = pPlayerObject.GetComponent<Transform>();
             pTimer = new Timer();
             pItemBase.SetSpriteRenderer(pItemBase.GetChildTransform(0).GetComponent<SpriteRenderer>());
             pItemBase.SetAnimator(pItemBase.GetChildTransform(0).GetComponent<Animator>());
@@ -186,6 +197,7 @@ public class ItemMain : MonoBehaviour
         pItemBase.SetPadding(fPadding);
         pItemBase.SetAutoCollect(false);
         pItemBase.SetSpriteRotate(bSpriteRotate);
+        fDistance = 0.0f;
 
         pItemBase.GetSpriteRenderer().sprite = GameManager.Instance.pItemSprite[Convert.ToInt32(enItemType)];
         pItemBase.GetRigidbody().gravityScale = 0.1f;
@@ -197,6 +209,7 @@ public class ItemMain : MonoBehaviour
         {
             case EItemType.enType_PowerS:
             case EItemType.enType_ScoreS:
+            case EItemType.enType_SpecialScoreS:
                 pItemBase.GetCircleCollider().radius = 0.05f;
                 break;
             default:
@@ -211,6 +224,17 @@ public class ItemMain : MonoBehaviour
             vTempPosition.y < 0 - fPadding || vTempPosition.y > Screen.height + fPadding)
         {
             DestroyItem();
+        }
+    }
+    public void ColliderCheck(float fDistance)
+    {
+        if (fDistance <= 0.1f)
+        {
+            pItemBase.GetCircleCollider().enabled = true;
+        }
+        else
+        {
+            pItemBase.GetCircleCollider().enabled = false;
         }
     }
     public void SetPlayerPower(EItemType enItemType)
@@ -317,17 +341,17 @@ public class ItemMain : MonoBehaviour
                 switch (GlobalData.enGameDifficulty)
                 {
                     case EGameDifficulty.enDifficulty_Easy:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (10 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (10 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Normal:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (20 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (20 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Hard:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Lunatic:
                     case EGameDifficulty.enDifficulty_Extra:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     default:
                         break;
@@ -337,17 +361,17 @@ public class ItemMain : MonoBehaviour
                 switch (GlobalData.enGameDifficulty)
                 {
                     case EGameDifficulty.enDifficulty_Easy:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (20 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (20 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Normal:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Hard:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Lunatic:
                     case EGameDifficulty.enDifficulty_Extra:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (70 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (70 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     default:
                         break;
@@ -357,17 +381,17 @@ public class ItemMain : MonoBehaviour
                 switch (GlobalData.enGameDifficulty)
                 {
                     case EGameDifficulty.enDifficulty_Easy:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (30 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Normal:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (50 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Hard:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (70 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (70 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     case EGameDifficulty.enDifficulty_Lunatic:
                     case EGameDifficulty.enDifficulty_Extra:
-                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (100 * pPlayerBase.GetPlayerScoreItem()));
+                        pPlayerBase.SetPlayerCurrentScore(pPlayerBase.GetPlayerCurrentScore() + (100 * (pPlayerBase.GetPlayerScoreItem() + 1)));
                         break;
                     default:
                         break;
@@ -403,8 +427,5 @@ public class ItemMain : MonoBehaviour
         }
         ItemManager.Instance.GetItemPool().ReturnPool(pItemBase.GetGameObject());
     }
-    #endregion
-
-    #region IENUMERATOR
     #endregion
 }

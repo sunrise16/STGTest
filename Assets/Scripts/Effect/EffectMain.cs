@@ -7,9 +7,7 @@ using MEC;
 public class EffectMain : MonoBehaviour
 {
     #region VARIABLE
-    public DelegateCommon pStartDelegate;
-    public DelegateCommon pCommonDelegate;
-    public DelegateCommon pConditionDelegate;
+    public Dictionary<EDelegateType, DelegateCommon> pDelegateDictionary;
 
     private EffectBase pEffectBase;
     private Timer pTimer;
@@ -37,10 +35,10 @@ public class EffectMain : MonoBehaviour
         }
 
         // START EFFECT CHECK
-        if (pStartDelegate != null)
+        if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Start))
         {
-            pStartDelegate();
-            pStartDelegate = null;
+            pDelegateDictionary[EDelegateType.enType_Start]();
+            pDelegateDictionary.Remove(EDelegateType.enType_Start);
         }
 
         // LASER TIMER ON, OFF
@@ -139,17 +137,17 @@ public class EffectMain : MonoBehaviour
             }
 
             // CONDITION PATTERN
-            if (pConditionDelegate != null)
+            if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Condition))
             {
-                pConditionDelegate();
+                pDelegateDictionary[EDelegateType.enType_Condition]();
             }
 
             // SWITCH OFF
             if (pTimer.GetTrigger().Equals(true))
             {
-                if (pCommonDelegate != null)
+                if (pDelegateDictionary.ContainsKey(EDelegateType.enType_Common))
                 {
-                    pCommonDelegate();
+                    pDelegateDictionary[EDelegateType.enType_Common]();
                 }
 
                 if (pTimer.GetRepeatCount().Equals(pTimer.GetRepeatLimit()))
@@ -171,6 +169,7 @@ public class EffectMain : MonoBehaviour
     {
         if (pEffectBase == null)
         {
+            pDelegateDictionary = new Dictionary<EDelegateType, DelegateCommon>();
             pEffectBase = new EffectBase(pEffectObject, pTransform, vSpawnPosition, vScale);
             pTimer = new Timer();
             pLaserDelayTimer = new Timer();
